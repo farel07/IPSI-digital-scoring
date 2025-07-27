@@ -32,3 +32,25 @@ Route::post('/kirim-notifikasi_2', function (Request $request) {
     event(new NotifikasiDikirim2($request->judul, $request->pesan));
     return response()->json(['status' => 'berhasil']);
 });
+
+// route scoring
+Route::prefix('scoring')->group(function () {
+    Route::get('/dewan', function () {
+        return view('scoring.dewan');
+    });
+    Route::get('/juri', function () {
+        return view('scoring.juri');
+    });
+    Route::get('operator', function(){
+        return view('scoring.operator');
+    });
+    Route::get('/penilaian', function () {
+        return view('scoring.penilaian');
+    }); 
+    Route::get('/timer', function () {
+        return view('scoring.timer');
+    });
+    Route::get('/home', function () {
+        return view('scoring.home');
+    });
+});
