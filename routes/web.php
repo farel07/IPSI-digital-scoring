@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Events\NotifikasiDikirim;
 use App\Events\NotifikasiDikirim2;
+use App\Http\Controllers\dewanController;
+use App\Http\Controllers\juriController;
+use App\Http\Controllers\operatorController;
+use App\Http\Controllers\penilaianController;
+use App\Http\Controllers\timerController;
 use Illuminate\Http\Request;
 
 /*
@@ -17,7 +22,7 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('scoring.home');
 });
 
 Route::view('/kirim-notifikasi', 'kirim');
@@ -35,22 +40,13 @@ Route::post('/kirim-notifikasi_2', function (Request $request) {
 
 // route scoring
 Route::prefix('scoring')->group(function () {
-    Route::get('/dewan', function () {
-        return view('scoring.dewan');
-    });
-    Route::get('/juri', function () {
-        return view('scoring.juri');
-    });
-    Route::get('operator', function(){
-        return view('scoring.operator');
-    });
-    Route::get('/penilaian', function () {
-        return view('scoring.penilaian');
-    }); 
-    Route::get('/timer', function () {
-        return view('scoring.timer');
-    });
-    Route::get('/home', function () {
-        return view('scoring.home');
-    });
+    Route::get('/dewan', [dewanController::class, 'index']);
+
+    Route::get('/juri', [juriController::class, 'index']);
+
+    Route::get('/operator', [operatorController::class, 'index']);
+
+    Route::get('/penilaian', [penilaianController::class, 'index']);
+
+    Route::get('/timer', [timerController::class, 'index']);
 });
