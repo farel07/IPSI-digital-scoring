@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('status');
             $table->foreignId('arena_id')->constrained('arena')->onDelete('cascade');
             $table->foreignId('bracket_id')->constrained('bracket')->onDelete('cascade');
+            $table->foreignId('player_id')->constrained('players')->onDelete('cascade');
             $table->timestamps();
         });
     }
