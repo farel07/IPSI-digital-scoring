@@ -306,4 +306,13 @@
 
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script src="{{ asset('assets') }}/js/listenEvents.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeListener(
+            "{{ env('PUSHER_APP_KEY') }}",
+            "{{ env('PUSHER_APP_CLUSTER') }}"
+        );
+    });
+</script>
 @endsection
