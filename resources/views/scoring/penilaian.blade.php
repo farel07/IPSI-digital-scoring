@@ -20,7 +20,7 @@
             <div class="d-flex justify-content-between">
                 <div class="m-2">
                     {{ $user_match }}
-                    <p></p>
+                    <p id="binaan-notif"></p>
                     <p class="text-start m-0">CONTINGENT</p>
                     <h5 class="text-primary">ATHLETE</h5>
                 </div>
@@ -303,4 +303,7 @@
             {{-- end of juri --}}
         </div>
     </div>
+
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script src="{{ asset('assets') }}/js/listenEvents.js"></script>
 @endsection
