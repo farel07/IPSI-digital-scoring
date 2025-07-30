@@ -35,7 +35,7 @@ class Matches extends Model
 
     public function playerMatches()
     {
-        return $this->hasMany(Player::class, 'player_id', 'id');
+        return $this->hasMany(PlayerMatch::class, 'match_id', 'id');
     }
 
     public function userMatch()
