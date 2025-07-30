@@ -47,10 +47,15 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id', 'id');
-    }   
+    }
 
     public function userMatch()
     {
         return $this->hasMany(UserMatch::class, 'user_id', 'id');
+    }
+
+    public function arena()
+    {
+        return $this->hasMany(Arena::class, 'user_id', 'id');
     }
 }

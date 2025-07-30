@@ -11,11 +11,17 @@ class Arena extends Model
 
     protected $table = 'arena';
     protected $fillable = [
-        'arena_name'
+        'arena_name',
+        'user_id'
     ];
 
     public function arenaMatches()
     {
         return $this->hasMany(Matches::class, 'arena_id', 'id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

@@ -13,8 +13,8 @@ class ArenaSeeder extends Seeder
      */
     public function run(): void
     {
-        Arena::firstOrCreate(['arena_name' => 'Arena 1']);
-        Arena::firstOrCreate(['arena_name' => 'Arena 2']);
-        Arena::firstOrCreate(['arena_name' => 'Arena 3']);
+        Arena::firstOrCreate(['arena_name' => 'Arena 1', 'user_id' => 1]);
+        Arena::firstOrCreate(['arena_name' => 'Arena 2', 'user_id' => 1]);
+        Arena::firstOrCreate(['arena_name' => 'Arena 3', 'user_id' => 1]);
     }
 }
