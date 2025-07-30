@@ -40,7 +40,7 @@
                             <div class="d-flex flex-column">
                                 <div class="d-flex justify-content-around mt-3">
                                     <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="lah"
-                                        style="width:60px;height:60px;rotate:90deg">
+                                        style="width:60px; height:60px; rotate:90deg; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%);">
                                     <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="lah"
                                         style="width:60px;height: 60px;rotate:90deg">
                                 </div>

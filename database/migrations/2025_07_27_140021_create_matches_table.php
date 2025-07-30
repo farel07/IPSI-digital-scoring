@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->dateTime('date');
             $table->string('status');
+            $table->string('round');
             $table->foreignId('arena_id')->constrained('arena')->onDelete('cascade');
             $table->foreignId('bracket_id')->constrained('bracket')->onDelete('cascade');
-            $table->foreignId('player_id')->constrained('players')->onDelete('cascade');
+            $table->foreignId('player_id')->nullable()->constrained('players')->onDelete('set null');
             $table->timestamps();
         });
     }

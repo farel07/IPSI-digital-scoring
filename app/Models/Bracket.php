@@ -10,7 +10,7 @@ class Bracket extends Model
     use HasFactory;
     protected $table = 'bracket';
     protected $fillable = [
-        'player_category',
+        'player_category_id',
         'name'
     ];
 

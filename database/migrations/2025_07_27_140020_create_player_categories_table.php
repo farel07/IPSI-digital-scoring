@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('category');
             $table->string('range');
             $table->foreignId('class_category_id')->constrained('class_categories')->onDelete('cascade');
+            $table->string('filter');
             $table->timestamps();
         });
     }

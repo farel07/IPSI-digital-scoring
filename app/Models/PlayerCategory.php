@@ -12,7 +12,8 @@ class PlayerCategory extends Model
     protected $fillable = [
         'category',
         'range',
-        'class_category_id'
+        'class_category_id',
+        'filter'
     ];
 
     public function players()
@@ -27,6 +28,6 @@ class PlayerCategory extends Model
 
     public function brackets()
     {
-        return $this->hasMany(Bracket::class, 'player_category_id', 'id');
+        return $this->hasMany(Bracket::class, 'player_category_id', 'id'); // hasOne?
     }
 }
