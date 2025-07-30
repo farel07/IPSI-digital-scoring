@@ -17,10 +17,15 @@ function initializeListener(appKey, appCluster) {
         cluster: appCluster,
     });
 
-    // Subscribe ke channel spesifik untuk binaan
+    // binaan
     const channel = pusher.subscribe("kirim-binaan-channel");
-    // Bind event 'terima-binaan'
     channel.bind("terima-binaan", function (data) {
-        alert(`Binaan diterima: ${data.isi}`); // Menggunakan alert seperti contoh Anda
+        alert(`Binaan diterima: ${data.isi}`);
+    });
+
+    // peringatan
+    const channel2 = pusher.subscribe("kirim-peringatan-channel");
+    channel2.bind("terima-peringatan", function (data) {
+        alert(`peringatan: ${data.isi}`); // Menggunakan alert seperti contoh Anda
     });
 }
