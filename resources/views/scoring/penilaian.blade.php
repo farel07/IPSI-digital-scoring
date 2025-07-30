@@ -1,3 +1,4 @@
+
 @extends('main.main')
 
 @section('content')
@@ -6,7 +7,10 @@
         <div class="border rounded-top w-100" style="background-color: blueviolet; ">
             <div class="container">
                 <p class="text-light text-center m-0 p-2" style="font-size: 20px">
-                    SCORING DIGITAL KELAS TANDING : A PUTRA DEWASA
+                    SCORING DIGITAL {{ $user_match->match->name }}
+                    {{ $user_match->match->bracket->playerCategory->classCategory->name }}
+                    {{ $user_match->match->bracket->playerCategory->category }}
+                    {{ $user_match->match->bracket->playerCategory->range }}
                 </p>
             </div>
         </div>
@@ -15,6 +19,8 @@
             {{-- title --}}
             <div class="d-flex justify-content-between">
                 <div class="m-2">
+                    {{ $user_match }}
+                    <p></p>
                     <p class="text-start m-0">CONTINGENT</p>
                     <h5 class="text-primary">ATHLETE</h5>
                 </div>

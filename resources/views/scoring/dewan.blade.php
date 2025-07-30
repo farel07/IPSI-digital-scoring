@@ -1,3 +1,6 @@
+{{ $user_match->match }}
+{{ $user_match->match->playerMatches }}
+
 @extends('main.main')
 @section('content')
     <div class="container">
@@ -6,16 +9,17 @@
                 {{-- title --}}
                 <div class="d-flex justify-content-between">
                     <div class="m-2">
-                        <p class="text-start m-0">CONTINGENT</p>
-                        <h5 class="text-primary">ATHLETE</h5>
+                        <p class="text-start m-0">{{ $user_match->match->playerMatches->where('side', 'blue')->first()?->player->contingent ?? '-' }}</p>
+                        <h5 class="text-primary">{{ $user_match->match->playerMatches->where('side', 'blue')->first()?->player->name ?? '-' }}</h5>
                     </div>
                     <div class="m-2">
-                        <p class="m-0 fw-bold">PARTAI 2</p>
-                        <p class="m-0 fw-bold">ARENA 1</p>
+                        {{-- <p class="m-0 fw-bold">PARTAI 2</p> --}}
+                        <p class="m-0 fw-bold">{{ $user_match->match->name }}</p>
+                        <p class="m-0 fw-bold">{{ $user_match->match->arena->arena_name }}</p>
                     </div>
                     <div class="mt-2 me-2">
-                        <p class="text-end m-0">CONTINGENT</p>
-                        <h5 class="text-end text-danger">ATHLETE</h5>
+                        <p class="text-end m-0">{{ $user_match->match->playerMatches->where('side', 'red')->first()?->player->contingent ?? '-' }}</p>
+                        <h5 class="text-end text-danger">{{ $user_match->match->playerMatches->where('side', 'red')->first()?->player->name ?? '-' }}</h5>
                     </div>
                 </div>
                 {{-- end title --}}
