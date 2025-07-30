@@ -20,7 +20,10 @@ function initializeListener(appKey, appCluster) {
     // binaan
     const channel = pusher.subscribe("kirim-binaan-channel");
     channel.bind("terima-binaan", function (data) {
-        alert(`Binaan diterima: ${data.isi}`);
+        // alert(`Binaan diterima: ${data.isi}`);
+        document.getElementById(
+            "binaan-notif"
+        ).innerHTML = `<strong>${data.isi}</strong>`;
     });
 
     // peringatan
