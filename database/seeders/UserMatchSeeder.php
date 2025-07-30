@@ -16,7 +16,7 @@ class UserMatchSeeder extends Seeder
     public function run(): void
     {
         $userIds = [1, 2, 3, 4, 5, 6];
-        $matchIds = [1, 2];
+        $matchIds = [1];
         $dataToInsert = [];
 
         foreach ($matchIds as $matchId) {
