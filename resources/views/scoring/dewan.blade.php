@@ -137,7 +137,7 @@
                                     JATUH</button>
                             </div>
                             <div class="col-6">
-                                <button class="mt-3 btn btn-primary w-100" type="button"
+                                <button class="mt-3 btn btn-primary w-100" onclick="kirimBinaan()" type="button"
                                     style="border-radius: 10px; height:100px">
                                     BINA</button>
                             </div>
