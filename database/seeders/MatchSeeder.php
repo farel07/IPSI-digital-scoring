@@ -20,17 +20,7 @@ class MatchSeeder extends Seeder
             'round' => 'I',
             'arena_id' => 1,
             'bracket_id' => 82,
-            'player_id' => 1
-        ]);
-
-        Matches::firstOrCreate([
-            'name' => 'Match 1',
-            'date' => now(),
-            'status' => 'active',
-            'round' => 'I',
-            'arena_id' => 1,
-            'bracket_id' => 82,
-            'player_id' => 2
+            'player_id' => null
         ]);
     }
 }

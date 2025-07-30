@@ -20,8 +20,8 @@ class PlayerMatchSeeder extends Seeder
 
         // Konfigurasi pertandingan individual berdasarkan data Anda
         $matches = [
-            ['match_id' => 1, 'player_id' => 1, 'side' => 'red'],
-            ['match_id' => 2, 'player_id' => 2, 'side' => 'blue'],
+            ['player_id' => 1, 'side' => 'red'],
+            ['player_id' => 2, 'side' => 'blue'],
         ];
 
         // Loop untuk setiap konfigurasi pertandingan
@@ -32,7 +32,7 @@ class PlayerMatchSeeder extends Seeder
 
             if ($m['player_id'] == 2) {
                 PlayerMatch::create([
-                    'match_id'      => $m['match_id'],
+                    'match_id'      => 1,
                     'player_id'     => $m['player_id'],
                     'side'          => $m['side'],
                     'round'         => 1, // Hanya ada satu ronde
@@ -47,7 +47,7 @@ class PlayerMatchSeeder extends Seeder
                 ]);
             } else {
                 PlayerMatch::create([
-                    'match_id'      => $m['match_id'],
+                    'match_id'      => 1,
                     'player_id'     => $m['player_id'],
                     'side'          => $m['side'],
                     'round'         => 1, // Hanya ada satu ronde
