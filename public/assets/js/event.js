@@ -7,7 +7,7 @@ function kirimBinaan() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    isi: "Binaan telah dikirim"
+                    isi: "Btst"
                 })
             }).then(res => res.json()).then(data => {
                 alert("Berhasil!");
