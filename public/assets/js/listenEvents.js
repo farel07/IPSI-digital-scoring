@@ -21,9 +21,9 @@ function initializeListener(appKey, appCluster) {
     const channel = pusher.subscribe("kirim-binaan-channel");
     channel.bind("terima-binaan", function (data) {
         // alert(`Binaan diterima: ${data.isi}`);
-        document.getElementById(
-            "binaan-notif"
-        ).innerHTML = `<strong>${data.isi}</strong>`;
+        const yellowFilter =
+            "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
+        document.getElementById("notif-binaan").style.filter = yellowFilter;
     });
 
     // peringatan
