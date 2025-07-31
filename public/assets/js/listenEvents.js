@@ -97,15 +97,19 @@ function initializeListener(appKey, appCluster) {
             if (data.count == 1) {
                 const yellowFilter =
                     "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
-                document.getElementById("red-notif-peringatan-1").style.filter =
-                    yellowFilter;
+                document.getElementById(
+                    "blue-notif-peringatan-1"
+                ).style.filter = yellowFilter;
             } else if (data.count == 2) {
                 const yellowFilter =
                     "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
-                document.getElementById("red-notif-peringatan-2").style.filter =
-                    yellowFilter;
+                document.getElementById(
+                    "blue-notif-peringatan-2"
+                ).style.filter = yellowFilter;
             } else if (data.count == 3) {
-                document.getElementById("red-notif-peringatan-3").innerHTML = 1;
+                document.getElementById(
+                    "blue-notif-peringatan-3"
+                ).innerHTML = 1;
             } else {
                 alert("stop :3");
             }
