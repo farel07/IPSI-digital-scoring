@@ -17,18 +17,64 @@ function initializeListener(appKey, appCluster) {
         cluster: appCluster,
     });
 
+    // dewan
     // binaan
-    const channel = pusher.subscribe("kirim-binaan-channel");
-    channel.bind("terima-binaan", function (data) {
-        // alert(`Binaan diterima: ${data.isi}`);
-        const yellowFilter =
-            "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
-        document.getElementById("notif-binaan").style.filter = yellowFilter;
+    const blueBinaanChannel = pusher.subscribe("kirim-binaan-channel");
+    blueBinaanChannel.bind("terima-binaan", function (data) {
+        if (data.count == 1) {
+            const yellowFilter =
+                "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
+            document.getElementById("blue-notif-binaan-1").style.filter =
+                yellowFilter;
+        } else if (data.count == 2) {
+            const yellowFilter =
+                "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
+            document.getElementById("blue-notif-binaan-2").style.filter =
+                yellowFilter;
+        } else {
+            alert("binaan cuman 2x banh");
+        }
+    });
+
+    // teguran
+    const blueTeguranChannel = pusher.subscribe("kirim-teguran-channel");
+    blueTeguranChannel.bind("terima-teguran", function (data) {
+        if (data.count == 1) {
+            const yellowFilter =
+                "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
+            document.getElementById("blue-notif-teguran-1").style.filter =
+                yellowFilter;
+        } else if (data.count == 2) {
+            const yellowFilter =
+                "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
+            document.getElementById("blue-notif-teguran-2").style.filter =
+                yellowFilter;
+        } else {
+            alert("teguran cuman 2x banh");
+        }
     });
 
     // peringatan
-    const channel2 = pusher.subscribe("kirim-peringatan-channel");
-    channel2.bind("terima-peringatan", function (data) {
-        alert(`peringatan: ${data.isi}`); // Menggunakan alert seperti contoh Anda
+    const bluePeringatanChannel = pusher.subscribe("kirim-peringatan-channel");
+    bluePeringatanChannel.bind("terima-peringatan", function (data) {
+        if (data.count == 1) {
+            const yellowFilter =
+                "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
+            document.getElementById("blue-notif-peringatan-1").style.filter =
+                yellowFilter;
+        } else if (data.count == 2) {
+            const yellowFilter =
+                "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
+            document.getElementById("blue-notif-peringatan-2").style.filter =
+                yellowFilter;
+        } else if (data.count == 3) {
+            document.getElementById("blue-notif-peringatan-3").innerHTML = "1";
+        } else {
+            alert("stop :3");
+        }
     });
+
+    // jatuhan
+    const jatuhanChannel = pusher.subscribe("kirim-jatuhan-channel");
+    jatuhanChannel.bind("terima-jatuhan", function (data) {});
 }

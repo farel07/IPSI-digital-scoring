@@ -41,11 +41,11 @@ Route::post('/kirim-notifikasi_2', function (Request $request) {
 });
 
 Route::post('/kirim-binaan', function (Request $request) {
-    event(new KirimBinaan($request->isi));
+    event(new KirimBinaan($request->count));
     return response()->json(['status' => 'berhasil']);
 });
 Route::post('/kirim-peringatan', function (Request $request) {
-    event(new KirimPeringatan($request->isi));
+    event(new KirimPeringatan($request->count));
     return response()->json(['status' => 'berhasil']);
 });
 
