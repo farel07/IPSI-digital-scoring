@@ -132,22 +132,22 @@
 
                         <div class="row justify-content-between me-4">
                             <div class="col-6">
-                                <button class="mt-3 btn btn-primary w-100" type="button"
+                                <button class="mt-3 btn btn-primary w-100" onclick="kirimJatuh()" type="button"
                                     style="border-radius: 10px; height:100px">
                                     JATUH</button>
                             </div>
                             <div class="col-6">
-                                <button class="mt-3 btn btn-primary w-100" onclick="kirimBinaan()" type="button"
+                                <button id="btn_binaan_blue" class="mt-3 btn btn-primary w-100" onclick="kirimBinaan()" value="1" type="button"
                                     style="border-radius: 10px; height:100px">
                                     BINA</button>
                             </div>
                             <div class="col-6">
-                                <button class="mt-3 btn btn-primary w-100" type="button"
+                                <button id="btn_teguran_blue" class="mt-3 btn btn-primary w-100" onclick="kirimTeguran()" value="1" type="button"
                                     style="border-radius: 10px; height:100px">
                                     TEGURAN</button>
                             </div>
                             <div class="col-6">
-                                <button class="mt-3 btn btn-primary w-100" onclick="kirimPeringatan()" type="button"
+                                <button id="btn_peringatan_blue" class="mt-3 btn btn-primary w-100" onclick="kirimPeringatan()" value="1" type="button"
                                     style="border-radius: 10px; height:100px">
                                     PERINGATAN</button>
                             </div>
