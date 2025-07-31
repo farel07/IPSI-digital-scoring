@@ -13,12 +13,13 @@ class kirimTeguran implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     // public $judul;
-    public $count;
+    public $count, $filter;
 
-    public function __construct($count)
+    public function __construct($count, $filter)
     {
         // $this->judul = $judul;
         $this->count = $count;
+        $this->filter = $filter;
         // $this->pesan = $pesan;
     }
 

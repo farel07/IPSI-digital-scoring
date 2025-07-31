@@ -1,9 +1,9 @@
-function kirimBinaan() {
+function kirimBinaan(filter) {
     // alert("Fitur ini belum tersedia.");
-    const binaanValue = document.getElementById("btn_binaan_blue").value;
+    const binaanValue = document.getElementById("btn_binaan_" + filter).value;
 
         if (binaanValue == 1) {
-            document.getElementById("btn_binaan_blue").value = 2;
+            document.getElementById("btn_binaan_" + filter).value = 2;
         }
 
             fetch('/kirim-binaan', {
@@ -13,19 +13,22 @@ function kirimBinaan() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    count: binaanValue
+                    count: binaanValue,
+                    filter: filter
                 })
             }).then(res => res.json()).then(data => {
-                alert(binaanValue)
+                alert(binaanValue + filter)
             });
         }
 
-function kirimPeringatan() {
+function kirimPeringatan(filter) {
     // alert("Fitur ini belum tersedia.");
-    const peringatanValue = document.getElementById("btn_peringatan_blue").value;
+    const peringatanValue = document.getElementById("btn_peringatan_" + filter).value;
 
     if (peringatanValue == 1) {
-        document.getElementById("btn_peringatan_blue").value = 2;
+        document.getElementById("btn_peringatan_" + filter).value = 2;
+    } else if (peringatanValue == 2) {
+        document.getElementById("btn_peringatan_" + filter).value = 3;
     }
 
             fetch('/kirim-peringatan', {
@@ -36,18 +39,19 @@ function kirimPeringatan() {
                 },
                 body: JSON.stringify({
                     count: peringatanValue,
+                    filter: filter
                 })
             }).then(res => res.json()).then(data => {
-                alert("Berhasil!");
+                alert(peringatanValue + filter);
             });
         }
 
-function kirimTeguran() {
+function kirimTeguran(filter) {
     // alert("Fitur ini belum tersedia.");
-    const teguranValue = document.getElementById("btn_teguran_blue").value; 
+    const teguranValue = document.getElementById("btn_teguran_" + filter).value;
 
     if (teguranValue == 1) {
-        document.getElementById("btn_teguran_blue").value = 2;
+        document.getElementById("btn_teguran_" + filter).value = 2;
     }
 
             fetch('/kirim-teguran', {
@@ -57,16 +61,17 @@ function kirimTeguran() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    count: teguranValue
+                    count: teguranValue,
+                    filter: filter
                 })
             }).then(res => res.json()).then(data => {
-                alert("Berhasil!");
+                alert(teguranValue + filter);
             });
         }
 
-function kirimJatuh() {
+function kirimJatuh(filter) {
     // alert("Fitur ini belum tersedia.");
-    const jatuhValue = document.getElementById("btn_jatuh_blue").value;
+    const jatuhValue = document.getElementById("btn_jatuh_" + filter).value;
 
             fetch('/kirim-jatuh', {
                 method: 'POST',
@@ -75,9 +80,10 @@ function kirimJatuh() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    count: jatuhValue
+                    count: jatuhValue,
+                    filter: filter
                 })
             }).then(res => res.json()).then(data => {
-                alert("Berhasil!");
+                alert(jatuhValue + filter);
             });
         }

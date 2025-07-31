@@ -48,19 +48,19 @@
                                     <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="lah"
                                         style="width:60px; height:60px; rotate:90deg;" id="blue-notif-binaan1">
                                     <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="lah"
-                                        style="width:60px;height: 60px;rotate:90deg" id="blue-notif-binaan2">
+                                        style="width:60px;height: 60px;rotate:90deg" id="blue-notif-binaan-2">
                                 </div>
                                 <div class="d-flex justify-content-around mt-3">
                                     <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="lah"
-                                        style="width:60px ; height: 60px;" id="blue-notif-teguran1">
+                                        style="width:60px ; height: 60px;" id="blue-notif-teguran-1">
                                     <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="lah"
-                                        style="width:60px ; height: 60px;" id="blue-notif-teguran2">
+                                        style="width:60px ; height: 60px;" id="blue-notif-teguran-2">
                                 </div>
                                 <div class="d-flex justify-content-around mt-3">
                                     <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="lah"
-                                        style="width:60px ; height: 60px;" id="blue-notif-peringatan1">
+                                        style="width:60px ; height: 60px;" id="blue-notif-peringatan-1">
                                     <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="lah"
-                                        style="width:60px ; height: 60px;" id="blue-notif-peringatan2">
+                                        style="width:60px ; height: 60px;" id="blue-notif-peringatan-2">
                                 </div>
                             </div>
                         </div>

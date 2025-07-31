@@ -44,19 +44,19 @@ Route::post('/kirim-notifikasi_2', function (Request $request) {
 
 
 Route::post('/kirim-binaan', function (Request $request) {
-    event(new KirimBinaan($request->count));
+    event(new KirimBinaan($request->count, $request->filter));
     return response()->json(['status' => 'berhasil']);
 });
 Route::post('/kirim-peringatan', function (Request $request) {
-    event(new KirimPeringatan($request->count));
+    event(new KirimPeringatan($request->count, $request->filter));
     return response()->json(['status' => 'berhasil']);
 });
 Route::post('/kirim-teguran', function (Request $request) {
-    event(new KirimTeguran($request->count));
+    event(new KirimTeguran($request->count, $request->filter));
     return response()->json(['status' => 'berhasil']);
 });
 Route::post('/kirim-jatuh', function (Request $request) {
-    event(new KirimJatuh($request->count));
+    event(new KirimJatuh($request->count, $request->filter));
     return response()->json(['status' => 'berhasil']);
 });
 

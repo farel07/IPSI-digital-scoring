@@ -24,13 +24,21 @@ function initializeListener(appKey, appCluster) {
         if (data.count == 1) {
             const yellowFilter =
                 "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
-            document.getElementById("blue-notif-binaan-1").style.filter =
-                yellowFilter;
+            const elem = document.getElementById("blue-notif-binaan-1");
+            if (elem) {
+                elem.style.filter = yellowFilter;
+            } else {
+                console.warn('Element with ID "blue-notif-binaan-1" not found.');
+            }
         } else if (data.count == 2) {
             const yellowFilter =
                 "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
-            document.getElementById("blue-notif-binaan-2").style.filter =
-                yellowFilter;
+            const elem = document.getElementById("blue-notif-binaan-2");
+            if (elem) {
+                elem.style.filter = yellowFilter;
+            } else {
+                console.warn('Element with ID "blue-notif-binaan-2" not found.');
+            }
         } else {
             alert("binaan cuman 2x banh");
         }

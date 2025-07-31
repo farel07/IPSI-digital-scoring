@@ -132,22 +132,22 @@
 
                         <div class="row justify-content-between me-4">
                             <div class="col-6">
-                                <button class="mt-3 btn btn-primary w-100" onclick="kirimJatuh()" type="button"
+                                <button class="mt-3 btn btn-primary w-100" onclick="kirimJatuh('blue')" type="button"
                                     style="border-radius: 10px; height:100px">
                                     JATUH</button>
                             </div>
                             <div class="col-6">
-                                <button id="btn_binaan_blue" class="mt-3 btn btn-primary w-100" onclick="kirimBinaan()" value="1" type="button"
+                                <button id="btn_binaan_blue" class="mt-3 btn btn-primary w-100" onclick="kirimBinaan('blue')" value="1" type="button"
                                     style="border-radius: 10px; height:100px">
                                     BINA</button>
                             </div>
                             <div class="col-6">
-                                <button id="btn_teguran_blue" class="mt-3 btn btn-primary w-100" onclick="kirimTeguran()" value="1" type="button"
+                                <button id="btn_teguran_blue" class="mt-3 btn btn-primary w-100" onclick="kirimTeguran('blue')" value="1" type="button"
                                     style="border-radius: 10px; height:100px">
                                     TEGURAN</button>
                             </div>
                             <div class="col-6">
-                                <button id="btn_peringatan_blue" class="mt-3 btn btn-primary w-100" onclick="kirimPeringatan()" value="1" type="button"
+                                <button id="btn_peringatan_blue" class="mt-3 btn btn-primary w-100" onclick="kirimPeringatan('blue')" value="1" type="button"
                                     style="border-radius: 10px; height:100px">
                                     PERINGATAN</button>
                             </div>
@@ -354,23 +354,23 @@
                             </div>
                             <div class="row justify-content-between">
                                 <div class="col-6 ps-3">
-                                    <button class="mt-3 btn btn-danger w-100" type="button"
-                                        style="border-radius: 10px; height:100px">
+                                    <button class="mt-3 btn btn-danger w-100" id="btn_jatuh_red" type="button"
+                                        style="border-radius: 10px; height:100px" onclick="kirimJatuh('red')" value="1" type="button">
                                         JATUH</button>
                                 </div>
                                 <div class="col-6 pe-3">
-                                    <button class="mt-3 btn btn-danger w-100" type="button"
-                                        style="border-radius: 10px; height:100px">
+                                    <button class="mt-3 btn btn-danger w-100" id="btn_binaan_red" type="button"
+                                        style="border-radius: 10px; height:100px" onclick="kirimBinaan('red')" value="1" type="button">
                                         BINA</button>
                                 </div>
                                 <div class="col-6 ps-3">
-                                    <button class="mt-3 btn btn-danger w-100" type="button"
-                                        style="border-radius: 10px; height:100px">
+                                    <button class="mt-3 btn btn-danger w-100" id="btn_teguran_red" type="button"
+                                        style="border-radius: 10px; height:100px" onclick="kirimTeguran('red')" value="1" type="button">
                                         TEGURAN</button>
                                 </div>
                                 <div class="col-6 pe-3">
-                                    <button class="mt-3 btn btn-danger w-100" type="button"
-                                        style="border-radius: 10px; height:100px">
+                                    <button class="mt-3 btn btn-danger w-100" id="btn_peringatan_red" type="button"
+                                        style="border-radius: 10px; height:100px" onclick="kirimPeringatan('red')" value="1" type="button">
                                         PERINGATAN</button>
                                 </div>
                                 <div class="col-6">
