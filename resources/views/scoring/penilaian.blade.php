@@ -46,21 +46,21 @@
                             <div class="d-flex flex-column">
                                 <div class="d-flex justify-content-around mt-3">
                                     <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="lah"
-                                        style="width:60px; height:60px; rotate:90deg;" id="blue-notif-binaan1">
+                                        style="width:60px; height:60px; rotate:90deg;" id="blue-notif-binaan-1">
                                     <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="lah"
-                                        style="width:60px;height: 60px;rotate:90deg" id="blue-notif-binaan2">
+                                        style="width:60px;height: 60px;rotate:90deg" id="blue-notif-binaan-2">
                                 </div>
                                 <div class="d-flex justify-content-around mt-3">
                                     <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="lah"
-                                        style="width:60px ; height: 60px;" id="blue-notif-teguran1">
+                                        style="width:60px ; height: 60px;" id="blue-notif-teguran-1">
                                     <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="lah"
-                                        style="width:60px ; height: 60px;" id="blue-notif-teguran2">
+                                        style="width:60px ; height: 60px;" id="blue-notif-teguran-2">
                                 </div>
                                 <div class="d-flex justify-content-around mt-3">
                                     <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="lah"
-                                        style="width:60px ; height: 60px;" id="blue-notif-peringatan1">
+                                        style="width:60px ; height: 60px;" id="blue-notif-peringatan-1">
                                     <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="lah"
-                                        style="width:60px ; height: 60px;" id="blue-notif-peringatan2">
+                                        style="width:60px ; height: 60px;" id="blue-notif-peringatan-2">
                                 </div>
                             </div>
                         </div>
@@ -102,22 +102,22 @@
                             <div class="d-flex flex-column">
                                 <div class="d-flex justify-content-around mt-3">
                                     <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="lah"
-                                        style="width:60px;height:60px;rotate:270deg">
+                                        style="width:60px;height:60px;rotate:270deg" id="red-notif-binaan-1">
                                     <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="lah"
-                                        style="width:60px;height: 60px;rotate:270deg">
+                                        style="width:60px;height: 60px;rotate:270deg" id="red-notif-binaan-2">
 
                                 </div>
                                 <div class="d-flex justify-content-around mt-3">
                                     <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="lah"
-                                        style="width:60px ; height: 60px;">
+                                        style="width:60px ; height: 60px;" id="red-notif-teguran-1">
                                     <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="lah"
-                                        style="width:60px ; height: 60px;">
+                                        style="width:60px ; height: 60px;" id="red-notif-teguran-2">
                                 </div>
                                 <div class="d-flex justify-content-around mt-3">
                                     <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="lah"
-                                        style="width:60px ; height: 60px;">
+                                        style="width:60px ; height: 60px;" id="red-notif-peringatan-1">
                                     <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="lah"
-                                        style="width:60px ; height: 60px;">
+                                        style="width:60px ; height: 60px;" id="red-notif-peringatan-2">
                                 </div>
                             </div>
                         </div>
@@ -217,7 +217,7 @@
                             <p class="m-0 text-center text-light" id="blue-notif-peringatan-3">0</p>
                         </div>
                         <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="red-notif-peringatan-3">0</p>
                         </div>
                     </div>
                     <div class="d-flex flex-column mx-1">
