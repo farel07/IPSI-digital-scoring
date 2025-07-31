@@ -13,12 +13,12 @@ class kirimJatuh implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     // public $judul;
-    public $isi;
+    public $count;
 
-    public function __construct($isi)
+    public function __construct($count)
     {
         // $this->judul = $judul;
-        $this->isi = $isi;
+        $this->count = $count;
         // $this->pesan = $pesan;
     }
 
