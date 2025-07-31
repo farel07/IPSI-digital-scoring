@@ -132,7 +132,7 @@
 
                         <div class="row justify-content-between me-4">
                             <div class="col-6">
-                                <button class="mt-3 btn btn-primary w-100" onclick="kirimJatuh('blue')" type="button"
+                                <button id="btn_jatuh_blue" class="mt-3 btn btn-primary w-100" onclick="kirimJatuh('blue')" type="button"
                                     style="border-radius: 10px; height:100px">
                                     JATUH</button>
                             </div>
