@@ -1,6 +1,18 @@
+const round = 2;
+
 function kirimBinaan(filter) {
     // alert("Fitur ini belum tersedia.");
     const binaanValue = document.getElementById("btn_binaan_" + filter).value;
+
+    if (round == 1) {
+        document.getElementById("point-bina-" + filter + "-" + round).innerHTML = binaanValue;
+    }
+    else if (round == 2) {
+        document.getElementById("point-bina-" + filter + "-" + round).innerHTML = binaanValue;
+    }
+    else if (round == 3) {
+        document.getElementById("point-bina-" + filter + "-" + round).innerHTML = binaanValue;
+    }
 
         if (binaanValue == 1) {
             document.getElementById("btn_binaan_" + filter).value = 2;
@@ -13,7 +25,7 @@ function kirimBinaan(filter) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    count: binaanValue,
+                    count: parseInt(binaanValue),
                     filter: filter
                 })
             }).then(res => res.json()).then(data => {
@@ -24,6 +36,15 @@ function kirimBinaan(filter) {
 function kirimPeringatan(filter) {
     // alert("Fitur ini belum tersedia.");
     const peringatanValue = document.getElementById("btn_peringatan_" + filter).value;
+
+    if (round == 1) {
+        document.getElementById("point-peringatan-" + filter + "-" + round).innerHTML = peringatanValue;
+        // total_peringatan += 1;
+    } else if (round == 2) {
+        document.getElementById("point-peringatan-" + filter + "-" + round).innerHTML = peringatanValue;
+    } else if (round == 3) {
+        document.getElementById("point-peringatan-" + filter + "-" + round).innerHTML = peringatanValue;
+    }
 
     if (peringatanValue == 1) {
         document.getElementById("btn_peringatan_" + filter).value = 2;
@@ -38,7 +59,7 @@ function kirimPeringatan(filter) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    count: peringatanValue,
+                    count: parseInt(peringatanValue),
                     filter: filter
                 })
             }).then(res => res.json()).then(data => {
@@ -49,6 +70,15 @@ function kirimPeringatan(filter) {
 function kirimTeguran(filter) {
     // alert("Fitur ini belum tersedia.");
     const teguranValue = document.getElementById("btn_teguran_" + filter).value;
+
+    if (round == 1) {
+        document.getElementById("point-teguran-" + filter + "-" + round).innerHTML = teguranValue;
+        // total_teguran += 1;
+    } else if (round == 2) {
+        document.getElementById("point-teguran-" + filter + "-" + round).innerHTML = teguranValue;
+    } else if (round == 3) {
+        document.getElementById("point-teguran-" + filter + "-" + round).innerHTML = teguranValue;
+    }
 
     if (teguranValue == 1) {
         document.getElementById("btn_teguran_" + filter).value = 2;
@@ -61,7 +91,7 @@ function kirimTeguran(filter) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    count: teguranValue,
+                    count: parseInt(teguranValue),
                     filter: filter
                 })
             }).then(res => res.json()).then(data => {
@@ -69,9 +99,20 @@ function kirimTeguran(filter) {
             });
         }
 
+        let total_jatuh = 0;
+
 function kirimJatuh(filter) {
     // alert("Fitur ini belum tersedia.");
     const jatuhValue = document.getElementById("btn_jatuh_" + filter).value;
+    total_jatuh += 1;
+    if (round == 1) {
+        document.getElementById("point-jatuh-" + filter + "-" + round).innerHTML = total_jatuh;
+        // total_jatuh += 1;
+    } else if (round == 2) {
+        document.getElementById("point-jatuh-" + filter + "-" + round).innerHTML = total_jatuh;
+    } else if (round == 3) {
+        document.getElementById("point-jatuh-" + filter + "-" + round).innerHTML = total_jatuh;
+    }
 
             fetch('/kirim-jatuh', {
                 method: 'POST',
@@ -80,7 +121,7 @@ function kirimJatuh(filter) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    count: jatuhValue,
+                    count: parseInt(jatuhValue),
                     filter: filter
                 })
             }).then(res => res.json()).then(data => {

@@ -57,75 +57,75 @@
                         <div class="row mt-2">
                             <div class="col-3 pe-0">
                                 <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">-
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-blue-1">bina
                                 </div>
                             </div>
                             <div class="col-3 ps-0 pe-0" style="width: 98px">
                                 <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
-                                    -
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-blue-1">
+                                    teguran
                                 </div>
                             </div>
                             <div class="col-3 ps-1 p-0" style="width: 98px">
                                 <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px;border-radius: 10px; width: 90px">
-                                    -
+                                    style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-blue-1">
+                                    peringatan
                                 </div>
                             </div>
                             <div class="col-3 ps-2 p-0">
                                 <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
-                                    -
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-blue-1">
+                                    jatuh
                                 </div>
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-3 pe-0">
                                 <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">-
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-blue-2">bina 2
                                 </div>
                             </div>
                             <div class="col-3 ps-0 pe-0" style="width: 98px">
                                 <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
-                                    -
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-blue-2">
+                                    teguran 2
                                 </div>
                             </div>
                             <div class="col-3 ps-1 p-0" style="width: 98px">
                                 <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px;border-radius: 10px; width: 90px">
-                                    -
+                                    style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-blue-2">
+                                    peringatan 2
                                 </div>
                             </div>
                             <div class="col-3 ps-2 p-0">
                                 <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
-                                    -
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-blue-2">
+                                    jatuh 2
                                 </div>
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-3 pe-0">
                                 <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">-
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-blue-3">bina 3
                                 </div>
                             </div>
                             <div class="col-3 ps-0 pe-0" style="width: 98px">
                                 <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
-                                    -
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-blue-3">
+                                    teguran 3
                                 </div>
                             </div>
                             <div class="col-3 ps-1 p-0" style="width: 98px">
                                 <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px;border-radius: 10px; width: 90px">
-                                    -
+                                    style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-blue-3">
+                                    peringatan 3
                                 </div>
                             </div>
                             <div class="col-3 ps-2 p-0">
                                 <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
-                                    -
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-blue-3">
+                                    jatuh 3
                                 </div>
                             </div>
                         </div>
@@ -133,7 +133,7 @@
                         <div class="row justify-content-between me-4">
                             <div class="col-6">
                                 <button id="btn_jatuh_blue" class="mt-3 btn btn-primary w-100" onclick="kirimJatuh('blue')" type="button"
-                                    style="border-radius: 10px; height:100px">
+                                    style="border-radius: 10px; height:100px" value="1">
                                     JATUH</button>
                             </div>
                             <div class="col-6">
@@ -168,14 +168,27 @@
 
                     {{-- scoring --}}
                     <div class="col-2">
-                        <div class="p-3 border bg-warning text-light text-center"
+                        <div class="p-3 border bg-success text-light text-center"
                             style="border-radius: 10px; height:55px">
                             SCORE</div>
-                        <div class="p-3 mt-2 border bg-light text-center" style="border-radius: 10px; height:55px">I</div>
-                        <div class="p-3 mt-2 border bg-light text-center" style="border-radius: 10px; height:55px">II
-                        </div>
-                        <div class="p-3 mt-2 border bg-light text-center" style="border-radius: 10px; height:55px">III
-                        </div>
+
+                        @if($user_match->match->round == 1)
+                            <div class="p-3 mt-2 border bg-warning text-center" style="border-radius: 10px; height:55px">I</div>
+                        @else
+                            <div class="p-3 mt-2 border bg-light text-center" style="border-radius: 10px; height:55px">I</div>
+                        @endif
+
+                        @if($user_match->match->round == 2)
+                            <div class="p-3 mt-2 border bg-warning text-center" style="border-radius: 10px; height:55px">II</div>
+                        @else
+                            <div class="p-3 mt-2 border bg-light text-center" style="border-radius: 10px; height:55px">II</div>
+                        @endif
+
+                        @if($user_match->match->round == 3)
+                            <div class="p-3 mt-2 border bg-warning text-center" style="border-radius: 10px; height:55px">III</div>
+                        @else
+                            <div class="p-3 mt-2 border bg-light text-center" style="border-radius: 10px; height:55px">III</div>
+                        @endif
                         <div class="mt-5">
                             {{-- request validation --}}
                             <!-- Button trigger modal -->
@@ -281,24 +294,50 @@
                         <div class="row justify-content-end mt-2">
                             <div class="col-3 pe-0">
                                 <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">-
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-red-1">bina
                                 </div>
                             </div>
                             <div class="col-3 ps-0 pe-0" style="width: 98px">
                                 <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-red-1">
+                                    teguran
+                                </div>
+                            </div>
+                            <div class="col-3 ps-1 p-0" style="width: 98px">
+                                <div class="py-3 border bg-light text-dark text-center"
+                                    style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-red-1">
+                                    peringatan
+                                </div>
+                            </div>
+                            <div class="col-3 ps-2 p-0">
+                                <div class="p-3 border bg-light text-dark text-center"
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-red-1">
+                                    jatuh
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-end mt-2">
+                            <div class="col-3 pe-0">
+                                <div class="p-3 border bg-light text-dark text-center"
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-red-2">
+                                    bina 2
+                                </div>
+                            </div>
+                            <div class="col-3 ps-0 pe-0" style="width: 98px">
+                                <div class="py-3 border bg-light text-dark text-center"
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-red-2">
                                     -
                                 </div>
                             </div>
                             <div class="col-3 ps-1 p-0" style="width: 98px">
                                 <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px;border-radius: 10px; width: 90px">
+                                    style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-red-2">
                                     -
                                 </div>
                             </div>
                             <div class="col-3 ps-2 p-0">
                                 <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-red-2">
                                     -
                                 </div>
                             </div>
@@ -306,49 +345,24 @@
                         <div class="row justify-content-end mt-2">
                             <div class="col-3 pe-0">
                                 <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">-
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-red-3">-
                                 </div>
                             </div>
                             <div class="col-3 ps-0 pe-0" style="width: 98px">
                                 <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-red-3">
                                     -
                                 </div>
                             </div>
                             <div class="col-3 ps-1 p-0" style="width: 98px">
                                 <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px;border-radius: 10px; width: 90px">
+                                    style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-red-3">
                                     -
                                 </div>
                             </div>
                             <div class="col-3 ps-2 p-0">
                                 <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
-                                    -
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row justify-content-end mt-2">
-                            <div class="col-3 pe-0">
-                                <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">-
-                                </div>
-                            </div>
-                            <div class="col-3 ps-0 pe-0" style="width: 98px">
-                                <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
-                                    -
-                                </div>
-                            </div>
-                            <div class="col-3 ps-1 p-0" style="width: 98px">
-                                <div class="py-3 border bg-light text-dark text-center"
-                                    style="font-size:14px;border-radius: 10px; width: 90px">
-                                    -
-                                </div>
-                            </div>
-                            <div class="col-3 ps-2 p-0">
-                                <div class="p-3 border bg-light text-dark text-center"
-                                    style="font-size:14px; border-radius: 10px; width: 90px">
+                                    style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-red-3">
                                     -
                                 </div>
                             </div>
