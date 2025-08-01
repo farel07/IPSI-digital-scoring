@@ -17,19 +17,17 @@ function initializeListener(appKey, appCluster) {
         cluster: appCluster,
     });
 
-    // dewan
+    // penilaian
+    const yellowFilter =
+        "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
     // binaan
     const blueBinaanChannel = pusher.subscribe("kirim-binaan-channel");
     blueBinaanChannel.bind("terima-binaan", function (data) {
         if (data.filter == "blue") {
             if (data.count == 1) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById("blue-notif-binaan-1").style.filter =
                     yellowFilter;
             } else if (data.count == 2) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById("blue-notif-binaan-2").style.filter =
                     yellowFilter;
             } else {
@@ -37,13 +35,9 @@ function initializeListener(appKey, appCluster) {
             }
         } else if (data.filter == "red") {
             if (data.count == 1) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById("red-notif-binaan-1").style.filter =
                     yellowFilter;
             } else if (data.count == 2) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById("red-notif-binaan-2").style.filter =
                     yellowFilter;
             } else {
@@ -59,29 +53,33 @@ function initializeListener(appKey, appCluster) {
     blueTeguranChannel.bind("terima-teguran", function (data) {
         if (data.filter == "blue") {
             if (data.count == 1) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById("blue-notif-teguran-1").style.filter =
                     yellowFilter;
+                document.getElementById(
+                    "blue-notif-teguran-1-table"
+                ).innerHTML = 1;
             } else if (data.count == 2) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById("blue-notif-teguran-2").style.filter =
                     yellowFilter;
+                document.getElementById(
+                    "blue-notif-teguran-2-table"
+                ).innerHTML = 1;
             } else {
                 alert("teguran cuman 2x banh");
             }
         } else if (data.filter == "red") {
             if (data.count == 1) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById("red-notif-teguran-1").style.filter =
                     yellowFilter;
+                document.getElementById(
+                    "red-notif-teguran-1-table"
+                ).innerHTML = 1;
             } else if (data.count == 2) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById("red-notif-teguran-2").style.filter =
                     yellowFilter;
+                document.getElementById(
+                    "red-notif-teguran-2-table"
+                ).innerHTML = 1;
             } else {
                 alert("teguran cuman 2x banh");
             }
@@ -95,17 +93,19 @@ function initializeListener(appKey, appCluster) {
     bluePeringatanChannel.bind("terima-peringatan", function (data) {
         if (data.filter == "blue") {
             if (data.count == 1) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById(
                     "blue-notif-peringatan-1"
                 ).style.filter = yellowFilter;
+                document.getElementById(
+                    "blue-notif-peringatan-1-table"
+                ).innerHTML = 1;
             } else if (data.count == 2) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById(
                     "blue-notif-peringatan-2"
                 ).style.filter = yellowFilter;
+                document.getElementById(
+                    "blue-notif-peringatan-2-table"
+                ).innerHTML = 1;
             } else if (data.count == 3) {
                 document.getElementById(
                     "blue-notif-peringatan-3"
@@ -115,15 +115,17 @@ function initializeListener(appKey, appCluster) {
             }
         } else if (data.filter == "red") {
             if (data.count == 1) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById("red-notif-peringatan-1").style.filter =
                     yellowFilter;
+                document.getElementById(
+                    "red-notif-peringatan-1-table"
+                ).innerHTML = 1;
             } else if (data.count == 2) {
-                const yellowFilter =
-                    "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
                 document.getElementById("red-notif-peringatan-2").style.filter =
                     yellowFilter;
+                document.getElementById(
+                    "red-notif-peringatan-2-table"
+                ).innerHTML = 1;
             } else if (data.count == 3) {
                 document.getElementById("red-notif-peringatan-3").innerHTML = 1;
             } else {
@@ -135,6 +137,18 @@ function initializeListener(appKey, appCluster) {
     });
 
     // jatuhan
-    const jatuhanChannel = pusher.subscribe("kirim-jatuhan-channel");
-    jatuhanChannel.bind("terima-jatuhan", function (data) {});
+    const jatuhanChannel = pusher.subscribe("kirim-jatuh-channel");
+    let initBlue = 0;
+    let initRed = 0;
+    jatuhanChannel.bind("terima-jatuh", function (data) {
+        if (data.filter == "blue") {
+            document.getElementById("blue-notif-jatuhan-table").innerHTML =
+                initBlue = initBlue + data.count;
+        } else if (data.filter == "red") {
+            document.getElementById("red-notif-jatuhan-table").innerHTML =
+                initRed = initRed + data.count;
+        } else {
+            alert("cuman 2 warna side aja yaa");
+        }
+    });
 }
