@@ -19,10 +19,10 @@
             {{-- title --}}
             <div class="d-flex justify-content-between">
                 <div class="m-2">
-                    {{ $user_match }}
+                    {{-- {{ $user_match }} --}}
                     <p></p>
-                    <p class="text-start m-0">CONTINGENT</p>
-                    <h5 class="text-primary">ATHLETE</h5>
+                    <p class="text-start m-0">{{ $user_match->match->playerMatches->where('side', 'blue')->first()?->player->contingent ?? '-' }}</p>
+                    <h5 class="text-primary">{{ $user_match->match->playerMatches->where('side', 'blue')->first()?->player->name ?? '-' }}</h5>
                 </div>
                 <div class="m-2">
                     <div class="px-3 pt-5 text-dark text-center" style="border-radius: 10px">
@@ -30,8 +30,8 @@
                     </div>
                 </div>
                 <div class="mt-2 me-2">
-                    <p class="text-end m-0">CONTINGENT</p>
-                    <h5 class="text-end text-danger">ATHLETE</h5>
+                    <p class="text-end m-0">{{ $user_match->match->playerMatches->where('side', 'red')->first()?->player->contingent ?? '-' }}</p>
+                    <h5 class="text-end text-danger">{{ $user_match->match->playerMatches->where('side', 'red')->first()?->player->name ?? '-' }}</h5>
                 </div>
             </div>
             {{-- end title --}}
@@ -225,10 +225,10 @@
                             <p class="m-0 text-center text-light">Peringatan 2</p>
                         </div>
                         <div class="border border-primary bg-primary py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="blue-notif-peringatan-2-table">0</p>
                         </div>
                         <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="red-notif-peringatan-2-table">0</p>
                         </div>
                     </div>
                     <div class="d-flex flex-column mx-1">
@@ -236,10 +236,10 @@
                             <p class="m-0 text-center text-light">Peringatan 1</p>
                         </div>
                         <div class="border border-primary bg-primary py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="blue-notif-peringatan-1-table">0</p>
                         </div>
                         <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="red-notif-peringatan-1-table">0</p>
                         </div>
                     </div>
                     <div class="d-flex flex-column mx-1">
@@ -247,10 +247,10 @@
                             <p class="m-0 text-center text-light">Teguran 2</p>
                         </div>
                         <div class="border border-primary bg-primary py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="blue-notif-teguran-2-table">0</p>
                         </div>
                         <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="red-notif-teguran-2-table">0</p>
                         </div>
                     </div>
                     <div class="d-flex flex-column mx-1">
@@ -258,10 +258,10 @@
                             <p class="m-0 text-center text-light">Teguran 1</p>
                         </div>
                         <div class="border border-primary bg-primary py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="blue-notif-teguran-1-table">0</p>
                         </div>
                         <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="red-notif-teguran-1-table">0</p>
                         </div>
                     </div>
                     <div class="d-flex flex-column mx-1">
@@ -269,10 +269,10 @@
                             <p class="m-0 text-center text-light">Jatuhan</p>
                         </div>
                         <div class="border border-primary bg-primary py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="blue-notif-jatuhan-table">0</p>
                         </div>
                         <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="red-notif-jatuhan-table">0</p>
                         </div>
                     </div>
                     <div class="d-flex flex-column mx-1">
