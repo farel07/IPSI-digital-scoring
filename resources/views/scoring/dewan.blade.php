@@ -152,13 +152,13 @@
                                     PERINGATAN</button>
                             </div>
                             <div class="col-6">
-                                <button class="mt-3 btn btn-primary w-100 h-75" type="button"
-                                    style="border-radius: 10px; background-color:rgb(190, 0, 0)">HAPUS
+                                <button class="mt-3 btn btn-primary w-100 h-75" type="button" id="btn_hapus_jatuhan_blue"
+                                    style="border-radius: 10px; background-color:rgb(190, 0, 0)" disabled onclick="kirimHapus('jatuhan', 'blue')">HAPUS
                                     JATUHAN</button>
                             </div>
                             <div class="col-6">
-                                <button class="mt-3 btn btn-primary w-100 h-75" type="button"
-                                    style="border-radius: 10px; background-color:rgb(190, 0, 0)">HAPUS
+                                <button class="mt-3 btn btn-primary w-100 h-75" type="button" id="btn_hapus_pelanggaran_blue"
+                                    style="border-radius: 10px; background-color:rgb(190, 0, 0)" disabled onclick="kirimHapus('pelanggaran', 'blue')" value="0">HAPUS
                                     PELANGGARAN</button>
                             </div>
                         </div>
@@ -389,12 +389,12 @@
                                 </div>
                                 <div class="col-6">
                                     <button class="mt-3 btn btn-primary w-100 h-75" type="button"
-                                        style="border-radius: 10px; background-color:rgb(190, 0, 0)">HAPUS
+                                        style="border-radius: 10px; background-color:rgb(190, 0, 0)" id="btn_hapus_jatuhan_red" onclick="kirimHapus('jatuhan', 'red')" disabled>HAPUS
                                         JATUHAN</button>
                                 </div>
                                 <div class="col-6">
                                     <button class="mt-3 btn btn-primary w-100 h-75" type="button"
-                                        style="border-radius: 10px; background-color:rgb(190, 0, 0)">HAPUS
+                                        style="border-radius: 10px; background-color:rgb(190, 0, 0)" id="btn_hapus_pelanggaran_red" onclick="kirimHapus('pelanggaran', 'red')" disabled>HAPUS
                                         PELANGGARAN</button>
                                 </div>
                             </div>
