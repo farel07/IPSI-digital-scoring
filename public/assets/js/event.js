@@ -4,9 +4,13 @@ function kirimBinaan(filter) {
     // alert("Fitur ini belum tersedia.");
     const binaanValue = document.getElementById("btn_binaan_" + filter).value;
     document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = false;
-    document.getElementById("btn_hapus_pelanggaran_" + filter).value = "binaan";
+    document.getElementById("btn_hapus_pelanggaran_" + filter).value = "binaan-" + binaanValue;
+
+    document.getElementById("btn_binaan_" + filter).disabled = true;
+
     setTimeout(() => {
         document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
+        document.getElementById("btn_binaan_" + filter).disabled = false;
     }, 4000);
 
     if (round == 1) {
@@ -21,6 +25,8 @@ function kirimBinaan(filter) {
 
         if (binaanValue == 1) {
             document.getElementById("btn_binaan_" + filter).value = 2;
+        } else {
+            document.getElementById("btn_binaan_" + filter).value = 3;
         }
 
             fetch('/kirim-binaan', {
@@ -42,10 +48,12 @@ function kirimPeringatan(filter) {
     // alert("Fitur ini belum tersedia.");
     const peringatanValue = document.getElementById("btn_peringatan_" + filter).value;
     document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = false;
-    document.getElementById("btn_hapus_pelanggaran_" + filter).value = "peringatan";
+    document.getElementById("btn_hapus_pelanggaran_" + filter).value = "peringatan-" + peringatanValue;
 
+    document.getElementById("btn_peringatan_" + filter).disabled = true;
     setTimeout(() => {
         document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
+        document.getElementById("btn_peringatan_" + filter).disabled = false;
     }, 4000);
 
     if (round == 1) {
@@ -61,6 +69,8 @@ function kirimPeringatan(filter) {
         document.getElementById("btn_peringatan_" + filter).value = 2;
     } else if (peringatanValue == 2) {
         document.getElementById("btn_peringatan_" + filter).value = 3;
+    } else {
+        document.getElementById("btn_peringatan_" + filter).value = 4;
     }
 
             fetch('/kirim-peringatan', {
@@ -82,10 +92,12 @@ function kirimTeguran(filter) {
     // alert("Fitur ini belum tersedia.");
     const teguranValue = document.getElementById("btn_teguran_" + filter).value;
     document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = false;
-        document.getElementById("btn_hapus_pelanggaran_" + filter).value = "teguran";
+        document.getElementById("btn_hapus_pelanggaran_" + filter).value = "teguran-" + teguranValue;
+    document.getElementById("btn_teguran_" + filter).disabled = true;
 
     setTimeout(() => {
         document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
+        document.getElementById("btn_teguran_" + filter).disabled = false;
     }, 4000);
 
     if (round == 1) {
@@ -99,6 +111,8 @@ function kirimTeguran(filter) {
 
     if (teguranValue == 1) {
         document.getElementById("btn_teguran_" + filter).value = 2;
+    } else if (teguranValue == 2) {
+        document.getElementById("btn_teguran_" + filter).value = 3;
     }
 
             fetch('/kirim-teguran', {
@@ -146,6 +160,8 @@ function kirimJatuh(filter) {
             });
         }
 
+        
+
     function kirimHapus(type, filter) {
         // alert("Fitur ini belum tersedia.");
         if (type == "jatuhan") {
@@ -157,7 +173,36 @@ function kirimJatuh(filter) {
             document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
             let tipe = document.getElementById("btn_hapus_pelanggaran_" + filter).value;
             type = tipe
+
+            // Reset value sesuai value sebelumnya
+            if (type === "binaan-1" || type === "binaan-2" || type === "binaan-3") {
+                let binaanValue = document.getElementById("btn_binaan_" + filter).value;
+                if (binaanValue == "2" || binaanValue == "1") {
+                    document.getElementById("btn_binaan_" + filter).value = "1";
+                } else {
+                    document.getElementById("btn_binaan_" + filter).value = "2";
+                }
+            } else if (type === "peringatan-1" || type === "peringatan-2" || type === "peringatan-3") {
+                let peringatanValue = document.getElementById("btn_peringatan_" + filter).value;
+                if (peringatanValue == "2" || peringatanValue == "1") {
+                    document.getElementById("btn_peringatan_" + filter).value = "1";
+                } else if (peringatanValue == "3") {
+                    document.getElementById("btn_peringatan_" + filter).value = "2";
+                } else {
+                    document.getElementById("btn_peringatan_" + filter).value = "3";
+                }
+            } else if (type === "teguran-1" || type === "teguran-2" || type === "teguran-3") {
+                let teguranValue = document.getElementById("btn_teguran_" + filter).value;
+                if (teguranValue == "2" || teguranValue == "1") {
+                    document.getElementById("btn_teguran_" + filter).value = "1";
+                } else {
+                    document.getElementById("btn_teguran_" + filter).value = "2";
+                }
+            }
         }
+
+        
+
         fetch('/kirim-hapus-pelanggaran', {
             method: 'POST',
             headers: {
