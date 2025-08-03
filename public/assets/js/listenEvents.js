@@ -21,8 +21,8 @@ function initializeListener(appKey, appCluster) {
     const yellowFilter =
         "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
     // binaan
-    const blueBinaanChannel = pusher.subscribe("kirim-binaan-channel");
-    blueBinaanChannel.bind("terima-binaan", function (data) {
+    const binaanChannel = pusher.subscribe("kirim-binaan-channel");
+    binaanChannel.bind("terima-binaan", function (data) {
         if (data.filter == "blue") {
             if (data.count == 1) {
                 document.getElementById("blue-notif-binaan-1").style.filter =
@@ -49,8 +49,8 @@ function initializeListener(appKey, appCluster) {
     });
 
     // teguran
-    const blueTeguranChannel = pusher.subscribe("kirim-teguran-channel");
-    blueTeguranChannel.bind("terima-teguran", function (data) {
+    const teguranChannel = pusher.subscribe("kirim-teguran-channel");
+    teguranChannel.bind("terima-teguran", function (data) {
         if (data.filter == "blue") {
             if (data.count == 1) {
                 document.getElementById("blue-notif-teguran-1").style.filter =
@@ -89,8 +89,8 @@ function initializeListener(appKey, appCluster) {
     });
 
     // peringatan
-    const bluePeringatanChannel = pusher.subscribe("kirim-peringatan-channel");
-    bluePeringatanChannel.bind("terima-peringatan", function (data) {
+    const peringatanChannel = pusher.subscribe("kirim-peringatan-channel");
+    peringatanChannel.bind("terima-peringatan", function (data) {
         if (data.filter == "blue") {
             if (data.count == 1) {
                 document.getElementById(
@@ -150,5 +150,13 @@ function initializeListener(appKey, appCluster) {
         } else {
             alert("cuman 2 warna side aja yaa");
         }
+    });
+
+    // hapus Pelanggaran
+    const hapusPelanggaranChannel = pusher.subscribe(
+        "kirim-hapus-pelanggaran-channel"
+    );
+    hapusPelanggaranChannel.bind("terima-hapus-pelanggaran", function (data) {
+        alert("tes");
     });
 }
