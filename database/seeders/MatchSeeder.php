@@ -17,7 +17,7 @@ class MatchSeeder extends Seeder
             'name' => 'Match 1',
             'date' => now(),
             'status' => 'active',
-            'round' => 'I',
+            'round' => 1,
             'arena_id' => 1,
             'bracket_id' => 82,
             'player_id' => null

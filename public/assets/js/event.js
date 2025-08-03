@@ -3,6 +3,11 @@ const round = 2;
 function kirimBinaan(filter) {
     // alert("Fitur ini belum tersedia.");
     const binaanValue = document.getElementById("btn_binaan_" + filter).value;
+    document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = false;
+    document.getElementById("btn_hapus_pelanggaran_" + filter).value = "binaan";
+    setTimeout(() => {
+        document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
+    }, 4000);
 
     if (round == 1) {
         document.getElementById("point-bina-" + filter + "-" + round).innerHTML = binaanValue;
@@ -36,6 +41,12 @@ function kirimBinaan(filter) {
 function kirimPeringatan(filter) {
     // alert("Fitur ini belum tersedia.");
     const peringatanValue = document.getElementById("btn_peringatan_" + filter).value;
+    document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = false;
+    document.getElementById("btn_hapus_pelanggaran_" + filter).value = "peringatan";
+
+    setTimeout(() => {
+        document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
+    }, 4000);
 
     if (round == 1) {
         document.getElementById("point-peringatan-" + filter + "-" + round).innerHTML = peringatanValue;
@@ -70,6 +81,12 @@ function kirimPeringatan(filter) {
 function kirimTeguran(filter) {
     // alert("Fitur ini belum tersedia.");
     const teguranValue = document.getElementById("btn_teguran_" + filter).value;
+    document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = false;
+        document.getElementById("btn_hapus_pelanggaran_" + filter).value = "teguran";
+
+    setTimeout(() => {
+        document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
+    }, 4000);
 
     if (round == 1) {
         document.getElementById("point-teguran-" + filter + "-" + round).innerHTML = teguranValue;
@@ -128,3 +145,30 @@ function kirimJatuh(filter) {
                 alert(jatuhValue + filter);
             });
         }
+
+    function kirimHapus(type, filter) {
+        // alert("Fitur ini belum tersedia.");
+        if (type == "jatuhan") {
+            document.getElementById("btn_hapus_jatuhan_" + filter).disabled = true;
+            document.getElementById("btn_hapus_jatuhan_" + filter).value = "jatuhan";
+            type = "jatuh";
+        }
+        else if (type == "pelanggaran") {
+            document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
+            let tipe = document.getElementById("btn_hapus_pelanggaran_" + filter).value;
+            type = tipe
+        }
+        fetch('/kirim-hapus-pelanggaran', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type: type,
+                filter: filter
+            })
+        }).then(res => res.json()).then(data => {
+            alert(type + filter);
+        });
+    }
