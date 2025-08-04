@@ -267,7 +267,7 @@ function kirimJatuh(filter) {
 
 function kirimPukul(filter){
     const pukulValue = document.getElementById("btn_pukul_" + filter).value;
-    count = parseInt(pukulValue);
+    count = pukulValue;
 
     fetch('/kirim-pukul', {
             method: 'POST',
@@ -276,7 +276,7 @@ function kirimPukul(filter){
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                count: count,
+                count: parseInt(count),
                 filter: filter
             })
         }).then(res => res.json()).then(data => {
