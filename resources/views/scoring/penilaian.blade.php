@@ -291,10 +291,10 @@
                             <p class="m-0 text-center text-light">Pukulan</p>
                         </div>
                         <div class="border border-primary bg-primary py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="blue-notif-pukulan-table">0</p>
                         </div>
                         <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="red-notif-pukulan-table">0</p>
                         </div>
                     </div>
 

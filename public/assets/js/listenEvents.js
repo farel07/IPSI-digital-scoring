@@ -105,13 +105,13 @@ function initializeListener(appKey, appCluster) {
 
   // jatuhan
   const jatuhanChannel = pusher.subscribe("kirim-jatuh-channel");
-  let initBlue = 0;
-  let initRed = 0;
+  let initBlueJatuhan = 0;
+  let initRedJatuhan = 0;
   jatuhanChannel.bind("terima-jatuh", function (data) {
     if (data.filter == "blue") {
-      document.getElementById("blue-notif-jatuhan-table").innerHTML = initBlue = initBlue + data.count;
+      document.getElementById("blue-notif-jatuhan-table").innerHTML = initBlueJatuhan = initBlueJatuhan + data.count;
     } else if (data.filter == "red") {
-      document.getElementById("red-notif-jatuhan-table").innerHTML = initRed = initRed + data.count;
+      document.getElementById("red-notif-jatuhan-table").innerHTML = initRedJatuhan = initRedJatuhan + data.count;
     }
   });
 
@@ -168,6 +168,18 @@ function initializeListener(appKey, appCluster) {
         var currentValue = parseInt(notifElement.innerHTML);
         notifElement.innerHTML = currentValue - 1;
       }
+    }
+  });
+
+  //   kirim pukulan from juri
+  const kirimJatuhanChannel = pusher.subscribe("kirim-pukul-channel");
+  let initBluePukulan = 0;
+  let initRedPukulan = 0;
+  kirimJatuhanChannel.bind("terima-pukul", function (data) {
+    if (data.filter == "blue") {
+      document.getElementById("blue-notif-pukulan-table").innerHTML = initBluePukulan += 1;
+    } else if (data.filter == "red") {
+      document.getElementById("red-notif-pukulan-table").innerHTML = initRedPukulan += 1;
     }
   });
 }
