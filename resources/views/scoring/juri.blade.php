@@ -33,7 +33,7 @@
                     <div class="p-3 mt-3 border bg-light text-center" style="border-radius: 10px">-</div>
                     <div class="row justify-content-between">
                         <div class="col-6 mb-3">
-                            <button class="mt-3 btn btn-primary w-100" type="button"
+                            <button class="mt-3 btn btn-primary w-100" type="button" value="1" onclick="kirimPukul('blue')"  id="btn_pukul_blue" 
                                 style="border-radius: 10px; height: 100px"><img class="w-25 me-2"
                                     src="{{ asset('assets') }}/img/icon/logo-pukul.png" alt="lah">PUKUL</button>
 
@@ -75,9 +75,9 @@
                                 TERBARU</button>
 
                         </div>
-                        <div class="col-6">
-                            <button class="mt-3 btn btn-danger w-100" type="button"
-                                style="border-radius: 10px; height:100px"><img class="w-25 me-1"
+                        <div class="col-6"> 
+                            <button class="mt-3 btn btn-danger w-100" type="button" onclick="kirimPukul('red')" id="btn_pukul_red"
+                                style="border-radius: 10px; height:100px" value="1"><img class="w-25 me-1" 
                                     src="{{ asset('assets') }}/img/icon/logo-pukul.png" alt="lah"> PUKUL</button>
                         </div>
                         <div class="d-grid gap-2 col-6 ms-auto mt-3">

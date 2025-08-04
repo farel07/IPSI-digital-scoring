@@ -264,3 +264,22 @@ function kirimJatuh(filter) {
             alert(type + filter);
         });
     }
+
+function kirimPukul(filter){
+    const pukulValue = document.getElementById("btn_pukul_" + filter).value;
+    count = parseInt(pukulValue);
+
+    fetch('/kirim-pukul', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                count: count,
+                filter: filter
+            })
+        }).then(res => res.json()).then(data => {
+            alert(count + filter);
+        });
+}
