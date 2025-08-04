@@ -1,4 +1,4 @@
-const round = 2;
+const round = 1;
 
 function kirimBinaan(filter) {
     // alert("Fitur ini belum tersedia.");
@@ -13,6 +13,8 @@ function kirimBinaan(filter) {
         document.getElementById("btn_binaan_" + filter).disabled = false;
     }, 4000);
 
+    if (binaanValue != 3) {
+
     if (round == 1) {
         document.getElementById("point-bina-" + filter + "-" + round).innerHTML = binaanValue;
     }
@@ -22,6 +24,8 @@ function kirimBinaan(filter) {
     else if (round == 3) {
         document.getElementById("point-bina-" + filter + "-" + round).innerHTML = binaanValue;
     }
+    }
+    
 
         if (binaanValue == 1) {
             document.getElementById("btn_binaan_" + filter).value = 2;
@@ -56,6 +60,8 @@ function kirimPeringatan(filter) {
         document.getElementById("btn_peringatan_" + filter).disabled = false;
     }, 4000);
 
+    if (peringatanValue != 4) {
+
     if (round == 1) {
         document.getElementById("point-peringatan-" + filter + "-" + round).innerHTML = peringatanValue;
         // total_peringatan += 1;
@@ -64,6 +70,7 @@ function kirimPeringatan(filter) {
     } else if (round == 3) {
         document.getElementById("point-peringatan-" + filter + "-" + round).innerHTML = peringatanValue;
     }
+}
 
     if (peringatanValue == 1) {
         document.getElementById("btn_peringatan_" + filter).value = 2;
@@ -100,6 +107,8 @@ function kirimTeguran(filter) {
         document.getElementById("btn_teguran_" + filter).disabled = false;
     }, 4000);
 
+    if (teguranValue != 3) {
+
     if (round == 1) {
         document.getElementById("point-teguran-" + filter + "-" + round).innerHTML = teguranValue;
         // total_teguran += 1;
@@ -108,6 +117,8 @@ function kirimTeguran(filter) {
     } else if (round == 3) {
         document.getElementById("point-teguran-" + filter + "-" + round).innerHTML = teguranValue;
     }
+
+}
 
     if (teguranValue == 1) {
         document.getElementById("btn_teguran_" + filter).value = 2;
@@ -130,12 +141,30 @@ function kirimTeguran(filter) {
             });
         }
 
-        let total_jatuh = 0;
+        let total_jatuh_blue = 0;
+        let total_jatuh_red = 0;
 
 function kirimJatuh(filter) {
+    let total_jatuh;
     // alert("Fitur ini belum tersedia.");
     const jatuhValue = document.getElementById("btn_jatuh_" + filter).value;
-    total_jatuh += 1;
+    document.getElementById("btn_hapus_jatuhan_" + filter).disabled = false;
+    document.getElementById("btn_jatuh_" + filter).disabled = true;
+    
+    setTimeout(() => {
+        document.getElementById("btn_hapus_jatuhan_" + filter).disabled = true;
+        document.getElementById("btn_jatuh_" + filter).disabled = false;
+    }, 4000);
+
+    if (filter == "blue") {
+        total_jatuh_blue += 1;
+        total_jatuh = total_jatuh_blue;
+    } else if (filter == "red") {
+        total_jatuh_red += 1;
+        total_jatuh = total_jatuh_red;
+    }
+    
+    // total_jatuh += 1;
     if (round == 1) {
         document.getElementById("point-jatuh-" + filter + "-" + round).innerHTML = total_jatuh;
         // total_jatuh += 1;
@@ -164,10 +193,21 @@ function kirimJatuh(filter) {
 
     function kirimHapus(type, filter) {
         // alert("Fitur ini belum tersedia.");
+        let total_jatuh;
+
+        if (filter == "blue") {
+            total_jatuh_blue -= 1;
+            total_jatuh = total_jatuh_blue;
+        } else if (filter == "red") {
+            total_jatuh_red -= 1;
+            total_jatuh = total_jatuh_red;
+        }
         if (type == "jatuhan") {
             document.getElementById("btn_hapus_jatuhan_" + filter).disabled = true;
             document.getElementById("btn_hapus_jatuhan_" + filter).value = "jatuhan";
-            type = "jatuh";
+            // type = "jatuhan";
+            document.getElementById("point-jatuh-" + filter + "-" + round).innerHTML = total_jatuh;
+            
         }
         else if (type == "pelanggaran") {
             document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
@@ -179,24 +219,31 @@ function kirimJatuh(filter) {
                 let binaanValue = document.getElementById("btn_binaan_" + filter).value;
                 if (binaanValue == "2" || binaanValue == "1") {
                     document.getElementById("btn_binaan_" + filter).value = "1";
+                    document.getElementById("point-bina-" + filter + "-" + round).innerHTML = "0";
                 } else {
                     document.getElementById("btn_binaan_" + filter).value = "2";
+                    document.getElementById("point-bina-" + filter + "-" + round).innerHTML = "1";
                 }
             } else if (type === "peringatan-1" || type === "peringatan-2" || type === "peringatan-3") {
                 let peringatanValue = document.getElementById("btn_peringatan_" + filter).value;
                 if (peringatanValue == "2" || peringatanValue == "1") {
                     document.getElementById("btn_peringatan_" + filter).value = "1";
+                    document.getElementById("point-peringatan-" + filter + "-" + round).innerHTML = "0";
                 } else if (peringatanValue == "3") {
                     document.getElementById("btn_peringatan_" + filter).value = "2";
+                    document.getElementById("point-peringatan-" + filter + "-" + round).innerHTML = "1";
                 } else {
                     document.getElementById("btn_peringatan_" + filter).value = "3";
+                    document.getElementById("point-peringatan-" + filter + "-" + round).innerHTML = "2";
                 }
             } else if (type === "teguran-1" || type === "teguran-2" || type === "teguran-3") {
                 let teguranValue = document.getElementById("btn_teguran_" + filter).value;
                 if (teguranValue == "2" || teguranValue == "1") {
                     document.getElementById("btn_teguran_" + filter).value = "1";
+                    document.getElementById("point-teguran-" + filter + "-" + round).innerHTML = "0";
                 } else {
                     document.getElementById("btn_teguran_" + filter).value = "2";
+                    document.getElementById("point-teguran-" + filter + "-" + round).innerHTML = "1";
                 }
             }
         }

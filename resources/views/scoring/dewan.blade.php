@@ -368,9 +368,9 @@
                             </div>
                             <div class="row justify-content-between">
                                 <div class="col-6 ps-3">
-                                    <button class="mt-3 btn btn-danger w-100" id="btn_jatuh_red" type="button"
-                                        style="border-radius: 10px; height:100px" onclick="kirimJatuh('red')" value="1" type="button">
-                                        JATUH</button>
+                                    <button id="btn_jatuh_red" class="mt-3 btn btn-danger w-100" onclick="kirimJatuh('red')" type="button"
+                                    style="border-radius: 10px; height:100px" value="1">
+                                    JATUH</button>
                                 </div>
                                 <div class="col-6 pe-3">
                                     <button class="mt-3 btn btn-danger w-100" id="btn_binaan_red" type="button"
