@@ -6,241 +6,168 @@
  * @param {string} appCluster - Cluster dari Pusher.
  */
 function initializeListener(appKey, appCluster) {
-    if (!appKey || !appCluster) {
-        console.error("Pusher Key atau Cluster tidak diberikan.");
-        return;
+  if (!appKey || !appCluster) {
+    console.error("Pusher Key atau Cluster tidak diberikan.");
+    return;
+  }
+
+  Pusher.logToConsole = true;
+
+  const pusher = new Pusher(appKey, {
+    cluster: appCluster,
+  });
+
+  // penilaian
+  const yellowFilter = "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
+  // binaan
+  const binaanChannel = pusher.subscribe("kirim-binaan-channel");
+  binaanChannel.bind("terima-binaan", function (data) {
+    if (data.filter == "blue") {
+      if (data.count == 1) {
+        document.getElementById("blue-notif-binaan-1").style.filter = yellowFilter;
+      } else if (data.count == 2) {
+        document.getElementById("blue-notif-binaan-2").style.filter = yellowFilter;
+      } else {
+        alert("binaan cuman 2x banh");
+      }
+    } else if (data.filter == "red") {
+      if (data.count == 1) {
+        document.getElementById("red-notif-binaan-1").style.filter = yellowFilter;
+      } else if (data.count == 2) {
+        document.getElementById("red-notif-binaan-2").style.filter = yellowFilter;
+      } else {
+        alert("binaan cuman 2x banh");
+      }
+    } else {
+      alert("cuman 2 warna side aja yaa");
     }
+  });
 
-    Pusher.logToConsole = true;
+  // teguran
+  const teguranChannel = pusher.subscribe("kirim-teguran-channel");
+  teguranChannel.bind("terima-teguran", function (data) {
+    if (data.filter == "blue") {
+      if (data.count == 1) {
+        document.getElementById("blue-notif-teguran-1").style.filter = yellowFilter;
+        document.getElementById("blue-notif-teguran-1-table").innerHTML = 1;
+      } else if (data.count == 2) {
+        document.getElementById("blue-notif-teguran-2").style.filter = yellowFilter;
+        document.getElementById("blue-notif-teguran-2-table").innerHTML = 1;
+      } else {
+        alert("teguran cuman 2x banh");
+      }
+    } else if (data.filter == "red") {
+      if (data.count == 1) {
+        document.getElementById("red-notif-teguran-1").style.filter = yellowFilter;
+        document.getElementById("red-notif-teguran-1-table").innerHTML = 1;
+      } else if (data.count == 2) {
+        document.getElementById("red-notif-teguran-2").style.filter = yellowFilter;
+        document.getElementById("red-notif-teguran-2-table").innerHTML = 1;
+      } else {
+        alert("teguran cuman 2x banh");
+      }
+    } else {
+      alert("cuman 2 warna side aja yaa");
+    }
+  });
 
-    const pusher = new Pusher(appKey, {
-        cluster: appCluster,
-    });
+  // peringatan
+  const peringatanChannel = pusher.subscribe("kirim-peringatan-channel");
+  peringatanChannel.bind("terima-peringatan", function (data) {
+    if (data.filter == "blue") {
+      if (data.count == 1) {
+        document.getElementById("blue-notif-peringatan-1").style.filter = yellowFilter;
+        document.getElementById("blue-notif-peringatan-1-table").innerHTML = 1;
+      } else if (data.count == 2) {
+        document.getElementById("blue-notif-peringatan-2").style.filter = yellowFilter;
+        document.getElementById("blue-notif-peringatan-2-table").innerHTML = 1;
+      } else if (data.count == 3) {
+        document.getElementById("blue-notif-peringatan-3").innerHTML = 1;
+      } else {
+        alert("stop :3");
+      }
+    } else if (data.filter == "red") {
+      if (data.count == 1) {
+        document.getElementById("red-notif-peringatan-1").style.filter = yellowFilter;
+        document.getElementById("red-notif-peringatan-1-table").innerHTML = 1;
+      } else if (data.count == 2) {
+        document.getElementById("red-notif-peringatan-2").style.filter = yellowFilter;
+        document.getElementById("red-notif-peringatan-2-table").innerHTML = 1;
+      } else if (data.count == 3) {
+        document.getElementById("red-notif-peringatan-3").innerHTML = 1;
+      } else {
+        alert("stop :3");
+      }
+    } else {
+      alert("cuman 2 warna side aja yaa");
+    }
+  });
 
-    // penilaian
-    const yellowFilter =
-        "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
-    // binaan
-    const binaanChannel = pusher.subscribe("kirim-binaan-channel");
-    binaanChannel.bind("terima-binaan", function (data) {
-        if (data.filter == "blue") {
-            if (data.count == 1) {
-                document.getElementById("blue-notif-binaan-1").style.filter =
-                    yellowFilter;
-            } else if (data.count == 2) {
-                document.getElementById("blue-notif-binaan-2").style.filter =
-                    yellowFilter;
-            } else {
-                alert("binaan cuman 2x banh");
-            }
-        } else if (data.filter == "red") {
-            if (data.count == 1) {
-                document.getElementById("red-notif-binaan-1").style.filter =
-                    yellowFilter;
-            } else if (data.count == 2) {
-                document.getElementById("red-notif-binaan-2").style.filter =
-                    yellowFilter;
-            } else {
-                alert("binaan cuman 2x banh");
-            }
-        } else {
-            alert("cuman 2 warna side aja yaa");
-        }
-    });
+  // jatuhan
+  const jatuhanChannel = pusher.subscribe("kirim-jatuh-channel");
+  let initBlue = 0;
+  let initRed = 0;
+  jatuhanChannel.bind("terima-jatuh", function (data) {
+    if (data.filter == "blue") {
+      document.getElementById("blue-notif-jatuhan-table").innerHTML = initBlue = initBlue + data.count;
+    } else if (data.filter == "red") {
+      document.getElementById("red-notif-jatuhan-table").innerHTML = initRed = initRed + data.count;
+    }
+  });
 
-    // teguran
-    const teguranChannel = pusher.subscribe("kirim-teguran-channel");
-    teguranChannel.bind("terima-teguran", function (data) {
-        if (data.filter == "blue") {
-            if (data.count == 1) {
-                document.getElementById("blue-notif-teguran-1").style.filter =
-                    yellowFilter;
-                document.getElementById(
-                    "blue-notif-teguran-1-table"
-                ).innerHTML = 1;
-            } else if (data.count == 2) {
-                document.getElementById("blue-notif-teguran-2").style.filter =
-                    yellowFilter;
-                document.getElementById(
-                    "blue-notif-teguran-2-table"
-                ).innerHTML = 1;
-            } else {
-                alert("teguran cuman 2x banh");
-            }
-        } else if (data.filter == "red") {
-            if (data.count == 1) {
-                document.getElementById("red-notif-teguran-1").style.filter =
-                    yellowFilter;
-                document.getElementById(
-                    "red-notif-teguran-1-table"
-                ).innerHTML = 1;
-            } else if (data.count == 2) {
-                document.getElementById("red-notif-teguran-2").style.filter =
-                    yellowFilter;
-                document.getElementById(
-                    "red-notif-teguran-2-table"
-                ).innerHTML = 1;
-            } else {
-                alert("teguran cuman 2x banh");
-            }
-        } else {
-            alert("cuman 2 warna side aja yaa");
-        }
-    });
-
-    // peringatan
-    const peringatanChannel = pusher.subscribe("kirim-peringatan-channel");
-    peringatanChannel.bind("terima-peringatan", function (data) {
-        if (data.filter == "blue") {
-            if (data.count == 1) {
-                document.getElementById(
-                    "blue-notif-peringatan-1"
-                ).style.filter = yellowFilter;
-                document.getElementById(
-                    "blue-notif-peringatan-1-table"
-                ).innerHTML = 1;
-            } else if (data.count == 2) {
-                document.getElementById(
-                    "blue-notif-peringatan-2"
-                ).style.filter = yellowFilter;
-                document.getElementById(
-                    "blue-notif-peringatan-2-table"
-                ).innerHTML = 1;
-            } else if (data.count == 3) {
-                document.getElementById(
-                    "blue-notif-peringatan-3"
-                ).innerHTML = 1;
-            } else {
-                alert("stop :3");
-            }
-        } else if (data.filter == "red") {
-            if (data.count == 1) {
-                document.getElementById("red-notif-peringatan-1").style.filter =
-                    yellowFilter;
-                document.getElementById(
-                    "red-notif-peringatan-1-table"
-                ).innerHTML = 1;
-            } else if (data.count == 2) {
-                document.getElementById("red-notif-peringatan-2").style.filter =
-                    yellowFilter;
-                document.getElementById(
-                    "red-notif-peringatan-2-table"
-                ).innerHTML = 1;
-            } else if (data.count == 3) {
-                document.getElementById("red-notif-peringatan-3").innerHTML = 1;
-            } else {
-                alert("stop :3");
-            }
-        } else {
-            alert("cuman 2 warna side aja yaa");
-        }
-    });
-
-    // jatuhan
-    const jatuhanChannel = pusher.subscribe("kirim-jatuh-channel");
-    let initBlue = 0;
-    let initRed = 0;
-    jatuhanChannel.bind("terima-jatuh", function (data) {
-        if (data.filter == "blue") {
-            document.getElementById("blue-notif-jatuhan-table").innerHTML =
-                initBlue = initBlue + data.count;
-        } else if (data.filter == "red") {
-            document.getElementById("red-notif-jatuhan-table").innerHTML =
-                initRed = initRed + data.count;
-        } else {
-            alert("cuman 2 warna side aja yaa");
-        }
-    });
-
-    // hapus Pelanggaran
-    const hapusPelanggaranChannel = pusher.subscribe(
-        "kirim-hapus-pelanggaran-channel"
-    );
-    hapusPelanggaranChannel.bind("terima-hapus-pelanggaran", function (data) {
-        if (data.filter == "blue") {
-            // Reset filter ikon untuk Binaan
-            if (data.type == "binaan-1") {
-                document.getElementById("blue-notif-binaan-1").style.filter =
-                    "";
-            } else if (data.type == "binaan-2") {
-                document.getElementById("blue-notif-binaan-2").style.filter =
-                    "";
-            }
-
-            // Reset filter ikon untuk Teguran
-            if (data.type == "teguran-1") {
-                document.getElementById("blue-notif-teguran-1").style.filter =
-                    "";
-                document.getElementById(
-                    "blue-notif-teguran-1-table"
-                ).innerHTML = 0;
-            } else if (data.type == "teguran-2") {
-                document.getElementById("blue-notif-teguran-2").style.filter =
-                    "";
-                document.getElementById(
-                    "blue-notif-teguran-2-table"
-                ).innerHTML = 0;
-            }
-
-            // Reset filter ikon untuk Peringatan
-            if (data.type == "peringatan-1") {
-                document.getElementById(
-                    "blue-notif-peringatan-1"
-                ).style.filter = "";
-                document.getElementById(
-                    "blue-notif-peringatan-1-table"
-                ).innerHTML = 0;
-            } else if (data.type == "peringatan-2") {
-                document.getElementById(
-                    "blue-notif-peringatan-2"
-                ).style.filter = "";
-                document.getElementById(
-                    "blue-notif-peringatan-2-table"
-                ).innerHTML = 0;
-            } else if (data.type == "peringatan-3") {
-                document.getElementById(
-                    "blue-notif-peringatan-3"
-                ).innerHTML = 0;
-            }
-        } else if (data.filter == "red") {
-            // Reset filter ikon untuk Binaan
-            if (data.type == "binaan-1") {
-                document.getElementById("red-notif-binaan-1").style.filter = "";
-            } else if (data.type == "binaan-2") {
-                document.getElementById("red-notif-binaan-2").style.filter = "";
-            }
-
-            // Reset filter ikon untuk Teguran
-            if (data.type == "teguran-1") {
-                document.getElementById("red-notif-teguran-1").style.filter =
-                    "";
-                document.getElementById(
-                    "red-notif-teguran-1-table"
-                ).innerHTML = 0;
-            } else if (data.type == "teguran-2") {
-                document.getElementById("red-notif-teguran-2").style.filter =
-                    "";
-                document.getElementById(
-                    "red-notif-teguran-2-table"
-                ).innerHTML = 0;
-            }
-
-            // Reset filter ikon untuk Peringatan
-            if (data.type == "peringatan-1") {
-                document.getElementById("red-notif-peringatan-1").style.filter =
-                    "";
-                document.getElementById(
-                    "red-notif-peringatan-1-table"
-                ).innerHTML = 0;
-            } else if (data.type == "peringatan-2") {
-                document.getElementById("red-notif-peringatan-2").style.filter =
-                    "";
-                document.getElementById(
-                    "red-notif-peringatan-2-table"
-                ).innerHTML = 0;
-            } else if (data.type == "peringatan-3") {
-                document.getElementById("red-notif-peringatan-3").innerHTML = 0;
-            }
-        }
-    });
+  // hapus Pelanggaran
+  const hapusPelanggaranChannel = pusher.subscribe("kirim-hapus-pelanggaran-channel");
+  hapusPelanggaranChannel.bind("terima-hapus-pelanggaran", function (data) {
+    if (data.filter == "blue") {
+      // Reset filter ikon untuk Binaan
+      if (data.type == "binaan-1") {
+        document.getElementById("blue-notif-binaan-1").style.filter = "";
+      } else if (data.type == "binaan-2") {
+        document.getElementById("blue-notif-binaan-2").style.filter = "";
+      } else if (data.type == "teguran-1") {
+        document.getElementById("blue-notif-teguran-1").style.filter = "";
+        document.getElementById("blue-notif-teguran-1-table").innerHTML = 0;
+      } else if (data.type == "teguran-2") {
+        document.getElementById("blue-notif-teguran-2").style.filter = "";
+        document.getElementById("blue-notif-teguran-2-table").innerHTML = 0;
+      } else if (data.type == "peringatan-1") {
+        document.getElementById("blue-notif-peringatan-1").style.filter = "";
+        document.getElementById("blue-notif-peringatan-1-table").innerHTML = 0;
+      } else if (data.type == "peringatan-2") {
+        document.getElementById("blue-notif-peringatan-2").style.filter = "";
+        document.getElementById("blue-notif-peringatan-2-table").innerHTML = 0;
+      } else if (data.type == "peringatan-3") {
+        document.getElementById("blue-notif-peringatan-3").innerHTML = 0;
+      } else if (data.type == "jatuhan") {
+        var notifElement = document.getElementById("blue-notif-jatuhan-table");
+        var currentValue = parseInt(notifElement.innerHTML);
+        notifElement.innerHTML = currentValue - 1;
+      }
+    } else if (data.filter == "red") {
+      // Reset filter ikon untuk Binaan
+      if (data.type == "binaan-1") {
+        document.getElementById("red-notif-binaan-1").style.filter = "";
+      } else if (data.type == "binaan-2") {
+        document.getElementById("red-notif-binaan-2").style.filter = "";
+      } else if (data.type == "teguran-1") {
+        document.getElementById("red-notif-teguran-1").style.filter = "";
+        document.getElementById("red-notif-teguran-1-table").innerHTML = 0;
+      } else if (data.type == "teguran-2") {
+        document.getElementById("red-notif-teguran-2").style.filter = "";
+        document.getElementById("red-notif-teguran-2-table").innerHTML = 0;
+      } else if (data.type == "peringatan-1") {
+        document.getElementById("red-notif-peringatan-1").style.filter = "";
+        document.getElementById("red-notif-peringatan-1-table").innerHTML = 0;
+      } else if (data.type == "peringatan-2") {
+        document.getElementById("red-notif-peringatan-2").style.filter = "";
+        document.getElementById("red-notif-peringatan-2-table").innerHTML = 0;
+      } else if (data.type == "peringatan-3") {
+        document.getElementById("red-notif-peringatan-3").innerHTML = 0;
+      } else if (data.type == "jatuhan") {
+        var notifElement = document.getElementById("red-notif-jatuhan-table");
+        var currentValue = parseInt(notifElement.innerHTML);
+        notifElement.innerHTML = currentValue - 1;
+      }
+    }
+  });
 }
