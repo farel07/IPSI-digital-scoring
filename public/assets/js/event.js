@@ -1,4 +1,8 @@
 const round = 1;
+const id_user = window.location.pathname.split("/").pop();
+const juri_ket = 'juri-' + id_user;
+
+
 
 function kirimBinaan(filter) {
   // alert("Fitur ini belum tersedia.");
@@ -266,7 +270,7 @@ function kirimPukul(filter) {
   const pukulValue = document.getElementById("btn_pukul_" + filter).value;
   count = pukulValue;
 
-  fetch("/kirim-pukul", {
+  fetch("/kirim-pukul/" + id_user, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
@@ -275,6 +279,29 @@ function kirimPukul(filter) {
     body: JSON.stringify({
       count: parseInt(count),
       filter: filter,
+      juri_ket: juri_ket
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      alert(count + filter);
+    });
+}
+
+function kirimTendang(filter) {
+  const tendangValue = document.getElementById("btn_tendang_" + filter).value;
+  count = tendangValue;
+
+  fetch("/kirim-tendang/" + id_user, {
+    method: "POST",
+    headers: {
+      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      count: parseInt(count),
+      filter: filter,
+      juri_ket: juri_ket
     }),
   })
     .then((res) => res.json())

@@ -1,38 +1,43 @@
-<?php 
+<?php
 
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class kirimPukul implements ShouldBroadcastNow
+class kirimTendang implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    // public $judul;
     public $count, $filter, $juri_ket;
 
+    /**
+     * Create a new event instance.
+     */
     public function __construct($count, $filter, $juri_ket)
     {
-        // $this->judul = $judul;
         $this->count = $count;
         $this->filter = $filter;
         $this->juri_ket = $juri_ket;
     }
 
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
     public function broadcastOn()
     {
-        return new Channel('kirim-pukul-channel');
+        return new Channel('kirim-tendang-channel');
     }
 
     public function broadcastAs()
     {
-        return 'terima-pukul';
+        return 'terima-tendang';
     }
 }
-
-
-?>

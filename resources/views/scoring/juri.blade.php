@@ -44,7 +44,7 @@
                                 TERBARU</button>
                         </div>
                         <div class="d-grid gap-2 col-6 me-auto mt-3">
-                            <button class="btn btn-primary" type="button" style="border-radius: 10px; height: 100px"><img
+                            <button class="btn btn-primary" id="btn_tendang_blue" type="button" style="border-radius: 10px; height: 100px" onclick="kirimTendang('blue')" value="2"><img
                                     class="w-25 me-1 mb-3" src="{{ asset('assets') }}/img/icon/logo-tendang.png"
                                     alt="lah">TENDANG</button>
                         </div>
@@ -81,7 +81,7 @@
                                     src="{{ asset('assets') }}/img/icon/logo-pukul.png" alt="lah"> PUKUL</button>
                         </div>
                         <div class="d-grid gap-2 col-6 ms-auto mt-3">
-                            <button class="btn btn-danger" type="button" style="border-radius: 10px; height: 100px"><img
+                            <button class="btn btn-danger" type="button" style="border-radius: 10px;height: 100px" onclick="kirimTendang('red')" id="btn_tendang_red" value="2"><img
                                     class="w-25 me-1 mb-3" src="{{ asset('assets') }}/img/icon/logo-tendang.png"
                                     alt="lah">TENDANG</button>
                         </div>
