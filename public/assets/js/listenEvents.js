@@ -172,14 +172,89 @@ function initializeListener(appKey, appCluster) {
   });
 
   //   kirim pukulan from juri
-  const kirimJatuhanChannel = pusher.subscribe("kirim-pukul-channel");
+  const kirimPukulanChannel = pusher.subscribe("kirim-pukul-channel");
   let initBluePukulan = 0;
   let initRedPukulan = 0;
-  kirimJatuhanChannel.bind("terima-pukul", function (data) {
+  kirimPukulanChannel.bind("terima-pukul", function (data) {
     if (data.filter == "blue") {
+      if (data.juri_ket == "juri-1") {
+        document.getElementById("blue-notif-juri-1-pukul").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("blue-notif-juri-1-pukul").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      } else if (data.juri_ket == "juri-2") {
+        document.getElementById("blue-notif-juri-2-pukul").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("blue-notif-juri-2-pukul").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      } else if (data.juri_ket == "juri-3") {
+        document.getElementById("blue-notif-juri-3-pukul").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("blue-notif-juri-3-pukul").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      }
       document.getElementById("blue-notif-pukulan-table").innerHTML = initBluePukulan += 1;
     } else if (data.filter == "red") {
+      if (data.juri_ket == "juri-1") {
+        document.getElementById("red-notif-juri-1-pukul").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("red-notif-juri-1-pukul").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      } else if (data.juri_ket == "juri-2") {
+        document.getElementById("red-notif-juri-2-pukul").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("red-notif-juri-2-pukul").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      } else if (data.juri_ket == "juri-3") {
+        document.getElementById("red-notif-juri-3-pukul").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("red-notif-juri-3-pukul").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      }
       document.getElementById("red-notif-pukulan-table").innerHTML = initRedPukulan += 1;
+    }
+  });
+
+  const kirimTendanganChannel = pusher.subscribe("kirim-tendang-channel");
+  let initBlueTendangan = 0;
+  let initRedTendangan = 0;
+  kirimTendanganChannel.bind("terima-tendang", function (data) {
+    if (data.filter == "blue") {
+      if (data.juri_ket == "juri-1") {
+        document.getElementById("blue-notif-juri-1-tendang").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("blue-notif-juri-1-tendang").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      } else if (data.juri_ket == "juri-2") {
+        document.getElementById("blue-notif-juri-2-tendang").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("blue-notif-juri-2-tendang").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      } else if (data.juri_ket == "juri-3") {
+        document.getElementById("blue-notif-juri-3-tendang").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("blue-notif-juri-3-tendang").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      }
+      document.getElementById("blue-notif-tendangan-table").innerHTML = initBlueTendangan += 1;
+    } else if (data.filter == "red") {
+      if (data.juri_ket == "juri-1") {
+        document.getElementById("red-notif-juri-1-tendang").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("red-notif-juri-1-tendang").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      } else if (data.juri_ket == "juri-2") {
+        document.getElementById("red-notif-juri-2-tendang").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("red-notif-juri-2-tendang").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      } else if (data.juri_ket == "juri-3") {
+        document.getElementById("red-notif-juri-3-tendang").classList.replace("bg-light", "bg-warning");
+        setTimeout(() => {
+          document.getElementById("red-notif-juri-3-tendang").classList.replace("bg-warning", "bg-light");
+        }, 4000);
+      }
+      document.getElementById("red-notif-tendangan-table").innerHTML = initRedTendangan += 1;
     }
   });
 }

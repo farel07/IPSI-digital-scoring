@@ -132,26 +132,26 @@
                 <div class="col-6 pt-3" style="padding-right: 40px">
                     <div class="d-flex justify-content-end">
                         <div class="kiri">
-                            <div class="bg-light mx-2 rounded">
+                            <div class="bg-light mx-2 rounded" id="blue-notif-juri-1-pukul">
                                 <p class="px-4 py-2 m-0">Juri 1</p>
                             </div>
-                            <div class="mt-4 border-dark bg-light mx-2 rounded">
+                            <div class="mt-4 border-dark bg-light mx-2 rounded" id="blue-notif-juri-1-tendang">
                                 <p class="px-4 py-2 m-0">Juri 1</p>
                             </div>
                         </div>
                         <div class="kiri">
-                            <div class="bg-light mx-2 rounded">
+                            <div class="bg-light mx-2 rounded" id="blue-notif-juri-2-pukul">
                                 <p class="px-4 py-2 m-0">Juri 2</p>
                             </div>
-                            <div class="mt-4 border-dark bg-light mx-2 rounded">
+                            <div class="mt-4 border-dark bg-light mx-2 rounded" id="blue-notif-juri-2-tendang">
                                 <p class="px-4 py-2 m-0">Juri 2</p>
                             </div>
                         </div>
                         <div class="kiri">
-                            <div class="bg-light mx-2 rounded">
+                            <div class="bg-light mx-2 rounded" id="blue-notif-juri-3-pukul">
                                 <p class="px-4 py-2 m-0">Juri 3</p>
                             </div>
-                            <div class="mt-4 border-dark bg-light mx-2 rounded">
+                            <div class="mt-4 border-dark bg-light mx-2 rounded" id="blue-notif-juri-3-tendang">
                                 <p class="px-4 py-2 m-0">Juri 3</p>
                             </div>
                         </div>
@@ -172,26 +172,26 @@
                                 style="width: 50px; height: 50px">
                         </div>
                         <div class="kanan">
-                            <div class="bg-light mx-2 rounded">
+                            <div class="bg-light mx-2 rounded" id="red-notif-juri-1-pukul">
                                 <p class="px-4 py-2 m-0">Juri 1</p>
                             </div>
-                            <div class="mt-4 border-dark bg-light mx-2 rounded">
+                            <div class="mt-4 border-dark bg-light mx-2 rounded" id="red-notif-juri-1-tendang">
                                 <p class="px-4 py-2 m-0">Juri 1</p>
                             </div>
                         </div>
                         <div class="kanan">
-                            <div class="bg-light mx-2 rounded">
+                            <div class="bg-light mx-2 rounded" id="red-notif-juri-2-pukul">
                                 <p class="px-4 py-2 m-0">Juri 2</p>
                             </div>
-                            <div class="mt-4 border-dark bg-light mx-2 rounded">
+                            <div class="mt-4 border-dark bg-light mx-2 rounded" id="red-notif-juri-2-tendang">
                                 <p class="px-4 py-2 m-0">Juri 2</p>
                             </div>
                         </div>
                         <div class="kanan">
-                            <div class="bg-light mx-2 rounded">
+                            <div class="bg-light mx-2 rounded" id="red-notif-juri-3-pukul">
                                 <p class="px-4 py-2 m-0">Juri 3</p>
                             </div>
-                            <div class="mt-4 border-dark bg-light mx-2 rounded">
+                            <div class="mt-4 border-dark bg-light mx-2 rounded" id="red-notif-juri-3-tendang">
                                 <p class="px-4 py-2 m-0">Juri 3</p>
                             </div>
                         </div>
@@ -280,10 +280,10 @@
                             <p class="m-0 text-center text-light">Tendangan</p>
                         </div>
                         <div class="border border-primary bg-primary py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="blue-notif-tendangan-table">0</p>
                         </div>
                         <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px">
-                            <p class="m-0 text-center text-light">0</p>
+                            <p class="m-0 text-center text-light" id="red-notif-tendangan-table">0</p>
                         </div>
                     </div>
                     <div class="d-flex flex-column mx-1">
