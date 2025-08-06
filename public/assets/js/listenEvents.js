@@ -171,90 +171,212 @@ function initializeListener(appKey, appCluster) {
     }
   });
 
-  //   kirim pukulan from juri
-  const kirimPukulanChannel = pusher.subscribe("kirim-pukul-channel");
+  // State untuk menyimpan pukulan yang sedang menunggu konfirmasi
+  const voteStatePukulan = {
+    blue: {
+      juri: new Set(),
+      startTime: null,
+      timeoutId: null,
+    },
+    red: {
+      juri: new Set(),
+      startTime: null,
+      timeoutId: null,
+    },
+  };
+
   let initBluePukulan = 0;
   let initRedPukulan = 0;
+
+  /**
+   * Fungsi untuk mereset state voting.
+   * @param {string} color - "blue" atau "red"
+   */
+  function resetVoteStatePukulan(color) {
+    console.log(`Mereset state untuk tim ${color}.`);
+    voteStatePukulan[color].juri.clear();
+    voteStatePukulan[color].startTime = null;
+
+    if (voteStatePukulan[color].timeoutId) {
+      clearTimeout(voteStatePukulan[color].timeoutId);
+      voteStatePukulan[color].timeoutId = null;
+    }
+
+    // Kembalikan semua notifikasi juri untuk tim tersebut ke warna semula
+    for (let i = 1; i <= 3; i++) {
+      const notifElement = document.getElementById(`${color}-notif-juri-${i}-pukul`);
+      if (notifElement) {
+        notifElement.classList.replace("bg-warning", "bg-light");
+      }
+    }
+  }
+
+  // Subscribe ke channel Pusher
+  const kirimPukulanChannel = pusher.subscribe("kirim-pukul-channel");
   kirimPukulanChannel.bind("terima-pukul", function (data) {
-    if (data.filter == "blue") {
-      if (data.juri_ket == "juri-1") {
-        document.getElementById("blue-notif-juri-1-pukul").classList.replace("bg-light", "bg-warning");
+    const color = data.filter;
+    const juriId = data.juri_ket;
+    const currentState = voteStatePukulan[color];
+
+    // Jika juri ini sudah memberikan suara dalam rentang waktu ini, abaikan.
+    if (currentState.juri.has(juriId)) {
+      return;
+    }
+
+    // --- PERBAIKAN 1: NYALAKAN LAMPU SEGERA SETELAH EVENT DITERIMA ---
+    // Selalu nyalakan lampu notifikasi untuk juri yang datanya baru masuk.
+    const notifElement = document.getElementById(`${color}-notif-${juriId}-pukul`);
+    if (notifElement) {
+      notifElement.classList.replace("bg-light", "bg-warning");
+    }
+    // ---------------------------------------------------------------------
+
+    // Cek apakah ini pukulan PERTAMA
+    if (currentState.juri.size === 0) {
+      console.log(`Pukulan pertama diterima untuk tim ${color} dari ${juriId}. Menunggu juri kedua...`);
+      currentState.juri.add(juriId);
+      currentState.startTime = new Date();
+
+      // Atur timer 4 detik. Jika tidak ada juri kedua, reset.
+      currentState.timeoutId = setTimeout(() => {
+        console.log(`Waktu habis untuk tim ${color}. Pukulan tidak sah.`);
+        resetVoteStatePukulan(color);
+      }, 4000);
+    }
+    // Jika ini pukulan KEDUA (atau ketiga)
+    else {
+      console.log(`Pukulan kedua diterima untuk tim ${color} dari ${juriId}.`);
+      currentState.juri.add(juriId);
+
+      const selisih_waktu = (new Date().getTime() - currentState.startTime.getTime()) / 1000;
+
+      // Cek jika minimal 2 juri masuk DAN waktunya valid
+      if (currentState.juri.size >= 2 && selisih_waktu <= 4) {
+        console.log(`Pukulan SAH untuk tim ${color}! Selisih waktu: ${selisih_waktu.toFixed(2)} detik.`);
+
+        // Matikan timer "waktu habis"
+        clearTimeout(currentState.timeoutId);
+        currentState.timeoutId = null; // Kosongkan ID timer
+
+        // Tambah skor
+        if (color === "blue") {
+          document.getElementById("blue-notif-pukulan-table").innerHTML = initBluePukulan += 1;
+        } else if (color === "red") {
+          document.getElementById("red-notif-pukulan-table").innerHTML = initRedPukulan += 1;
+        }
+
+        // --- PERBAIKAN 2: BERI JEDA SEBELUM MERESET ---
+        // Jangan langsung reset. Beri waktu 1.5 detik agar operator bisa melihat
+        // kedua lampu menyala, baru kemudian reset state.
         setTimeout(() => {
-          document.getElementById("blue-notif-juri-1-pukul").classList.replace("bg-warning", "bg-light");
-        }, 4000);
-      } else if (data.juri_ket == "juri-2") {
-        document.getElementById("blue-notif-juri-2-pukul").classList.replace("bg-light", "bg-warning");
-        setTimeout(() => {
-          document.getElementById("blue-notif-juri-2-pukul").classList.replace("bg-warning", "bg-light");
-        }, 4000);
-      } else if (data.juri_ket == "juri-3") {
-        document.getElementById("blue-notif-juri-3-pukul").classList.replace("bg-light", "bg-warning");
-        setTimeout(() => {
-          document.getElementById("blue-notif-juri-3-pukul").classList.replace("bg-warning", "bg-light");
-        }, 4000);
+          resetVoteStatePukulan(color);
+        }, 1500); // Jeda 1.5 detik
+        // ------------------------------------------------------
       }
-      document.getElementById("blue-notif-pukulan-table").innerHTML = initBluePukulan += 1;
-    } else if (data.filter == "red") {
-      if (data.juri_ket == "juri-1") {
-        document.getElementById("red-notif-juri-1-pukul").classList.replace("bg-light", "bg-warning");
-        setTimeout(() => {
-          document.getElementById("red-notif-juri-1-pukul").classList.replace("bg-warning", "bg-light");
-        }, 4000);
-      } else if (data.juri_ket == "juri-2") {
-        document.getElementById("red-notif-juri-2-pukul").classList.replace("bg-light", "bg-warning");
-        setTimeout(() => {
-          document.getElementById("red-notif-juri-2-pukul").classList.replace("bg-warning", "bg-light");
-        }, 4000);
-      } else if (data.juri_ket == "juri-3") {
-        document.getElementById("red-notif-juri-3-pukul").classList.replace("bg-light", "bg-warning");
-        setTimeout(() => {
-          document.getElementById("red-notif-juri-3-pukul").classList.replace("bg-warning", "bg-light");
-        }, 4000);
-      }
-      document.getElementById("red-notif-pukulan-table").innerHTML = initRedPukulan += 1;
     }
   });
 
-  const kirimTendanganChannel = pusher.subscribe("kirim-tendang-channel");
+  // State untuk menyimpan tendangan yang sedang menunggu konfirmasi
+  const voteStateTendangan = {
+    blue: {
+      juri: new Set(),
+      startTime: null,
+      timeoutId: null,
+    },
+    red: {
+      juri: new Set(),
+      startTime: null,
+      timeoutId: null,
+    },
+  };
+
   let initBlueTendangan = 0;
   let initRedTendangan = 0;
+
+  /**
+   * Fungsi untuk mereset state voting.
+   * @param {string} color - "blue" atau "red"
+   */
+  function resetVoteStateTendangan(color) {
+    console.log(`Mereset state untuk tim ${color}.`);
+    voteStateTendangan[color].juri.clear();
+    voteStateTendangan[color].startTime = null;
+
+    if (voteStateTendangan[color].timeoutId) {
+      clearTimeout(voteStateTendangan[color].timeoutId);
+      voteStateTendangan[color].timeoutId = null;
+    }
+
+    // Kembalikan semua notifikasi juri untuk tim tersebut ke warna semula
+    for (let i = 1; i <= 3; i++) {
+      const notifElement = document.getElementById(`${color}-notif-juri-${i}-tendang`);
+      if (notifElement) {
+        notifElement.classList.replace("bg-warning", "bg-light");
+      }
+    }
+  }
+
+  // Subscribe ke channel Pusher
+  const kirimTendanganChannel = pusher.subscribe("kirim-tendang-channel");
   kirimTendanganChannel.bind("terima-tendang", function (data) {
-    if (data.filter == "blue") {
-      if (data.juri_ket == "juri-1") {
-        document.getElementById("blue-notif-juri-1-tendang").classList.replace("bg-light", "bg-warning");
+    const color = data.filter;
+    const juriId = data.juri_ket;
+    const currentState = voteStateTendangan[color];
+
+    // Jika juri ini sudah memberikan suara dalam rentang waktu ini, abaikan.
+    if (currentState.juri.has(juriId)) {
+      return;
+    }
+
+    // --- PERBAIKAN 1: NYALAKAN LAMPU SEGERA SETELAH EVENT DITERIMA ---
+    // Selalu nyalakan lampu notifikasi untuk juri yang datanya baru masuk.
+    const notifElement = document.getElementById(`${color}-notif-${juriId}-tendang`);
+    if (notifElement) {
+      notifElement.classList.replace("bg-light", "bg-warning");
+    }
+    // ---------------------------------------------------------------------
+
+    // Cek apakah ini Tendangan PERTAMA
+    if (currentState.juri.size === 0) {
+      console.log(`Tendangan pertama diterima untuk tim ${color} dari ${juriId}. Menunggu juri kedua...`);
+      currentState.juri.add(juriId);
+      currentState.startTime = new Date();
+
+      // Atur timer 4 detik. Jika tidak ada juri kedua, reset.
+      currentState.timeoutId = setTimeout(() => {
+        console.log(`Waktu habis untuk tim ${color}. Tendangan tidak sah.`);
+        resetVoteStateTendangan(color);
+      }, 4000);
+    }
+    // Jika ini Tendangan KEDUA (atau ketiga)
+    else {
+      console.log(`Tendangan kedua diterima untuk tim ${color} dari ${juriId}.`);
+      currentState.juri.add(juriId);
+
+      const selisih_waktu = (new Date().getTime() - currentState.startTime.getTime()) / 1000;
+
+      // Cek jika minimal 2 juri masuk DAN waktunya valid
+      if (currentState.juri.size >= 2 && selisih_waktu <= 4) {
+        console.log(`Tendangan SAH untuk tim ${color}! Selisih waktu: ${selisih_waktu.toFixed(2)} detik.`);
+
+        // Matikan timer "waktu habis"
+        clearTimeout(currentState.timeoutId);
+        currentState.timeoutId = null; // Kosongkan ID timer
+
+        // Tambah skor
+        if (color === "blue") {
+          document.getElementById("blue-notif-tendangan-table").innerHTML = initBlueTendangan += 1;
+        } else if (color === "red") {
+          document.getElementById("red-notif-tendangan-table").innerHTML = initRedTendangan += 1;
+        }
+
+        // --- PERBAIKAN 2: BERI JEDA SEBELUM MERESET ---
+        // Jangan langsung reset. Beri waktu 1.5 detik agar operator bisa melihat
+        // kedua lampu menyala, baru kemudian reset state.
         setTimeout(() => {
-          document.getElementById("blue-notif-juri-1-tendang").classList.replace("bg-warning", "bg-light");
-        }, 4000);
-      } else if (data.juri_ket == "juri-2") {
-        document.getElementById("blue-notif-juri-2-tendang").classList.replace("bg-light", "bg-warning");
-        setTimeout(() => {
-          document.getElementById("blue-notif-juri-2-tendang").classList.replace("bg-warning", "bg-light");
-        }, 4000);
-      } else if (data.juri_ket == "juri-3") {
-        document.getElementById("blue-notif-juri-3-tendang").classList.replace("bg-light", "bg-warning");
-        setTimeout(() => {
-          document.getElementById("blue-notif-juri-3-tendang").classList.replace("bg-warning", "bg-light");
-        }, 4000);
+          resetVoteStateTendangan(color);
+        }, 1500);
       }
-      document.getElementById("blue-notif-tendangan-table").innerHTML = initBlueTendangan += 1;
-    } else if (data.filter == "red") {
-      if (data.juri_ket == "juri-1") {
-        document.getElementById("red-notif-juri-1-tendang").classList.replace("bg-light", "bg-warning");
-        setTimeout(() => {
-          document.getElementById("red-notif-juri-1-tendang").classList.replace("bg-warning", "bg-light");
-        }, 4000);
-      } else if (data.juri_ket == "juri-2") {
-        document.getElementById("red-notif-juri-2-tendang").classList.replace("bg-light", "bg-warning");
-        setTimeout(() => {
-          document.getElementById("red-notif-juri-2-tendang").classList.replace("bg-warning", "bg-light");
-        }, 4000);
-      } else if (data.juri_ket == "juri-3") {
-        document.getElementById("red-notif-juri-3-tendang").classList.replace("bg-light", "bg-warning");
-        setTimeout(() => {
-          document.getElementById("red-notif-juri-3-tendang").classList.replace("bg-warning", "bg-light");
-        }, 4000);
-      }
-      document.getElementById("red-notif-tendangan-table").innerHTML = initRedTendangan += 1;
     }
   });
 }
