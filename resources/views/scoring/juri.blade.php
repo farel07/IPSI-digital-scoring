@@ -28,9 +28,9 @@
                 <div class="col-4">
                     <div class="p-3 border bg-primary text-light text-center" style="border-radius: 10px">TEAM BLUE
                     </div>
-                    <div class="p-3 mt-3 border bg-light text-center" style="border-radius: 10px">-</div>
-                    <div class="p-3 mt-3 border bg-light text-center" style="border-radius: 10px">-</div>
-                    <div class="p-3 mt-3 border bg-light text-center" style="border-radius: 10px">-</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-1" style="border-radius: 10px">-</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-2" style="border-radius: 10px">-</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-3" style="border-radius: 10px">-</div>
                     <div class="row justify-content-between">
                         <div class="col-6 mb-3">
                             <button class="mt-3 btn btn-primary w-100" type="button" value="1" onclick="kirimPukul('blue')"  id="btn_pukul_blue" 
@@ -65,9 +65,9 @@
                 {{-- team red --}}
                 <div class="col-4">
                     <div class="p-3 border bg-danger text-light text-center" style="border-radius: 10px">TEAM RED</div>
-                    <div class="p-3 mt-3 border bg-light text-center" style="border-radius: 10px">-</div>
-                    <div class="p-3 mt-3 border bg-light text-center" style="border-radius: 10px">-</div>
-                    <div class="p-3 mt-3 border bg-light text-center" style="border-radius: 10px">-</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-1" style="border-radius: 10px">-</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-2" style="border-radius: 10px">-</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-3" style="border-radius: 10px">-</div>
                     <div class="row justify-content-between">
                         <div class="col-6">
                             <button class="mt-3 btn btn-primary w-100" type="button"

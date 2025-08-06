@@ -266,46 +266,80 @@ function kirimHapus(type, filter) {
     });
 }
 
-function kirimPukul(filter) {
-  const pukulValue = document.getElementById("btn_pukul_" + filter).value;
-  count = pukulValue;
+/**
+ * Fungsi utama untuk mengirim skor. Fungsi ini menangani semua logika:
+ * - Memperbarui tampilan di layar.
+ * - Menghitung total skor dari string (misal: "1 + 2 + 1").
+ * - Mengirim data ke endpoint server yang sesuai.
+ *
+ * @param {string} filter - Warna tim, "blue" atau "red".
+ * @param {number} pointValue - Nilai poin yang akan ditambahkan (1 untuk pukul, 2 untuk tendang).
+ * @param {string} endpoint - URL API tujuan (misal: "/kirim-pukul/" atau "/kirim-tendang/").
+ */
+function kirimSkor(filter, pointValue, endpoint) {
+  // Pastikan variabel global 'round', 'id_user', dan 'juri_ket' sudah tersedia
+  if (typeof round === 'undefined' || typeof id_user === 'undefined' || typeof juri_ket === 'undefined') {
+    console.error("Variabel global 'round', 'id_user', atau 'juri_ket' belum didefinisikan.");
+    return;
+  }
 
-  fetch("/kirim-pukul/" + id_user, {
+  const displayElement = document.getElementById(`total-point-${filter}-${round}`);
+
+  if (!displayElement) {
+    console.error(`Elemen display skor tidak ditemukan untuk ID: total-point-${filter}-${round}`);
+    return;
+  }
+
+  // Ambil teks yang sudah ada
+  let currentText = displayElement.innerHTML.trim();
+  let newText = (currentText === "" || currentText === "0")
+    ? pointValue.toString()
+    : `${currentText} + ${pointValue}`;
+
+  // Update tampilan skor
+  displayElement.innerHTML = newText;
+
+  // Hitung total skor dari string
+  // const totalSum = newText
+  //   .split(' + ')
+  //   .map(num => parseInt(num, 10))
+  //   .reduce((total, num) => total + num, 0);
+
+  // Kirim ke server
+  fetch(`${endpoint}${id_user}`, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      count: parseInt(count),
+      // count: totalSum,
       filter: filter,
       juri_ket: juri_ket
-    }),
+    })
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) throw new Error('Respons jaringan bermasalah');
+      return res.json();
+    })
     .then((data) => {
-      alert(count + filter);
+      console.log(`Data terkirim ke ${endpoint}:`, data);
+    })
+    .catch((error) => {
+      console.error(`Terjadi masalah dengan operasi fetch ke ${endpoint}:`, error);
     });
 }
 
-function kirimTendang(filter) {
-  const tendangValue = document.getElementById("btn_tendang_" + filter).value;
-  count = tendangValue;
+/**
+ * Fungsi yang dipanggil saat tombol PUKUL ditekan.
+ */
+function kirimPukul(filter) {
+  kirimSkor(filter, 1, "/kirim-pukul/");
+}
 
-  fetch("/kirim-tendang/" + id_user, {
-    method: "POST",
-    headers: {
-      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      count: parseInt(count),
-      filter: filter,
-      juri_ket: juri_ket
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      alert(count + filter);
-    });
+/**
+ * Fungsi yang dipanggil saat tombol TENDANG ditekan.
+ */
+function kirimTendang(filter) {
+  kirimSkor(filter, 2, "/kirim-tendang/");
 }
