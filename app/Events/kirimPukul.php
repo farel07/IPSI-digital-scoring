@@ -13,12 +13,11 @@ class kirimPukul implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     // public $judul;
-    public $count, $filter, $juri_ket;
+    public  $filter, $juri_ket;
 
-    public function __construct($count, $filter, $juri_ket)
+    public function __construct( $filter, $juri_ket)
     {
         // $this->judul = $judul;
-        $this->count = $count;
         $this->filter = $filter;
         $this->juri_ket = $juri_ket;
     }

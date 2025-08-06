@@ -14,14 +14,13 @@ class kirimTendang implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $count, $filter, $juri_ket;
+    public $filter, $juri_ket;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($count, $filter, $juri_ket)
+    public function __construct($filter, $juri_ket)
     {
-        $this->count = $count;
         $this->filter = $filter;
         $this->juri_ket = $juri_ket;
     }

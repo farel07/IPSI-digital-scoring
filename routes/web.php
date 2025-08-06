@@ -67,11 +67,11 @@ Route::post('/kirim-hapus-pelanggaran', function (Request $request) {
     return response()->json(['status' => 'berhasil']);
 });
 Route::post('/kirim-pukul/{id}', function (Request $request, $id) {
-    event(new kirimPukul($request->count, $request->filter, $request->juri_ket, $id));
+    event(new kirimPukul($request->filter, $request->juri_ket, $id));
     return response()->json(['status' => 'berhasil']);
 });
 Route::post('kirim-tendang/{id}', function (Request $request, $id) {
-    event(new kirimTendang($request->count, $request->filter, $request->juri_ket, $id));
+    event(new kirimTendang($request->filter, $request->juri_ket, $id));
     return response()->json(['status' => 'berhasil']);
 });
 
