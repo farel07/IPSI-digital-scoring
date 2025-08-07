@@ -379,4 +379,114 @@ function initializeListener(appKey, appCluster) {
       }
     }
   });
+
+  // hapus poin pukulan/tendangan terbaru
+  // State object untuk melacak permintaan PENGHAPUSAN, strukturnya sudah pas.
+  const deleteVoteState = {
+    blue: {
+      pukulan: { juri: new Set(), timeoutId: null },
+      tendangan: { juri: new Set(), timeoutId: null },
+    },
+    red: {
+      pukulan: { juri: new Set(), timeoutId: null },
+      tendangan: { juri: new Set(), timeoutId: null },
+    },
+  };
+
+  /**
+   * Fungsi untuk mereset state voting PENGHAPUSAN. Tidak perlu diubah.
+   * @param {string} color - "blue" atau "red"
+   * @param {string} type - "pukulan" atau "tendangan"
+   */
+  function resetDeleteState(color, type) {
+    console.log(`Mereset state penghapusan untuk ${color} - ${type}.`);
+    const state = deleteVoteState[color][type];
+    state.juri.clear();
+    if (state.timeoutId) {
+      clearTimeout(state.timeoutId);
+      state.timeoutId = null;
+    }
+  }
+
+  // Subscribe ke channel Pusher
+  const kirimHapusPukulTendang = pusher.subscribe("kirim-hapus-point-channel");
+  kirimHapusPukulTendang.bind("terima-hapus-point", function (data) {
+    const color = data.filter; // "blue" atau "red"
+    const type = data.type; // "pukulan" atau "tendangan"
+    const juriId = data.juri_ket; // "juri-1", "juri-2", dll.
+
+    // Dapatkan state yang relevan (misal: state untuk hapus pukulan biru)
+    const currentState = deleteVoteState[color][type];
+
+    // Abaikan jika juri ini sudah meminta hapus dalam sesi ini
+    if (currentState.juri.has(juriId)) {
+      return;
+    }
+
+    // Catat juri yang meminta hapus
+    currentState.juri.add(juriId);
+    console.log(`Permintaan hapus dari ${juriId} untuk ${color}-${type}. Total permintaan: ${currentState.juri.size}`);
+
+    // Periksa apakah syarat sudah terpenuhi (minimal 2 juri)
+    if (currentState.juri.size >= 2) {
+      console.log(`PENGHAPUSAN SAH untuk ${color}-${type}. Minimal 2 juri telah setuju.`);
+
+      // Batalkan timer "waktu habis" yang mungkin berjalan dari juri pertama
+      clearTimeout(currentState.timeoutId);
+
+      // --- LOGIKA UTAMA YANG DIUBAH ---
+      // 1. Buat ID elemen target secara dinamis berdasarkan data dari Pusher
+      const elementId = `${color}-notif-${type}-table`; // Contoh: akan menjadi "blue-notif-pukulan-table"
+
+      // 2. Dapatkan elemen tersebut
+      const elementToUpdate = document.getElementById(elementId);
+
+      // 3. Lakukan pengurangan jika elemennya ada
+      if (elementToUpdate) {
+        // Ambil nilai saat ini, ubah ke angka. Gunakan '|| 0' untuk keamanan jika kosong.
+        let currentValue = parseInt(elementToUpdate.innerHTML) || 0;
+
+        // Kurangi nilainya. Gunakan Math.max untuk mencegah nilai negatif.
+        let newValue = Math.max(0, currentValue - 1);
+
+        // Perbarui tampilan elemen dengan nilai yang baru
+        elementToUpdate.innerHTML = newValue;
+
+        // Memperbarui variabel state internal sesuai dengan warna dan tipe
+        if (color === "blue") {
+          if (type === "pukulan") {
+            initBluePukulan = newValue;
+            console.log(`Variabel initBluePukulan diperbarui menjadi: ${initBluePukulan}`);
+          } else if (type === "tendangan") {
+            initBlueTendangan = newValue;
+            console.log(`Variabel initBlueTendangan diperbarui menjadi: ${initBlueTendangan}`);
+          }
+        } else if (color === "red") {
+          if (type === "pukulan") {
+            initRedPukulan = newValue;
+            console.log(`Variabel initRedPukulan diperbarui menjadi: ${initRedPukulan}`);
+          } else if (type === "tendangan") {
+            initRedTendangan = newValue;
+            console.log(`Variabel initRedTendangan diperbarui menjadi: ${initRedTendangan}`);
+          }
+        }
+
+        // alert(`Poin ${type} untuk tim ${color} berhasil dikurangi 1.`);
+      } else {
+        console.error(`Elemen dengan ID '${elementId}' tidak ditemukan!`);
+      }
+      // --- AKHIR LOGIKA UTAMA YANG DIUBAH ---
+
+      // Langsung reset state setelah penghapusan berhasil agar siap untuk aksi berikutnya
+      resetDeleteState(color, type);
+    } else {
+      // Jika ini adalah juri PERTAMA yang meminta hapus, mulai timer 4 detik
+      console.log("Menunggu konfirmasi juri kedua untuk penghapusan...");
+      currentState.timeoutId = setTimeout(() => {
+        console.log(`Waktu habis. Permintaan hapus untuk ${color}-${type} dibatalkan.`);
+        // alert(`Permintaan hapus poin untuk tim ${color} tidak valid (tidak ada konfirmasi juri kedua).`);
+        resetDeleteState(color, type);
+      }, 4000);
+    }
+  });
 }
