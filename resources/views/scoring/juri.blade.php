@@ -39,7 +39,7 @@
 
                         </div>
                         <div class="col-6">
-                            <button class="mt-3 btn w-100 text-light" type="button"
+                            <button class="mt-3 btn w-100 text-light" type="button" onclick="kirimHapusPoint('blue')" id="btn_hapus_point_blue" disabled
                                 style="border-radius: 10px; height: 100px; background-color:rgb(190, 0, 0)">HAPUS POINT
                                 TERBARU</button>
                         </div>
@@ -70,7 +70,7 @@
                     <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-3" style="border-radius: 10px">-</div>
                     <div class="row justify-content-between">
                         <div class="col-6">
-                            <button class="mt-3 btn btn-primary w-100" type="button"
+                            <button class="mt-3 btn btn-primary w-100" type="button" onclick="kirimHapusPoint('red')" id="btn_hapus_point_red" disabled
                                 style="border-radius: 10px; background-color:rgb(190, 0, 0); height: 100px">HAPUS POINT
                                 TERBARU</button>
 

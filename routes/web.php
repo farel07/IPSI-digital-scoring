@@ -10,6 +10,7 @@ use App\Events\KirimJatuh;
 use App\Events\kirimPukul;
 use App\Events\hapusPelanggaran;
 use App\Events\kirimTendang;
+use App\Events\hapusPoint;
 use App\Http\Controllers\dewanController;
 use App\Http\Controllers\juriController;
 use App\Http\Controllers\operatorController;
@@ -72,6 +73,10 @@ Route::post('/kirim-pukul/{id}', function (Request $request, $id) {
 });
 Route::post('kirim-tendang/{id}', function (Request $request, $id) {
     event(new kirimTendang($request->filter, $request->juri_ket, $id));
+    return response()->json(['status' => 'berhasil']);
+});
+Route::post('kirim-hapus-point/{id}', function (Request $request, $id) {
+    event(new hapusPoint($request->filter, $request->type, $request->juri_ket, $id));
     return response()->json(['status' => 'berhasil']);
 });
 
