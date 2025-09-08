@@ -82,13 +82,14 @@ Route::post('kirim-hapus-point/{id}', function (Request $request, $id) {
 
 // route scoring
 Route::prefix('scoring')->group(function () {
-    Route::get('/dewan/{id}', [dewanController::class, 'index']);
+    Route::get('/dewan/{user}', [dewanController::class, 'index']);
 
-    Route::get('/juri/{id}', [juriController::class, 'index']);
+    // Route::get('/juri/{id}', [juriController::class, 'index']);
+    Route::get('/juri/{user}', [juriController::class, 'index'])->name('scoring.juri');
 
     Route::get('/operator/{id}', [operatorController::class, 'index']);
 
-    Route::get('/penilaian/{id}', [penilaianController::class, 'index']);
+    Route::get('/penilaian/{user}', [penilaianController::class, 'index']);
 
     Route::get('/timer', [timerController::class, 'index']);
 });

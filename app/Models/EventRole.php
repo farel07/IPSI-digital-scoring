@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class UserMatch extends Model
+class EventRole extends Model
 {
     use HasFactory;
-    protected $table = 'user_match';
+
+    protected $table = 'user_event';
+
     protected $fillable = [
         'user_id',
-        'match_id'
+        'event_id',
     ];
 
     public function user()
@@ -19,8 +21,8 @@ class UserMatch extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function match()
+    public function event()
     {
-        return $this->belongsTo(Matches::class, 'match_id', 'id');
+        return $this->belongsTo(Event::class, 'event_id', 'id');
     }
 }
