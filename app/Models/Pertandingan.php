@@ -37,9 +37,9 @@ class Pertandingan extends Model
     public function getPemainUnit1Attribute()
     {
         return BracketPeserta::where('kelas_pertandingan_id', $this->kelas_pertandingan_id)
-                             ->where('unit_id', $this->unit1_id)
-                             ->with('player.contingent') // Eager load relasi dari BracketPeserta
-                             ->get();
+            ->where('unit_id', $this->unit1_id)
+            ->with('player.contingent') // Eager load relasi dari BracketPeserta
+            ->get();
     }
 
     /**
@@ -48,8 +48,13 @@ class Pertandingan extends Model
     public function getPemainUnit2Attribute()
     {
         return BracketPeserta::where('kelas_pertandingan_id', $this->kelas_pertandingan_id)
-                             ->where('unit_id', $this->unit2_id)
-                             ->with('player.contingent') // Eager load relasi dari BracketPeserta
-                             ->get();
+            ->where('unit_id', $this->unit2_id)
+            ->with('player.contingent') // Eager load relasi dari BracketPeserta
+            ->get();
+    }
+
+    public function detailPointTanding()
+    {
+        return $this->hasOne(DetailPointTanding::class, 'pertandingan_id', 'id');
     }
 }
