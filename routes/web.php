@@ -16,6 +16,7 @@ use App\Http\Controllers\juriController;
 use App\Http\Controllers\operatorController;
 use App\Http\Controllers\penilaianController;
 use App\Http\Controllers\timerController;
+use App\Http\Controllers\TandingController;
 use Illuminate\Http\Request;
 
 /*
@@ -47,26 +48,11 @@ Route::post('/kirim-notifikasi_2', function (Request $request) {
 });
 
 
-Route::post('/kirim-binaan', function (Request $request) {
-    event(new KirimBinaan($request->count, $request->filter));
-    return response()->json(['status' => 'berhasil']);
-});
-Route::post('/kirim-peringatan', function (Request $request) {
-    event(new KirimPeringatan($request->count, $request->filter));
-    return response()->json(['status' => 'berhasil']);
-});
-Route::post('/kirim-teguran', function (Request $request) {
-    event(new KirimTeguran($request->count, $request->filter));
-    return response()->json(['status' => 'berhasil']);
-});
-Route::post('/kirim-jatuh', function (Request $request) {
-    event(new KirimJatuh($request->count, $request->filter));
-    return response()->json(['status' => 'berhasil']);
-});
-Route::post('/kirim-hapus-pelanggaran', function (Request $request) {
-    event(new hapusPelanggaran($request->type, $request->filter));
-    return response()->json(['status' => 'berhasil']);
-});
+Route::post('/kirim-binaan', [TandingController::class, 'kirim_binaan']);
+Route::post('/kirim-peringatan', [TandingController::class, 'kirim_peringatan']);
+Route::post('/kirim-teguran', [TandingController::class, 'kirim_teguran']);
+Route::post('/kirim-jatuh', [TandingController::class, 'kirim_jatuh']);
+Route::post('/kirim-hapus-pelanggaran', [TandingController::class, 'hapus_pelanggaran']);
 Route::post('/kirim-pukul/{id}', function (Request $request, $id) {
     event(new kirimPukul($request->filter, $request->juri_ket, $id));
     return response()->json(['status' => 'berhasil']);
