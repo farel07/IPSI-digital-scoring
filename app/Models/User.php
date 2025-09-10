@@ -2,60 +2,55 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPasswordContract
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable, CanResetPassword;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $table = 'users';
+
     protected $fillable = [
-        'username',
+        'nama_lengkap',
+        'email',
+        'jenis_kelamin',
+        'alamat',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'negara',
+        'no_telp',
+        'status',
         'password',
         'role_id',
-        'name',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
+    protected $hidden = ['password'];
 
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
-    public function userMatch()
+    public function contingent()
     {
-        return $this->hasMany(UserMatch::class, 'user_id', 'id');
+        return $this->hasMany(Contingent::class, 'user_id', 'id');
     }
 
-    public function arena()
+    public function events()
     {
-        return $this->hasMany(Arena::class, 'user_id', 'id');
+        return $this->belongsToMany(Event::class, 'user_event', 'user_id', 'event_id');
+    }
+
+    public function eventRoles()
+    {
+        return $this->hasMany(EventRole::class, 'user_id', 'id');
+    }
+
+    public function user_arena(){
+        return $this->hasMany(UserArena::class, 'user_id', 'id');       
     }
 }

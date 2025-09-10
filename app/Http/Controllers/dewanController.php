@@ -2,27 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Matches;
+// Import model yang BENAR
 use Illuminate\Http\Request;
+use App\Models\Pertandingan;
 use App\Models\User;
-use App\Models\UserMatch;
+
+// Hapus model lama yang tidak terpakai
+// use App\Models\Matches;
+// use App\Models\UserMatch;
 
 class dewanController extends Controller
 {
-    public function index($id)
+    /**
+     * [DIPERBARUI TOTAL] Menampilkan halaman Dewan untuk seorang User.
+     * Logika ini SAMA PERSIS dengan controller lain yang sudah bekerja.
+     *
+     * @param User $user Menerima objek Dewan (User) dari URL melalui Route Model Binding.
+     */
+    public function index(User $user)
     {
-        $user_match = UserMatch::where('user_id', $id)->get();
-        $user_match = $user_match->map(function ($match) {
-            $match->match = Matches::find($match->match_id)->where('status', '!=', 'completed')->first();
-            return $match;
-        });
+        // 1. Dapatkan arena ID milik Dewan ini.
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
 
-        // return $user_match[0]->match->playerMatches;
-        // return User::find($id);
+        // 2. Tangani jika Dewan tidak punya arena.
+        if (!$arenaId) {
+            abort(404, 'Dewan ini tidak ditugaskan ke arena manapun.');
+        }
 
+        // 3. Cari satu pertandingan aktif di arena tersebut dan muat semua relasi yang diperlukan.
+        // Accessor di model `Pertandingan` akan menangani pengambilan data pemain.
+        $pertandingan = Pertandingan::with([
+                'kelasPertandingan.kelas',
+                'kelasPertandingan.kategoriPertandingan'
+            ])
+            ->where('arena_id', $arenaId)
+            ->where('status', '!=', 'completed') // Bisa 'siap_dimulai' atau 'berlangsung'
+            ->first(); // Mengambil hanya SATU pertandingan aktif.
+
+        // 4. Kirim objek pertandingan (atau null jika tidak ada) ke view.
         return view("scoring.dewan", [
-            'id' => $id,
-            'user_match' => $user_match[0],
+            'pertandingan' => $pertandingan,
         ]);
     }
 }

@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bracket', function (Blueprint $table) {
+        Schema::create('player_clustering', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('player_category_id')->constrained('player_categories')->onDelete('cascade');
+            $table->integer('nomor');
+            $table->foreignId('player_id')->constrained('players')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bracket');
+        Schema::dropIfExists('player_clustering');
     }
 };

@@ -8,20 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Arena extends Model
 {
     use HasFactory;
-
     protected $table = 'arena';
-    protected $fillable = [
-        'arena_name',
-        'user_id'
-    ];
-
-    public function arenaMatches()
+    protected $fillable = ['arena_name'];
+    public function pertandingan()
     {
-        return $this->hasMany(Matches::class, 'arena_id', 'id');
+        return $this->hasMany(Pertandingan::class, 'arena_id');
     }
-
-    public function user()
+    public function user_arena()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->hasMany(UserArena::class, 'arena_id');
     }
 }

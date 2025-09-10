@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('players_invoice', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
-            $table->timestamps();
+            $table->string('foto_invoice')->nullable(); // simpan path foto invoice
+            $table->decimal('total_price', 15, 2); // simpan harga total
+            $table->date('date'); // tanggal invoice
+            $table->timestamps(); // created_at & updated_at
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('invoice_player');
     }
 };

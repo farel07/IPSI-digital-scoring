@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -15,70 +13,225 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ambil ID dari setiap role untuk dihubungkan ke user
-        // Menggunakan first() karena kita yakin datanya sudah ada dari RoleSeeder
-        $operatorRole = Role::where('name', 'operator')->first();
-        $juriRole = Role::where('name', 'juri')->first();
-        $dewanRole = Role::where('name', 'dewan')->first();
-        $timerRole = Role::where('name', 'timer')->first();
+        DB::table('users')->insert([
+            // Data Admin
+            [
+                'nama_lengkap' => 'Super Admin',
+                'email' => 'superadmin@example.com',
+                'password' => Hash::make('password123'), // Ganti dengan password yang aman
+                'alamat' => 'Jl. Merdeka No. 1, Jakarta',
+                'jenis_kelamin' => 'Laki-laki',
+                'tempat_lahir' => 'Jakarta',
+                'tanggal_lahir' => '1990-01-15',
+                'negara' => 'Indonesia',
+                'no_telp' => '081234567890',
+                'status' => 1,
+                'role_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama_lengkap' => 'Ogik',
+                'email' => 'ogik@example.com',
+                'password' => Hash::make('password123'), // Ganti dengan password yang aman
+                'alamat' => 'Jl. Merdeka No. 1, Jakarta',
+                'jenis_kelamin' => 'Laki-laki',
+                'tempat_lahir' => 'Jakarta',
+                'tanggal_lahir' => '1990-01-15',
+                'negara' => 'Indonesia',
+                'no_telp' => '081234567890',
+                'status' => 1,
+                'role_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama_lengkap' => 'Leri',
+                'email' => 'leri@example.com',
+                'password' => Hash::make('password123'), // Ganti dengan password yang aman
+                'alamat' => 'Jl. Merdeka No. 1, Jakarta',
+                'jenis_kelamin' => 'Laki-laki',
+                'tempat_lahir' => 'Jakarta',
+                'tanggal_lahir' => '1990-01-15',
+                'negara' => 'Indonesia',
+                'no_telp' => '081234567890',
+                'status' => 1,
+                'role_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama_lengkap' => 'Baim',
+                'email' => 'baim@example.com',
+                'password' => Hash::make('password123'), // Ganti dengan password yang aman
+                'alamat' => 'Jl. Merdeka No. 1, Jakarta',
+                'jenis_kelamin' => 'Laki-laki',
+                'tempat_lahir' => 'Jakarta',
+                'tanggal_lahir' => '1990-01-15',
+                'negara' => 'Indonesia',
+                'no_telp' => '081234567890',
+                'status' => 1,
+                'role_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama_lengkap' => 'Faiz',
+                'email' => 'faiz@example.com',
+                'password' => Hash::make('password123'), // Ganti dengan password yang aman
+                'alamat' => 'Jl. Merdeka No. 1, Jakarta',
+                'jenis_kelamin' => 'Laki-laki',
+                'tempat_lahir' => 'Jakarta',
+                'tanggal_lahir' => '1990-01-15',
+                'negara' => 'Indonesia',
+                'no_telp' => '081234567890',
+                'status' => 1,
+                'role_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
 
-        // Membuat user dengan password default 'password'
-        // Password di-hash menggunakan Hash::make() untuk keamanan
+            [
+                'nama_lengkap' => 'atmint Suki',
+                'email' => 'admin1@example.com',
+                'password' => Hash::make('password123'), // Ganti dengan password yang aman
+                'alamat' => 'Jl. Merdeka No. 1, Jakarta',
+                'jenis_kelamin' => 'Laki-laki',
+                'tempat_lahir' => 'Jakarta',
+                'tanggal_lahir' => '1990-01-15',
+                'negara' => 'Indonesia',
+                'no_telp' => '081234567890',
+                'status' => 1,
+                'role_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
 
-        // User Operator
-        User::firstOrCreate(
-            ['username' => 'operator1'],
             [
-                'name' => 'Operator 1',
-                'password' => Hash::make('sandiOperator1'),
-                'role_id' => $operatorRole->id,
-            ]
-        );
+                'nama_lengkap' => 'atmint Bleki',
+                'email' => 'admin2@example.com',
+                'password' => Hash::make('password123'), // Ganti dengan password yang aman
+                'alamat' => 'Jl. Merdeka No. 1, Jakarta',
+                'jenis_kelamin' => 'Laki-laki',
+                'tempat_lahir' => 'Jakarta',
+                'tanggal_lahir' => '1990-01-15',
+                'negara' => 'Indonesia',
+                'no_telp' => '0812345673',
+                'status' => 1,
+                'role_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
 
-        // User Juri
-        User::firstOrCreate(
-            ['username' => 'juri1'],
             [
-                'name' => 'Juri 1',
-                'password' => Hash::make('sandiJuri1'),
-                'role_id' => $juriRole->id,
-            ]
-        );
-        User::firstOrCreate(
-            ['username' => 'juri2'],
-            [
-                'name' => 'Juri 2',
-                'password' => Hash::make('sandiJurii2'),
-                'role_id' => $juriRole->id,
-            ]
-        );
-        User::firstOrCreate(
-            ['username' => 'juri3'],
-            [
-                'name' => 'Juri 3',
-                'password' => Hash::make('sandiJuri3'),
-                'role_id' => $juriRole->id,
-            ]
-        );
+                'nama_lengkap' => 'atmint Acumalaka',
+                'email' => 'admin3@example.com',
+                'password' => Hash::make('password123'), // Ganti dengan password yang aman
+                'alamat' => 'Jl. Merdeka No. 1, Jakarta',
+                'jenis_kelamin' => 'Laki-laki',
+                'tempat_lahir' => 'Ngawi',
+                'tanggal_lahir' => '1990-01-15',
+                'negara' => 'Indonesia',
+                'no_telp' => '0814563393',
+                'status' => 1,
+                'role_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
 
-        // User Dewan
-        User::firstOrCreate(
-            ['username' => 'dewan1'],
+            // Data Manager 1
             [
-                'name' => 'Dewan 1',
-                'password' => Hash::make('sandiDewan1'),
-                'role_id' => $dewanRole->id,
-            ]
-        );
+                'nama_lengkap' => 'Manager1',
+                'email' => 'manager1@example.com',
+                'password' => Hash::make('password123'), // Ganti dengan password yang aman
+                'alamat' => 'Jl. Sudirman No. 10, Bandung',
+                'jenis_kelamin' => 'Perempuan',
+                'tempat_lahir' => 'Bandung',
+                'tanggal_lahir' => '1992-05-20',
+                'negara' => 'Indonesia',
+                'no_telp' => '081234567891',
+                'status' => 1,
+                'role_id' => 3, // Role ID untuk Manager
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Data Manager 2
+            [
+                'nama_lengkap' => 'Manager2',
+                'email' => 'manager2@example.com',
+                'password' => Hash::make('password123'), // Ganti dengan password yang aman
+                'alamat' => 'Jl. Gatot Subroto No. 5, Surabaya',
+                'jenis_kelamin' => 'Laki-laki',
+                'tempat_lahir' => 'Surabaya',
+                'tanggal_lahir' => '1991-11-30',
+                'negara' => 'Indonesia',
+                'no_telp' => '081234567892',
+                'status' => 1,
+                'role_id' => 3, // Role ID untuk Manager
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // [
+            //     'nama_lengkap' => 'Mas Feris',
+            //     'email' => 'feris@example.com',
+            //     'password' => Hash::make('password123'), // Ganti dengan password yang aman
+            //     'alamat' => 'Jl. Gatot Kaca No. 5, Surabaya',
+            //     'jenis_kelamin' => 'Laki-laki',
+            //     'tempat_lahir' => 'Surabaya',
+            //     'tanggal_lahir' => '1998-11-30',
+            //     'negara' => 'Indonesia',
+            //     'no_telp' => '08976464461',
+            //     'status' => 1,
+            //     'role_id' => 2,
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ],
 
-        // User Timer
-        User::firstOrCreate(
-            ['username' => 'timer1'],
-            [
-                'name' => 'Timer 1',
-                'password' => Hash::make('sandiTimer1'),
-                'role_id' => $timerRole->id,
-            ]
-        );
+            // [
+            //     'nama_lengkap' => 'Mas Hoiri',
+            //     'email' => 'hoiri@example.com',
+            //     'password' => Hash::make('password123'), // Ganti dengan password yang aman
+            //     'alamat' => 'Jl. Gatot Subroto No. 10, Surabaya',
+            //     'jenis_kelamin' => 'Laki-laki',
+            //     'tempat_lahir' => 'Surabaya',
+            //     'tanggal_lahir' => '1991-11-20',
+            //     'negara' => 'Indonesia',
+            //     'no_telp' => '087702426911',
+            //     'status' => 1,
+            //     'role_id' => 2,
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ],
+            // [
+            //     'nama_lengkap' => 'Mas Daemon',
+            //     'email' => 'daemon@example.com',
+            //     'password' => Hash::make('password123'), // Ganti dengan password yang aman
+            //     'alamat' => 'Jl. Gatot Subroto No. 5, Surabaya',
+            //     'jenis_kelamin' => 'Laki-laki',
+            //     'tempat_lahir' => 'Dragonstone',
+            //     'tanggal_lahir' => '1991-11-30',
+            //     'negara' => 'Indonesia',
+            //     'no_telp' => '081234567892',
+            //     'status' => 1,
+            //     'role_id' => 3,
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ],
+            // [
+            //     'nama_lengkap' => 'Mas-Masan',
+            //     'email' => 'mase@example.com',
+            //     'password' => Hash::make('password123'), // Ganti dengan password yang aman
+            //     'alamat' => 'Jl. Gatot Subroto No. 5, Surabaya',
+            //     'jenis_kelamin' => 'Laki-laki',
+            //     'tempat_lahir' => 'Surabaya',
+            //     'tanggal_lahir' => '1991-11-30',
+            //     'negara' => 'Indonesia',
+            //     'no_telp' => '081234567892',
+            //     'status' => 1,
+            //     'role_id' => 3,
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ],
+        ]);
     }
 }
