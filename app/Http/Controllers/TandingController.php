@@ -3,54 +3,155 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\DetailPointTanding;
+use App\Models\Pertandingan;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
+// Import semua Event Anda
 use App\Events\KirimBinaan;
 use App\Events\KirimPeringatan;
 use App\Events\KirimTeguran;
 use App\Events\KirimJatuh;
 use App\Events\kirimPukul;
-use App\Events\hapusPelanggaran;
 use App\Events\kirimTendang;
+use App\Events\hapusPelanggaran;
 use App\Events\hapusPoint;
 
 class TandingController extends Controller
 {
-    //
-    public function kirim_binaan(Request $request)
+    // --- FUNGSI DEWAN ---
+
+    public function kirim_binaan(Request $request, User $user)
     {
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
+
+        if (!$arenaId) {
+            abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
+            ->where('arena_id', $arenaId)
+            ->where('status', 'siap_dimulai')
+            ->first();
+
+
+        // Panggil helper dengan kolom 'binaan_point', nilai dari 'count', dan filter
+        $this->updateOrCreatePoint($pertandingan, 'binaan_point', $request->filter, $request->count);
+        
         event(new KirimBinaan($request->count, $request->filter));
         return response()->json(['status' => 'berhasil']);
     }
 
-    public function kirim_peringatan(Request $request)
+    public function kirim_peringatan(Request $request, User $user)
     {
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
+
+        if (!$arenaId) {
+            abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
+            ->where('arena_id', $arenaId)
+            ->where('status', 'siap_dimulai')
+            ->first();
+
+        $this->updateOrCreatePoint($pertandingan, 'peringatan', $request->filter, $request->count);
+
         event(new KirimPeringatan($request->count, $request->filter));
-    return response()->json(['status' => 'berhasil']);
+        return response()->json(['status' => 'berhasil']);
     }
 
-    public function kirim_teguran(Request $request)
+    public function kirim_teguran(Request $request, Pertandingan $pertandingan)
     {
+        $this->updateOrCreatePoint($pertandingan, 'teguran', $request->filter, $request->count);
+
         event(new KirimTeguran($request->count, $request->filter));
         return response()->json(['status' => 'berhasil']);
     }
 
-    public function kirim_jatuh(Request $request)
+    public function kirim_jatuh(Request $request, Pertandingan $pertandingan)
     {
+        $this->updateOrCreatePoint($pertandingan, 'fall_point', $request->filter, $request->count);
+
         event(new KirimJatuh($request->count, $request->filter));
         return response()->json(['status' => 'berhasil']);
     }
 
-    public function kirim_pukul(Request $request)
+    // --- FUNGSI JURI ---
+
+    public function kirim_pukul(Request $request, Pertandingan $pertandingan)
     {
-        event(new kirimPukul($request->count, $request->filter));
+        // Panggil helper dengan kolom 'punch_point', nilai tetap '1', dan filter
+        $this->updateOrCreatePoint($pertandingan, 'punch_point', $request->filter, 1);
+        
+        // Asumsi event butuh juri_ket, kirim dari request
+        event(new kirimPukul($request->filter, $request->juri_ket, $pertandingan->id));
         return response()->json(['status' => 'berhasil']);
     }
 
+    public function kirim_tendang(Request $request, Pertandingan $pertandingan)
+    {
+        // Panggil helper dengan kolom 'kick_point', nilai tetap '2', dan filter
+        $this->updateOrCreatePoint($pertandingan, 'kick_point', $request->filter, 2);
+
+        event(new kirimTendang($request->filter, $request->juri_ket, $pertandingan->id));
+        return response()->json(['status' => 'berhasil']);
+    }
+    
+    // --- FUNGSI HAPUS (Dibiarkan kosong sesuai permintaan) ---
+    
     public function hapus_pelanggaran(Request $request)
     {
         event(new hapusPelanggaran($request->count, $request->filter));
         return response()->json(['status' => 'berhasil']);
     }
 
-    
+    public function kirim_hapus_point(Request $request, $id)
+    {
+        event(new hapusPoint($request->filter, $request->type, $request->juri_ket, $id));
+        return response()->json(['status' => 'berhasil']);
+    }
+
+
+    /**
+     * [FUNGSI HELPER PRIBADI]
+     * Fungsi cerdas untuk mencari/membuat record point dan menambahkan nilai.
+     *
+     * @param Pertandingan $pertandingan Objek pertandingan saat ini.
+     * @param string $baseColumn Nama kolom dasar (misal: 'punch_point', 'teguran').
+     * @param string $filter 'blue' atau 'red'.
+     * @param int $value Nilai yang akan ditambahkan.
+     */
+    private function updateOrCreatePoint(Pertandingan $pertandingan, string $baseColumn, string $filter, int $value)
+    {
+        // 1. Tentukan side (1 untuk biru, 2 untuk merah) berdasarkan filter
+        $side = ($filter === 'blue') ? 1 : 2;
+
+        // 2. Bangun nama kolom yang lengkap, contoh: 'punch_point_1' atau 'teguran_2'
+        $fullColumnName = $baseColumn . '_' . $side;
+        
+        // 3. Ambil nomor babak saat ini langsung dari tabel pertandingan
+        $currentRound = $pertandingan->current_round;
+
+        if ($fullColumnName == 'peringatan_1' || $fullColumnName == 'peringatan_2') {
+            DetailPointTanding::updateOrCreate(
+            // Kriteria pencarian
+            ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound],
+            // Nilai untuk di-update atau dibuat
+            [$fullColumnName => DB::raw("$value")]
+        );
+        }
+        else {
+
+            // 4. Logika utama: Cari atau buat record, lalu increment kolom yang sesuai dengan nilai yang diberikan.
+            DetailPointTanding::updateOrCreate(
+                // Kriteria pencarian
+                ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound],
+                // Nilai untuk di-update atau dibuat
+                [$fullColumnName => DB::raw("$fullColumnName + $value")]
+            );
+            
+        }
+    }
 }

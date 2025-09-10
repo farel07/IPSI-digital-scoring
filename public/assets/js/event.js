@@ -33,7 +33,7 @@ function kirimBinaan(filter) {
     document.getElementById("btn_binaan_" + filter).value = 3;
   }
 
-  fetch("/kirim-binaan", {
+  fetch("/kirim-binaan/" + id_user, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
@@ -81,7 +81,7 @@ function kirimPeringatan(filter) {
     document.getElementById("btn_peringatan_" + filter).value = 4;
   }
 
-  fetch("/kirim-peringatan", {
+  fetch("/kirim-peringatan/" + id_user, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),

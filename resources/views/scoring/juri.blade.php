@@ -1,5 +1,11 @@
 @extends('main.main')
 @section('content')
+
+<div id="match-data" 
+     data-pertandingan-id="{{ $pertandingan->id }}" 
+     data-current-round="{{ $pertandingan->current_round }}">
+</div>
+
     <div class="container mt-2 mb-2 rounded pb-4" style="background-color: rgb(216, 216, 216)">
         <div class="container">
             {{-- title --}}
