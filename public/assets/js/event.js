@@ -127,7 +127,7 @@ function kirimTeguran(filter) {
     document.getElementById("btn_teguran_" + filter).value = 3;
   }
 
-  fetch("/kirim-teguran", {
+  fetch("/kirim-teguran/" + id_user, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
@@ -177,7 +177,7 @@ function kirimJatuh(filter) {
     document.getElementById("point-jatuh-" + filter + "-" + round).innerHTML = total_jatuh;
   }
 
-  fetch("/kirim-jatuh", {
+  fetch("/kirim-jatuh/" + id_user, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
@@ -249,7 +249,7 @@ function kirimHapus(type, filter) {
     }
   }
 
-  fetch("/kirim-hapus-pelanggaran", {
+  fetch("/kirim-hapus-pelanggaran/" + id_user, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),

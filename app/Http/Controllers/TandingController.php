@@ -62,16 +62,37 @@ class TandingController extends Controller
         return response()->json(['status' => 'berhasil']);
     }
 
-    public function kirim_teguran(Request $request, Pertandingan $pertandingan)
+    public function kirim_teguran(Request $request, User $user)
     {
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
+
+        if (!$arenaId) {
+            abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
+            ->where('arena_id', $arenaId)
+            ->where('status', 'siap_dimulai')
+            ->first();
+
         $this->updateOrCreatePoint($pertandingan, 'teguran', $request->filter, $request->count);
 
         event(new KirimTeguran($request->count, $request->filter));
         return response()->json(['status' => 'berhasil']);
     }
 
-    public function kirim_jatuh(Request $request, Pertandingan $pertandingan)
+    public function kirim_jatuh(Request $request, User $user)
     {
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
+
+        if (!$arenaId) {
+            abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
+            ->where('arena_id', $arenaId)
+            ->where('status', 'siap_dimulai')
+            ->first();
         $this->updateOrCreatePoint($pertandingan, 'fall_point', $request->filter, $request->count);
 
         event(new KirimJatuh($request->count, $request->filter));
@@ -80,8 +101,18 @@ class TandingController extends Controller
 
     // --- FUNGSI JURI ---
 
-    public function kirim_pukul(Request $request, Pertandingan $pertandingan)
+    public function kirim_pukul(Request $request, User $user)
     {
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
+
+        if (!$arenaId) {
+            abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
+            ->where('arena_id', $arenaId)
+            ->where('status', 'siap_dimulai')
+            ->first();
         // Panggil helper dengan kolom 'punch_point', nilai tetap '1', dan filter
         $this->updateOrCreatePoint($pertandingan, 'punch_point', $request->filter, 1);
         
@@ -90,8 +121,18 @@ class TandingController extends Controller
         return response()->json(['status' => 'berhasil']);
     }
 
-    public function kirim_tendang(Request $request, Pertandingan $pertandingan)
+    public function kirim_tendang(Request $request, User $user)
     {
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
+
+        if (!$arenaId) {
+            abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
+            ->where('arena_id', $arenaId)
+            ->where('status', 'siap_dimulai')
+            ->first();
         // Panggil helper dengan kolom 'kick_point', nilai tetap '2', dan filter
         $this->updateOrCreatePoint($pertandingan, 'kick_point', $request->filter, 2);
 

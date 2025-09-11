@@ -55,20 +55,9 @@ Route::post('/kirim-jatuh/{user}', [TandingController::class, 'kirim_jatuh']);
 Route::post('/kirim-hapus-pelanggaran/{user}', [TandingController::class, 'hapus_pelanggaran']);
 
 
-Route::post('/kirim-pukul/{id}', function (Request $request, $id) {
-    event(new kirimPukul($request->filter, $request->juri_ket, $id));
-    return response()->json(['status' => 'berhasil']);
-});
-
-
-Route::post('kirim-tendang/{id}', function (Request $request, $id) {
-    event(new kirimTendang($request->filter, $request->juri_ket, $id));
-    return response()->json(['status' => 'berhasil']);
-});
-Route::post('kirim-hapus-point/{id}', function (Request $request, $id) {
-    event(new hapusPoint($request->filter, $request->type, $request->juri_ket, $id));
-    return response()->json(['status' => 'berhasil']);
-});
+Route::post('/kirim-pukul/{user}', [TandingController::class, 'kirim_pukul']);
+Route::post('kirim-tendang/{user}', [TandingController::class, 'kirim_tendang']);
+Route::post('kirim-hapus-point/{user}', [TandingController::class, 'hapus_point']);
 
 // route scoring
 Route::prefix('scoring')->group(function () {
