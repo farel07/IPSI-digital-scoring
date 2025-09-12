@@ -9,7 +9,10 @@
  */
 
 
-const id_user = window.location.pathname.split("/").pop();
+const user_id = window.location.pathname.split("/").pop();
+
+
+
 
 
 function initializeListener(appKey, appCluster) {
@@ -283,7 +286,7 @@ function initializeListener(appKey, appCluster) {
         // ------------------------------------------------------
 
         // Kirim ke server
-  fetch(`/kirim_pukul_insert/` + id_user, {
+  fetch(`/kirim-pukul-insert/` + user_id, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
@@ -299,10 +302,10 @@ function initializeListener(appKey, appCluster) {
       return res.json();
     })
     .then((data) => {
-      console.log(`Data terkirim ke ${endpoint}:`, data);
+      console.log(`Data terkirim:`, data);
     })
     .catch((error) => {
-      console.error(`Terjadi masalah dengan operasi fetch ke ${endpoint}:`, error);
+      console.error(`Terjadi masalah dengan operasi fetch ke:`, error);
     });
 
       }
@@ -412,7 +415,7 @@ function initializeListener(appKey, appCluster) {
 
         
         // Kirim ke server
-  fetch(`/kirim_pukul_insert/` + id_user, {
+  fetch(`/kirim-tendang-insert/` + user_id, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
@@ -428,10 +431,10 @@ function initializeListener(appKey, appCluster) {
       return res.json();
     })
     .then((data) => {
-      console.log(`Data terkirim ke ${endpoint}:`, data);
+      console.log(`Data terkirim:`, data);
     })
     .catch((error) => {
-      console.error(`Terjadi masalah dengan operasi fetch ke ${endpoint}:`, error);
+      console.error(`Terjadi masalah dengan:`, error);
     });
 
       }

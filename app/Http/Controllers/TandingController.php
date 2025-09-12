@@ -30,6 +30,10 @@ class TandingController extends Controller
             abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
         }
 
+        if($request->count < 1 || $request->count > 2){
+            return response()->json(['status' => 'gagal', 'message' => 'Count harus antara 1 dan 3']);
+        }
+
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
             ->where('status', 'siap_dimulai')
@@ -40,7 +44,7 @@ class TandingController extends Controller
         $this->updateOrCreatePoint($pertandingan, 'binaan_point', $request->filter, $request->count);
         
         event(new KirimBinaan($request->count, $request->filter));
-        return response()->json(['status' => 'berhasil']);
+        return response()->json(['status' => 'berhasil', 'data' => $request->all()]);
     }
 
     public function kirim_peringatan(Request $request, User $user)
@@ -49,6 +53,10 @@ class TandingController extends Controller
 
         if (!$arenaId) {
             abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        if($request->count < 1 || $request->count > 3){
+            return response()->json(['status' => 'gagal', 'message' => 'Count harus antara 1 dan 3']);
         }
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
@@ -66,8 +74,13 @@ class TandingController extends Controller
     {
         $arenaId = $user->user_arena->first()->arena_id ?? null;
 
+
         if (!$arenaId) {
             abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        if($request->count < 1 || $request->count > 2){
+            return response()->json(['status' => 'gagal', 'message' => 'Count harus antara 1 dan 2']);
         }
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
@@ -180,18 +193,77 @@ class TandingController extends Controller
     
     // --- FUNGSI HAPUS (Dibiarkan kosong sesuai permintaan) ---
     
-    public function hapus_pelanggaran(Request $request)
+    public function hapus_pelanggaran(Request $request, User $user)
     {
+
+         $arenaId = $user->user_arena->first()->arena_id ?? null;
+
+        if (!$arenaId) {
+            abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
+            ->where('arena_id', $arenaId)
+            ->where('status', 'siap_dimulai')
+            ->first();
+
+
+        if($request->type == 'binaan-1' || $request->type == 'binaan-2'){
+            $type = 'binaan_point';
+            $point = -1;
+        } else if($request->type == 'peringatan-1' || $request->type == 'peringatan-2' || $request->type == 'peringatan-3'){
+            $type = 'peringatan';
+            $point = -1;
+        } else if($request->type == 'teguran-1' || $request->type == 'teguran-2'){
+            $type = 'teguran';
+            $point = -1;
+        } else if($request->type == 'jatuhan'){
+            $type = 'fall_point';
+            $point = -1;
+        } else {
+            return response()->json(['status' => 'gagal', 'message' => 'Tipe tidak valid']);
+        }
+
+        $this->updateOrCreatePoint($pertandingan, $type, $request->filter, $point);
+
+
         event(new hapusPelanggaran($request->count, $request->filter));
-        return response()->json(['status' => 'berhasil']);
+        return response()->json(['status' => 'berhasil', 'data' => $type]);
     }
 
-    public function kirim_hapus_point(Request $request, $id)
+    public function hapus_point(Request $request, User $user)
     {
-        event(new hapusPoint($request->filter, $request->type, $request->juri_ket, $id));
-        return response()->json(['status' => 'berhasil']);
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
+
+        if (!$arenaId) {
+            abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
+            ->where('arena_id', $arenaId)
+            ->where('status', 'siap_dimulai')
+            ->first();
+
+        event(new hapusPoint($request->filter, $request->type, $request->juri_ket, $pertandingan->id));
+        return response()->json(['status' => 'berhasil', 'data' => $request->all()]);
     }
 
+
+    public function get_point(Request $request, user $user)
+    {
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
+
+        if (!$arenaId) {
+            abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        $pertandingan = Pertandingan::where('arena_id', $arenaId)
+            ->where('status', 'siap_dimulai')
+            ->first();
+
+        $points = DetailPointTanding::where('pertandingan_id', $pertandingan->id)->get();
+        return response()->json(['status' => 'berhasil', 'data' => $points]);
+    }
 
     /**
      * [FUNGSI HELPER PRIBADI]
@@ -213,13 +285,26 @@ class TandingController extends Controller
         // 3. Ambil nomor babak saat ini langsung dari tabel pertandingan
         $currentRound = $pertandingan->current_round;
 
-        if ($fullColumnName == 'peringatan_1' || $fullColumnName == 'peringatan_2') {
+        if ($fullColumnName == 'peringatan_1' || $fullColumnName == 'peringatan_2' || $fullColumnName == 'peringatan_3' || $fullColumnName == 'teguran_1' || $fullColumnName == 'teguran_2' || $fullColumnName == 'binaan_point_1' || $fullColumnName == 'binaan_point_2' || $fullColumnName == 'fall_point_1' || $fullColumnName == 'fall_point_2') {
+
+            if($value < 0){
+
+                DetailPointTanding::updateOrCreate(
+                // Kriteria pencarian
+                ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound],
+                // Nilai untuk di-update atau dibuat
+                [$fullColumnName => DB::raw("GREATEST(0, $fullColumnName + $value)")]
+            );
+            } else {
             DetailPointTanding::updateOrCreate(
             // Kriteria pencarian
             ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound],
             // Nilai untuk di-update atau dibuat
             [$fullColumnName => DB::raw("$value")]
         );
+            }
+
+           
         }
         else {
 

@@ -46,7 +46,8 @@ function kirimBinaan(filter) {
   })
     .then((res) => res.json())
     .then((data) => {
-      alert(binaanValue + filter);
+      // alert(binaanValue + filter);
+      console.log(data);
     });
 }
 
@@ -94,7 +95,8 @@ function kirimPeringatan(filter) {
   })
     .then((res) => res.json())
     .then((data) => {
-      alert(peringatanValue + filter);
+      // alert(peringatanValue + filter);
+      console.log(data);
     });
 }
 
@@ -140,7 +142,7 @@ function kirimTeguran(filter) {
   })
     .then((res) => res.json())
     .then((data) => {
-      alert(teguranValue + filter);
+      console.log(data);
     });
 }
 
@@ -190,7 +192,8 @@ function kirimJatuh(filter) {
   })
     .then((res) => res.json())
     .then((data) => {
-      alert(jatuhValue + filter);
+      // alert(jatuhValue + filter);
+      console.log(data);
     });
 }
 
@@ -262,7 +265,8 @@ function kirimHapus(type, filter) {
   })
     .then((res) => res.json())
     .then((data) => {
-      alert(type + filter);
+      // alert(type + filter);
+      console.log(data)
     });
 }
 

@@ -17,6 +17,9 @@ class penilaianController extends Controller
      */
     public function index(User $user)
     {
+        if ($user->role->id !== 6) {
+            abort(403, 'Akses ditolak. User ini bukan operator.');
+        }
         // 1. Dapatkan arena ID milik Penilai/Juri ini.
         $arenaId = $user->user_arena->first()->arena_id ?? null;
 

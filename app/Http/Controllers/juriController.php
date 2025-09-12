@@ -10,9 +10,12 @@ use App\Models\Pertandingan;
 
 class juriController extends Controller
 {
+
     public function index(User $user)
     {
-
+        if ($user->role->id !== 4) {
+            abort(403, 'Akses ditolak. User ini bukan juri.');
+        }
         // 1. Dapatkan arena ID milik juri.
         $arenaId = $user->user_arena->first()->arena_id ?? null;
 

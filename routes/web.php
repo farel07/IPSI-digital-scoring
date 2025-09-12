@@ -57,8 +57,11 @@ Route::post('/kirim-hapus-pelanggaran/{user}', [TandingController::class, 'hapus
 
 Route::post('/kirim-pukul/{user}', [TandingController::class, 'kirim_pukul']);
 Route::post('/kirim-pukul-insert/{user}', [TandingController::class, 'kirim_pukul_insert']);
+Route::post('/kirim-tendang-insert/{user}', [TandingController::class, 'kirim_tendang_insert']);
 Route::post('kirim-tendang/{user}', [TandingController::class, 'kirim_tendang']);
 Route::post('kirim-hapus-point/{user}', [TandingController::class, 'hapus_point']);
+
+Route::post('get_point/{user}', [TandingController::class, 'get_point']);
 
 // route scoring
 Route::prefix('scoring')->group(function () {
@@ -67,7 +70,7 @@ Route::prefix('scoring')->group(function () {
     // Route::get('/juri/{id}', [juriController::class, 'index']);
     Route::get('/juri/{user}', [juriController::class, 'index'])->name('scoring.juri');
 
-    Route::get('/operator/{id}', [operatorController::class, 'index']);
+    Route::get('/operator/{user}', [operatorController::class, 'index']);
 
     Route::get('/penilaian/{user}', [penilaianController::class, 'index']);
 
