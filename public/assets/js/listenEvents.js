@@ -409,6 +409,31 @@ function initializeListener(appKey, appCluster) {
         setTimeout(() => {
           resetVoteStateTendangan(color);
         }, 1500);
+
+        
+        // Kirim ke server
+  fetch(`/kirim_pukul_insert/` + id_user, {
+    method: "POST",
+    headers: {
+      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      filter: color,
+      juri_ket: juriId
+    })
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error('Respons jaringan bermasalah');
+      return res.json();
+    })
+    .then((data) => {
+      console.log(`Data terkirim ke ${endpoint}:`, data);
+    })
+    .catch((error) => {
+      console.error(`Terjadi masalah dengan operasi fetch ke ${endpoint}:`, error);
+    });
+
       }
     }
   });
