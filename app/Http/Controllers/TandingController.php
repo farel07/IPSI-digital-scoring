@@ -38,7 +38,7 @@ class TandingController extends Controller
 
         // Panggil helper dengan kolom 'binaan_point', nilai dari 'count', dan filter
         $this->updateOrCreatePoint($pertandingan, 'binaan_point', $request->filter, $request->count);
-        
+
         event(new KirimBinaan($request->count, $request->filter));
         return response()->json(['status' => 'berhasil']);
     }
@@ -115,16 +115,16 @@ class TandingController extends Controller
             ->first();
         // Panggil helper dengan kolom 'punch_point', nilai tetap '1', dan filter
         // $this->updateOrCreatePoint($pertandingan, 'punch_point', $request->filter, 1);
-        
+
         // Asumsi event butuh juri_ket, kirim dari request
         event(new kirimPukul($request->filter, $request->juri_ket, $pertandingan->id));
         return response()->json(['status' => 'berhasil']);
     }
 
-    
+
     public function kirim_pukul_insert(Request $request, User $user)
     {
-       $arenaId = $user->user_arena->first()->arena_id ?? null;
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
 
         if (!$arenaId) {
             abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
@@ -158,9 +158,9 @@ class TandingController extends Controller
         event(new kirimTendang($request->filter, $request->juri_ket, $pertandingan->id));
         return response()->json(['status' => 'berhasil']);
     }
-    
+
     // --- FUNGSI HAPUS (Dibiarkan kosong sesuai permintaan) ---
-    
+
     public function hapus_pelanggaran(Request $request)
     {
         event(new hapusPelanggaran($request->count, $request->filter));
@@ -190,19 +190,18 @@ class TandingController extends Controller
 
         // 2. Bangun nama kolom yang lengkap, contoh: 'punch_point_1' atau 'teguran_2'
         $fullColumnName = $baseColumn . '_' . $side;
-        
+
         // 3. Ambil nomor babak saat ini langsung dari tabel pertandingan
         $currentRound = $pertandingan->current_round;
 
         if ($fullColumnName == 'peringatan_1' || $fullColumnName == 'peringatan_2') {
             DetailPointTanding::updateOrCreate(
-            // Kriteria pencarian
-            ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound],
-            // Nilai untuk di-update atau dibuat
-            [$fullColumnName => DB::raw("$value")]
-        );
-        }
-        else {
+                // Kriteria pencarian
+                ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound],
+                // Nilai untuk di-update atau dibuat
+                [$fullColumnName => DB::raw("$value")]
+            );
+        } else {
 
             // 4. Logika utama: Cari atau buat record, lalu increment kolom yang sesuai dengan nilai yang diberikan.
             DetailPointTanding::updateOrCreate(
@@ -211,7 +210,6 @@ class TandingController extends Controller
                 // Nilai untuk di-update atau dibuat
                 [$fullColumnName => DB::raw("$fullColumnName + $value")]
             );
-            
         }
     }
 }
