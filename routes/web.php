@@ -56,6 +56,7 @@ Route::post('/kirim-hapus-pelanggaran/{user}', [TandingController::class, 'hapus
 
 
 Route::post('/kirim-pukul/{user}', [TandingController::class, 'kirim_pukul']);
+Route::post('/kirim-pukul-insert/{user}', [TandingController::class, 'kirim_pukul_insert']);
 Route::post('kirim-tendang/{user}', [TandingController::class, 'kirim_tendang']);
 Route::post('kirim-hapus-point/{user}', [TandingController::class, 'hapus_point']);
 
