@@ -4,14 +4,7 @@
  * Fungsi untuk memulai listener event binaan dari Pusher.
  * @param {string} appKey - Kunci aplikasi dari Pusher.
  * @param {string} appCluster - Cluster dari Pusher.
- * 
- * 
  */
-
-
-const id_user = window.location.pathname.split("/").pop();
-
-
 function initializeListener(appKey, appCluster) {
   if (!appKey || !appCluster) {
     console.error("Pusher Key atau Cluster tidak diberikan.");
@@ -265,8 +258,6 @@ function initializeListener(appKey, appCluster) {
         clearTimeout(currentState.timeoutId);
         currentState.timeoutId = null; // Kosongkan ID timer
 
-
-
         // Tambah skor
         if (color === "blue") {
           document.getElementById("blue-notif-pukulan-table").innerHTML = initBluePukulan += 1;
@@ -281,30 +272,6 @@ function initializeListener(appKey, appCluster) {
           resetVoteStatePukulan(color);
         }, 1500); // Jeda 1.5 detik
         // ------------------------------------------------------
-
-        // Kirim ke server
-  fetch(`/kirim_pukul_insert/` + id_user, {
-    method: "POST",
-    headers: {
-      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      filter: color,
-      juri_ket: juriId
-    })
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error('Respons jaringan bermasalah');
-      return res.json();
-    })
-    .then((data) => {
-      console.log(`Data terkirim ke ${endpoint}:`, data);
-    })
-    .catch((error) => {
-      console.error(`Terjadi masalah dengan operasi fetch ke ${endpoint}:`, error);
-    });
-
       }
     }
   });
@@ -409,31 +376,6 @@ function initializeListener(appKey, appCluster) {
         setTimeout(() => {
           resetVoteStateTendangan(color);
         }, 1500);
-
-        
-        // Kirim ke server
-  fetch(`/kirim_pukul_insert/` + id_user, {
-    method: "POST",
-    headers: {
-      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      filter: color,
-      juri_ket: juriId
-    })
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error('Respons jaringan bermasalah');
-      return res.json();
-    })
-    .then((data) => {
-      console.log(`Data terkirim ke ${endpoint}:`, data);
-    })
-    .catch((error) => {
-      console.error(`Terjadi masalah dengan operasi fetch ke ${endpoint}:`, error);
-    });
-
       }
     }
   });
