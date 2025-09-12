@@ -60,8 +60,19 @@
                             <div class="col-5">
                                 <div class="d-flex flex-column">
                                     <div class="d-flex justify-content-around mt-3">
-                                        <img src="{{ asset('assets/img/icon/icon-onefinger.png') }}" alt="Binaan 1" style="width:60px; height:60px; rotate:90deg;" id="blue-notif-binaan-1">
-                                        <img src="{{ asset('assets/img/icon/icon-twofinger.png') }}" alt="Binaan 2" style="width:60px;height: 60px;rotate:90deg" id="blue-notif-binaan-2">
+                                        @if ($pertandingan->detailPointTanding?->binaan_point_1 > 0 && $pertandingan->detailPointTanding?->binaan_point_1 < 2)
+                                           <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Binaan 1" style="width:60px;height:60px;rotate:270deg; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="blue-notif-binaan-1">
+                                        @elseif ($pertandingan->detailPointTanding?->binaan_point_1 == 0)
+                                            <img src="{{ asset('assets/img/icon/icon-onefinger.png') }}" alt="Binaan 1" style="width:60px; height:60px; rotate:270deg;" id="blue-notif-binaan-1">
+                                        @else
+                                            <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Binaan 1" style="width:60px;height:60px;rotate:270deg; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="blue-notif-binaan-1">
+                                        @endif
+
+                                        @if ($pertandingan->detailPointTanding?->binaan_point_1 > 1 && $pertandingan->detailPointTanding?->binaan_point_1 < 3)
+                                            <img src="{{ asset('assets/img/icon/icon-twofinger.png') }}" alt="Binaan 2" style="width:60px;height:60px;rotate:270deg; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="blue-notif-binaan-2">
+                                        @else
+                                            <img src="{{ asset('assets/img/icon/icon-twofinger.png') }}" alt="Binaan 2" style="width:60px;height:60px;rotate:270deg;" id="blue-notif-binaan-2">
+                                        @endif
                                     </div>
                                     <div class="d-flex justify-content-around mt-3">
                                         <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Teguran 1" style="width:60px ; height: 60px;" id="blue-notif-teguran-1">
@@ -105,8 +116,19 @@
                             <div class="col-5">
                                 <div class="d-flex flex-column">
                                     <div class="d-flex justify-content-around mt-3">
-                                        <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Binaan 1" style="width:60px;height:60px;rotate:270deg" id="red-notif-binaan-1">
-                                        <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="Binaan 2" style="width:60px;height: 60px;rotate:270deg" id="red-notif-binaan-2">
+                                        @if ($pertandingan->detailPointTanding?->binaan_point_2 > 0 && $pertandingan->detailPointTanding?->binaan_point_2 < 2)
+                                           <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Binaan 1" style="width:60px;height:60px;rotate:270deg; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="red-notif-binaan-1">
+                                        @elseif ($pertandingan->detailPointTanding?->binaan_point_2 == 0)
+                                            <img src="{{ asset('assets/img/icon/icon-onefinger.png') }}" alt="Binaan 1" style="width:60px; height:60px; rotate:270deg;" id="red-notif-binaan-1">
+                                        @else
+                                            <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Binaan 1" style="width:60px;height:60px;rotate:270deg; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="red-notif-binaan-1">
+                                        @endif
+
+                                        @if ($pertandingan->detailPointTanding?->binaan_point_2 > 1 && $pertandingan->detailPointTanding?->binaan_point_2 < 3)
+                                            <img src="{{ asset('assets/img/icon/icon-twofinger.png') }}" alt="Binaan 2" style="width:60px;height:60px;rotate:270deg; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="red-notif-binaan-2">
+                                        @else
+                                            <img src="{{ asset('assets/img/icon/icon-twofinger.png') }}" alt="Binaan 2" style="width:60px;height:60px;rotate:270deg;" id="red-notif-binaan-2">
+                                        @endif
                                     </div>
                                     <div class="d-flex justify-content-around mt-3">
                                         <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Teguran 1" style="width:60px ; height: 60px;" id="red-notif-teguran-1">
@@ -174,28 +196,112 @@
                         </div>
                         <div class="d-flex flex-column mx-1">
                             <div class="border border-info bg-info rounded-top py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light">Peringatan 3</p></div>
-                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-peringatan-3">0</p></div>
-                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-peringatan-3">0</p></div>
+                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-peringatan-3">
+                                @if ($pertandingan->detailPointTanding?->peringatan_1 > 2 && $pertandingan->detailPointTanding?->peringatan_1 < 4)
+                                    1
+                                @elseif($pertandingan->detailPointTanding?->peringatan_1 == 0)
+                                    0
+                                @else
+                                    0
+                                @endif     
+                            </p></div>
+                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-peringatan-3">
+                                @if ($pertandingan->detailPointTanding?->peringatan_2 > 2 && $pertandingan->detailPointTanding?->peringatan_2 < 4)
+                                    1
+                                @elseif($pertandingan->detailPointTanding?->peringatan_2 == 0)
+                                    0
+                                @else
+                                    0
+                                @endif        
+                            </p></div>
                         </div>
                         <div class="d-flex flex-column mx-1">
                             <div class="border border-info bg-info rounded-top py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light">Peringatan 2</p></div>
-                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-peringatan-2-table">0</p></div>
-                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-peringatan-2-table">0</p></div>
+                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-peringatan-2-table">
+                                @if ($pertandingan->detailPointTanding?->peringatan_1 > 1 && $pertandingan->detailPointTanding?->peringatan_1 < 3)
+                                    1
+                                @elseif ($pertandingan->detailPointTanding?->peringatan_1 > 2)
+                                    1
+                                @elseif($pertandingan->detailPointTanding?->peringatan_1 == 0)
+                                    0
+                                @else
+                                    0
+                                @endif    
+                            </p></div>
+                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-peringatan-2-table">
+                                @if ($pertandingan->detailPointTanding?->peringatan_2 > 1 && $pertandingan->detailPointTanding?->peringatan_2 < 3)
+                                    1
+                                @elseif ($pertandingan->detailPointTanding?->peringatan_2 > 2)
+                                    1
+                                @elseif($pertandingan->detailPointTanding?->peringatan_2 == 0)
+                                    0
+                                @else
+                                    0
+                                @endif    
+                            </p></div>
                         </div>
                         <div class="d-flex flex-column mx-1">
                             <div class="border border-info bg-info rounded-top py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light">Peringatan 1</p></div>
-                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-peringatan-1-table">{{ $pertandingan->detailPointTanding?->peringatan_1 ?? 0 }}</p></div>
-                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-peringatan-1-table">{{ $pertandingan->detailPointTanding?->peringatan_2 ?? 0 }}</p></div>
+                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-peringatan-1-table">
+                                @if ($pertandingan->detailPointTanding?->peringatan_1 > 0 && $pertandingan->detailPointTanding?->peringatan_1 < 2)
+                                    1
+                                @elseif ($pertandingan->detailPointTanding?->peringatan_1 > 2 && $pertandingan->detailPointTanding?->peringatan_1 > 1)
+                                    1
+                                @elseif($pertandingan->detailPointTanding?->peringatan_1 == 0)
+                                    0
+                                @else
+                                    0
+                                @endif
+                            </p></div>
+                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-peringatan-1-table">
+                                @if ($pertandingan->detailPointTanding?->peringatan_2 > 0 && $pertandingan->detailPointTanding?->peringatan_2 < 2)
+                                    1
+                                @elseif ($pertandingan->detailPointTanding?->peringatan_2 > 2 && $pertandingan->detailPointTanding?->peringatan_2 > 1)
+                                    1
+                                @elseif($pertandingan->detailPointTanding?->peringatan_2 == 0)
+                                    0
+                                @else
+                                    0
+                                @endif    
+                            </p></div>
                         </div>
                         <div class="d-flex flex-column mx-1">
                             <div class="border border-info bg-info rounded-top py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light">Teguran 2</p></div>
-                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-teguran-2-table">0</p></div>
-                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-teguran-2-table">0</p></div>
+                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-teguran-2-table">
+                                @if ($pertandingan->detailPointTanding?->teguran_1 > 1 && $pertandingan->detailPointTanding?->teguran_1 < 3)
+                                    1
+                                @elseif ($pertandingan->detailPointTanding?->teguran_1 == 0)
+                                    0
+                                @else 
+                                    1
+                                @endif    
+                            </p></div>
+                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-teguran-2-table">
+                                @if ($pertandingan->detailPointTanding?->teguran_2 > 1 && $pertandingan->detailPointTanding?->teguran_2 < 3)
+                                    1
+                                @elseif ($pertandingan->detailPointTanding?->teguran_2 == 0)
+                                    0
+                                @else 
+                                    1
+                                @endif    
+                            </p></div>
                         </div>
                         <div class="d-flex flex-column mx-1">
                             <div class="border border-info bg-info rounded-top py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light">Teguran 1</p></div>
-                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-teguran-1-table">{{ $pertandingan->detailPointTanding?->teguran_1 ?? 0 }}</p></div>
-                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-teguran-1-table">{{ $pertandingan->detailPointTanding?->teguran_2 ?? 0 }}</p></div>
+                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-teguran-1-table">
+                                @if ($pertandingan->detailPointTanding?->teguran_1 == 0)
+                                    0
+                                @else
+                                    1
+                                @endif
+                            </p></div>
+                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-teguran-1-table">
+                                @if ($pertandingan->detailPointTanding?->teguran_2 == 0)
+                                    0
+                                @else
+                                    1
+                                @endif
+                            </p></div>
                         </div>
                         <div class="d-flex flex-column mx-1">
                             <div class="border border-info bg-info rounded-top py-2 px-2"><p class="m-0 text-center text-light">Jatuhan</p></div>

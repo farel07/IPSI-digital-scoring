@@ -1,8 +1,6 @@
 const round = 1;
 const id_user = window.location.pathname.split("/").pop();
-const juri_ket = 'juri-' + id_user;
-
-
+const juri_ket = "juri-" + id_user;
 
 function kirimBinaan(filter) {
   // alert("Fitur ini belum tersedia.");
@@ -280,7 +278,7 @@ const deleteButtonTimers = {};
  */
 function kirimSkor(filter, pointValue, endpoint) {
   // Pastikan variabel global 'round', 'id_user', dan 'juri_ket' sudah tersedia
-  if (typeof round === 'undefined' || typeof id_user === 'undefined' || typeof juri_ket === 'undefined') {
+  if (typeof round === "undefined" || typeof id_user === "undefined" || typeof juri_ket === "undefined") {
     console.error("Variabel global 'round', 'id_user', atau 'juri_ket' belum didefinisikan.");
     return;
   }
@@ -293,10 +291,10 @@ function kirimSkor(filter, pointValue, endpoint) {
     if (deleteButtonTimers[filter]) {
       clearTimeout(deleteButtonTimers[filter]);
     }
-    
+
     // Aktifkan tombol hapus
     deleteButton.disabled = false;
-    
+
     // Set timer baru untuk menonaktifkan tombol setelah 4 detik
     deleteButtonTimers[filter] = setTimeout(() => {
       deleteButton.disabled = true;
@@ -313,9 +311,7 @@ function kirimSkor(filter, pointValue, endpoint) {
 
   // Ambil teks yang sudah ada
   let currentText = displayElement.innerHTML.trim();
-  let newText = (currentText === "" || currentText === "0")
-    ? pointValue.toString()
-    : `${currentText} + ${pointValue}`;
+  let newText = currentText === "" || currentText === "0" ? pointValue.toString() : `${currentText} + ${pointValue}`;
 
   // Update tampilan skor
   displayElement.innerHTML = newText;
@@ -325,15 +321,15 @@ function kirimSkor(filter, pointValue, endpoint) {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       filter: filter,
-      juri_ket: juri_ket
-    })
+      juri_ket: juri_ket,
+    }),
   })
     .then((res) => {
-      if (!res.ok) throw new Error('Respons jaringan bermasalah');
+      if (!res.ok) throw new Error("Respons jaringan bermasalah");
       return res.json();
     })
     .then((data) => {
@@ -358,26 +354,23 @@ function kirimTendang(filter) {
   kirimSkor(filter, 2, "/kirim-tendang/");
 }
 
-
-
-
 // hapus pointTerbar
 /**
  * @param {string} filter - Warna tim, "blue" atau "red".
  */
 function kirimHapusPoint(filter) {
   // Pastikan variabel global 'round' dan 'juri_ket' sudah tersedia
-  if (typeof round === 'undefined' || typeof juri_ket === 'undefined') {
+  if (typeof round === "undefined" || typeof juri_ket === "undefined") {
     console.error("Variabel global 'round' atau 'juri_ket' belum didefinisikan.");
     return;
   }
 
   const displayElement = document.getElementById(`total-point-${filter}-${round}`);
-  
+
   // --- LOGIKA BARU UNTUK MENONAKTIFKAN TOMBOL ---
   const deleteButton = document.getElementById(`btn_hapus_point_${filter}`);
   if (deleteButton) {
-      deleteButton.disabled = true;
+    deleteButton.disabled = true;
   }
   // --- AKHIR LOGIKA BARU ---
 
@@ -394,16 +387,16 @@ function kirimHapusPoint(filter) {
     return;
   }
 
-  const pointsArray = currentText.split(' + ');
-  
+  const pointsArray = currentText.split(" + ");
+
   // Ambil nilai poin terakhir untuk menentukan tipenya
   const lastPointValue = parseInt(pointsArray[pointsArray.length - 1], 10);
-  let type = '';
+  let type = "";
 
   if (lastPointValue === 1) {
-    type = 'pukulan';
+    type = "pukulan";
   } else if (lastPointValue === 2) {
-    type = 'tendangan';
+    type = "tendangan";
   } else {
     console.error(`Nilai poin terakhir tidak valid untuk dihapus: ${lastPointValue}`);
     return;
@@ -411,34 +404,34 @@ function kirimHapusPoint(filter) {
 
   pointsArray.pop();
 
-  let newText = pointsArray.join(' + ');
+  let newText = pointsArray.join(" + ");
   if (newText === "") {
     newText = "0";
   }
 
   displayElement.innerHTML = newText;
 
-  fetch('/kirim-hapus-point/' + id_user, {
+  fetch("/kirim-hapus-point/" + id_user, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       filter: filter,
       type: type,
-      juri_ket: juri_ket
-    })
+      juri_ket: juri_ket,
+    }),
   })
     .then((res) => {
-      if (!res.ok) throw new Error('Respons jaringan bermasalah saat menghapus skor');
+      if (!res.ok) throw new Error("Respons jaringan bermasalah saat menghapus skor");
       return res.json();
     })
     .then((data) => {
       console.log(`Notifikasi hapus terkirim. Tipe: ${type}`, data);
     })
     .catch((error) => {
-      console.error('Terjadi masalah dengan operasi fetch untuk hapus skor:', error);
+      console.error("Terjadi masalah dengan operasi fetch untuk hapus skor:", error);
       displayElement.innerHTML = currentText;
     });
 }

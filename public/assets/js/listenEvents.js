@@ -4,15 +4,10 @@
  * Fungsi untuk memulai listener event binaan dari Pusher.
  * @param {string} appKey - Kunci aplikasi dari Pusher.
  * @param {string} appCluster - Cluster dari Pusher.
- * 
- * 
  */
 
 
 const user_id = window.location.pathname.split("/").pop();
-
-
-
 
 
 function initializeListener(appKey, appCluster) {
@@ -268,8 +263,6 @@ function initializeListener(appKey, appCluster) {
         clearTimeout(currentState.timeoutId);
         currentState.timeoutId = null; // Kosongkan ID timer
 
-
-
         // Tambah skor
         if (color === "blue") {
           document.getElementById("blue-notif-pukulan-table").innerHTML = initBluePukulan += 1;
@@ -286,7 +279,7 @@ function initializeListener(appKey, appCluster) {
         // ------------------------------------------------------
 
         // Kirim ke server
-  fetch(`/kirim-pukul-insert/` + user_id, {
+  fetch(`/kirim_pukul_insert/` + id_user, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
@@ -302,10 +295,10 @@ function initializeListener(appKey, appCluster) {
       return res.json();
     })
     .then((data) => {
-      console.log(`Data terkirim:`, data);
+      console.log(`Data terkirim ke ${endpoint}:`, data);
     })
     .catch((error) => {
-      console.error(`Terjadi masalah dengan operasi fetch ke:`, error);
+      console.error(`Terjadi masalah dengan operasi fetch ke ${endpoint}:`, error);
     });
 
       }
@@ -415,7 +408,7 @@ function initializeListener(appKey, appCluster) {
 
         
         // Kirim ke server
-  fetch(`/kirim-tendang-insert/` + user_id, {
+  fetch(`/kirim_pukul_insert/` + id_user, {
     method: "POST",
     headers: {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
@@ -431,12 +424,13 @@ function initializeListener(appKey, appCluster) {
       return res.json();
     })
     .then((data) => {
-      console.log(`Data terkirim:`, data);
+      console.log(`Data terkirim ke ${endpoint}:`, data);
     })
     .catch((error) => {
-      console.error(`Terjadi masalah dengan:`, error);
+      console.error(`Terjadi masalah dengan operasi fetch ke ${endpoint}:`, error);
     });
 
+    
       }
     }
   });
