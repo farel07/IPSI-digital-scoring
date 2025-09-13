@@ -71,6 +71,7 @@ Route::prefix('scoring')->group(function () {
     Route::get('/juri/{user}', [juriController::class, 'index'])->name('scoring.juri');
 
     Route::get('/operator/{user}', [operatorController::class, 'index']);
+    Route::post('/operator/update-status/{pertandingan}', [OperatorController::class, 'updateStatus'])->name('operator.updateStatus');
 
     Route::get('/penilaian/{user}', [penilaianController::class, 'index']);
 

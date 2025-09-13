@@ -16,6 +16,7 @@
         rel="stylesheet">
     <title>Document</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @yield('styles')
 
 </head>
 
@@ -24,6 +25,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
     </script>
+    @stack('scripts')
     <script src="{{ asset('assets') }}/js/timer.js"></script>
     <script src="{{ asset('assets') }}/js/event.js"></script>
 </body>

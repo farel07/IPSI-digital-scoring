@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pertandingan;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 
 class operatorController extends Controller
 {
@@ -38,6 +39,29 @@ class operatorController extends Controller
         // 4. Kirim DAFTAR pertandingan tersebut ke view.
         return view("scoring.operator", [
             'daftar_pertandingan' => $daftar_pertandingan,
+        ]);
+    }
+
+    public function updateStatus(Request $request, Pertandingan $pertandingan)
+    {
+        // return response()->json(['status' => 'sukses', 'message' => 'Fungsi ini belum diimplementasikan.']);
+        // 1. Validasi input: pastikan status yang dikirim adalah salah satu dari nilai yang diizinkan.
+        $validated = $request->validate([
+            'status' => [
+                'required',
+                Rule::in(['menunggu_peserta', 'siap_dimulai', 'berlangsung', 'selesai', 'ditunda']),
+            ],
+        ]);
+
+        // 2. Update status pertandingan di database.
+        $pertandingan->status = $validated['status'];
+        $pertandingan->save();
+
+        // 3. Kirim respons sukses kembali ke JavaScript.
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Status pertandingan berhasil diperbarui!',
+            'new_status' => $validated['status']
         ]);
     }
 }

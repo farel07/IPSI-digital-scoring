@@ -1,4 +1,41 @@
 @extends('main.main')
+
+@section('styles')
+{{-- [CSS BARU] Tambahkan blok style ini untuk warna dropdown --}}
+<style>
+    .status-dropdown {
+        font-weight: 600;
+        border-width: 2px;
+        transition: all 0.2s ease-in-out;
+    }
+    .status-menunggu_peserta {
+        border-color: #6c757d;
+        color: #6c757d;
+        background-color: #f8f9fa;
+    }
+    .status-siap_dimulai {
+        border-color: #0d6efd;
+        color: #0d6efd;
+        background-color: #cfe2ff;
+    }
+    .status-berlangsung {
+        border-color: #ffc107;
+        color: #664d03;
+        background-color: #fff3cd;
+    }
+    .status-selesai {
+        border-color: #198754;
+        color: #198754;
+        background-color: #d1e7dd;
+    }
+    .status-ditunda {
+        border-color: #dc3545;
+        color: #dc3545;
+        background-color: #f8d7da;
+    }
+</style>
+@endsection
+
 @section('content')
     <div class="container mt-2 mb-0 rounded-top pb-4 pt-3"
         style="background-color: rgb(216, 216, 216); border-bottom: 1px solid #c0c0c0">
@@ -36,11 +73,10 @@
                         <th scope="col">Babak</th>
                         <th scope="col" class="table-primary">Sudut Biru</th>
                         <th scope="col" class="table-danger">Sudut Merah</th>
-                        <th scope="col">Status</th>
+                        <th scope="col" style="width: 180px;">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- [FIX KUNCI] Loop setiap pertandingan dari daftar --}}
                     @forelse ($daftar_pertandingan as $pertandingan)
                         <tr>
                             <th scope="row">{{ $pertandingan->id }}</th>
@@ -52,26 +88,16 @@
                                 Babak {{ $pertandingan->round_number }} / Match {{ $pertandingan->match_number }}
                             </td>
                             <td>
-                                {{-- Menampilkan semua pemain dari accessor pemain_unit_1 --}}
                                 @forelse ($pertandingan->pemain_unit_1 as $peserta)
-                                    <div>
-                                        <strong>{{ $peserta->player?->name ?? 'N/A' }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ $peserta->player?->contingent?->name }}</small>
-                                    </div>
+                                    <div><strong>{{ $peserta->player?->name ?? 'N/A' }}</strong><br><small class="text-muted">{{ $peserta->player?->contingent?->name }}</small></div>
                                     @if(!$loop->last)<hr class="my-1">@endif
                                 @empty
                                     <span class="text-muted">-- Belum Ada --</span>
                                 @endforelse
                             </td>
                             <td>
-                                {{-- Menampilkan semua pemain dari accessor pemain_unit_2 --}}
                                 @forelse ($pertandingan->pemain_unit_2 as $peserta)
-                                    <div>
-                                        <strong>{{ $peserta->player?->name ?? 'N/A' }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ $peserta->player?->contingent?->name }}</small>
-                                    </div>
+                                    <div><strong>{{ $peserta->player?->name ?? 'N/A' }}</strong><br><small class="text-muted">{{ $peserta->player?->contingent?->name }}</small></div>
                                     @if(!$loop->last)<hr class="my-1">@endif
                                 @empty
                                     <span class="text-muted">-- Belum Ada --</span>
@@ -79,13 +105,22 @@
                             </td>
                             <td>
                                 @php
-                                    $statusText = ucwords(str_replace('_', ' ', $pertandingan->status));
-                                    $badgeClass = 'bg-secondary';
-                                    if ($pertandingan->status == 'siap_dimulai') $badgeClass = 'bg-primary';
-                                    if ($pertandingan->status == 'selesai') $badgeClass = 'bg-success';
-                                    if ($pertandingan->status == 'berlangsung') $badgeClass = 'bg-warning text-dark';
+                                    $statusOptions = [
+                                        'menunggu_peserta' => 'Menunggu Peserta',
+                                        'siap_dimulai' => 'Siap Dimulai',
+                                        'berlangsung' => 'Berlangsung',
+                                        'selesai' => 'Selesai',
+                                        'ditunda' => 'Ditunda',
+                                    ];
                                 @endphp
-                                <span class="badge fs-6 {{ $badgeClass }}">{{ $statusText }}</span>
+                                {{-- [PERUBAHAN KUNCI] Tambahkan class dinamis untuk warna awal --}}
+                                <select class="form-select status-dropdown status-{{ $pertandingan->status }}" data-id="{{ $pertandingan->id }}">
+                                    @foreach ($statusOptions as $value => $text)
+                                        <option value="{{ $value }}" {{ $pertandingan->status == $value ? 'selected' : '' }}>
+                                            {{ $text }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </td>
                         </tr>
                     @empty
@@ -101,3 +136,68 @@
 
     </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const statusDropdowns = document.querySelectorAll('.status-dropdown');
+
+    // [FUNGSI BARU] untuk mengubah warna dropdown
+    function updateDropdownColor(dropdown) {
+        // Hapus semua class warna yang mungkin ada
+        dropdown.classList.remove('status-menunggu_peserta', 'status-siap_dimulai', 'status-berlangsung', 'status-selesai', 'status-ditunda');
+        // Tambahkan class baru berdasarkan nilai yang dipilih
+        dropdown.classList.add('status-' + dropdown.value);
+    }
+
+    statusDropdowns.forEach(dropdown => {
+        // Simpan status awal untuk fitur "Batal"
+        dropdown.dataset.originalStatus = dropdown.value;
+
+        dropdown.addEventListener('change', function () {
+            const pertandinganId = this.dataset.id;
+            const newStatus = this.value;
+            // [PERBAIKAN URL] Gunakan URL root agar konsisten
+            const url = `update-status/${pertandinganId}`;
+
+            if (!confirm(`Anda yakin ingin mengubah status pertandingan #${pertandinganId} menjadi "${this.options[this.selectedIndex].text}"?`)) {
+                this.value = this.dataset.originalStatus;
+                return;
+            }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    // Tambahkan header ini untuk penanganan error redirect yang lebih baik
+                    'Accept': 'application/json' 
+                },
+                body: JSON.stringify({
+                    status: newStatus
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.message || 'Gagal mengubah status.'); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                // [PERBAIKAN] Panggil fungsi untuk update warna dan status original
+                this.dataset.originalStatus = newStatus;
+                updateDropdownColor(this);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan: ' + error.message);
+                // Kembalikan ke nilai dan warna awal jika gagal
+                this.value = this.dataset.originalStatus;
+                updateDropdownColor(this);
+            });
+        });
+    });
+});
+</script>
+@endpush
