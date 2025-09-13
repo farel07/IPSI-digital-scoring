@@ -75,12 +75,42 @@
                                         @endif
                                     </div>
                                     <div class="d-flex justify-content-around mt-3">
-                                        <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Teguran 1" style="width:60px ; height: 60px;" id="blue-notif-teguran-1">
-                                        <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="Teguran 2" style="width:60px ; height: 60px;" id="blue-notif-teguran-2">
+                                        @if ($pertandingan->detailPointTanding?->teguran_1 == 0)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Teguran 1" style="width:60px ; height: 60px;" id="blue-notif-teguran-1">
+                                        @else
+                                            <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Teguran 1" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="blue-notif-teguran-1">
+                                        @endif
+
+                                        @if ($pertandingan->detailPointTanding?->teguran_1 > 1 && $pertandingan->detailPointTanding?->teguran_1 < 3)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="Teguran 2" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="blue-notif-teguran-2">
+                                        @elseif ($pertandingan->detailPointTanding?->teguran_1 > 0 && $pertandingan->detailPointTanding?->teguran_1 < 2)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="Binaan 1" style="width:60px;height:60px;" id="blue-notif-binaan-1">
+                                        @elseif ($pertandingan->detailPointTanding?->teguran_1 == 0)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="Teguran 2" style="width:60px ; height: 60px;" id="blue-notif-teguran-2">
+                                        @else 
+                                            <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="Teguran 2" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="blue-notif-teguran-2">
+                                        @endif
                                     </div>
                                     <div class="d-flex justify-content-around mt-3">
-                                        <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 1" style="width:60px ; height: 60px;" id="blue-notif-peringatan-1">
-                                        <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 2" style="width:60px ; height: 60px;" id="blue-notif-peringatan-2">
+                                        @if ($pertandingan->detailPointTanding?->peringatan_1 > 0 && $pertandingan->detailPointTanding?->peringatan_1 < 2)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 1" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="blue-notif-peringatan-1">
+                                        @elseif ($pertandingan->detailPointTanding?->peringatan_1 > 2 && $pertandingan->detailPointTanding?->peringatan_1 > 1)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 1" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="blue-notif-peringatan-1">
+                                        @elseif($pertandingan->detailPointTanding?->peringatan_1 == 0)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 1" style="width:60px ; height: 60px;" id="blue-notif-peringatan-1">
+                                        @else
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 1" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="blue-notif-peringatan-1">
+                                        @endif
+
+                                        @if ($pertandingan->detailPointTanding?->peringatan_1 > 1 && $pertandingan->detailPointTanding?->peringatan_1 < 3)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 2" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="blue-notif-peringatan-2">
+                                        @elseif ($pertandingan->detailPointTanding?->peringatan_1 > 2)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 2" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="blue-notif-peringatan-2">
+                                        @elseif($pertandingan->detailPointTanding?->peringatan_1 == 0)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 2" style="width:60px ; height: 60px;" id="blue-notif-peringatan-2">
+                                        @else
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 2" style="width:60px ; height: 60px;" id="blue-notif-peringatan-2">
+                                        @endif 
                                     </div>
                                 </div>
                             </div>
@@ -131,12 +161,42 @@
                                         @endif
                                     </div>
                                     <div class="d-flex justify-content-around mt-3">
-                                        <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Teguran 1" style="width:60px ; height: 60px;" id="red-notif-teguran-1">
-                                        <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="Teguran 2" style="width:60px ; height: 60px;" id="red-notif-teguran-2">
+                                        @if ($pertandingan->detailPointTanding?->teguran_2 == 0)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Teguran 1" style="width:60px ; height: 60px;" id="red-notif-teguran-1">
+                                        @else
+                                            <img src="{{ asset('assets') }}/img/icon/icon-onefinger.png" alt="Teguran 1" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="red-notif-teguran-1">
+                                        @endif
+                                        
+                                        @if ($pertandingan->detailPointTanding?->teguran_2 > 1 && $pertandingan->detailPointTanding?->teguran_2 < 3)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="Teguran 2" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="red-notif-teguran-2">
+                                        @elseif ($pertandingan->detailPointTanding?->teguran_2 > 0 && $pertandingan->detailPointTanding?->teguran_2 < 2)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="Binaan 1" style="width:60px;height:60px;" id="red-notif-binaan-2">
+                                        @elseif ($pertandingan->detailPointTanding?->teguran_2 == 0)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="Teguran 2" style="width:60px ; height: 60px;" id="red-notif-teguran-2">
+                                        @else 
+                                            <img src="{{ asset('assets') }}/img/icon/icon-twofinger.png" alt="Teguran 2" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="red-notif-teguran-2">
+                                        @endif
                                     </div>
                                     <div class="d-flex justify-content-around mt-3">
-                                        <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 1" style="width:60px ; height: 60px;" id="red-notif-peringatan-1">
-                                        <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 2" style="width:60px ; height: 60px;" id="red-notif-peringatan-2">
+                                        @if ($pertandingan->detailPointTanding?->peringatan_2 > 0 && $pertandingan->detailPointTanding?->peringatan_2 < 2)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 1" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="red-notif-peringatan-1">
+                                        @elseif ($pertandingan->detailPointTanding?->peringatan_2 > 2 && $pertandingan->detailPointTanding?->peringatan_2 > 1)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 1" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="red-notif-peringatan-1">
+                                        @elseif($pertandingan->detailPointTanding?->peringatan_2 == 0)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 1" style="width:60px ; height: 60px;" id="red-notif-peringatan-1">
+                                        @else
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 1" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="red-notif-peringatan-1">
+                                        @endif
+
+                                        @if ($pertandingan->detailPointTanding?->peringatan_2 > 1 && $pertandingan->detailPointTanding?->peringatan_2 < 3)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 2" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="red-notif-peringatan-2">
+                                        @elseif ($pertandingan->detailPointTanding?->peringatan_2 > 2)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 2" style="width:60px ; height: 60px; filter: brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)" id="red-notif-peringatan-2">
+                                        @elseif($pertandingan->detailPointTanding?->peringatan_2 == 0)
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 2" style="width:60px ; height: 60px;" id="red-notif-peringatan-2">
+                                        @else
+                                            <img src="{{ asset('assets') }}/img/icon/icon-wasit.png" alt="Peringatan 2" style="width:60px ; height: 60px;" id="red-notif-peringatan-2">
+                                        @endif 
                                     </div>
                                 </div>
                             </div>
@@ -250,7 +310,7 @@
                                 @elseif($pertandingan->detailPointTanding?->peringatan_1 == 0)
                                     0
                                 @else
-                                    0
+                                    1
                                 @endif
                             </p></div>
                             <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-peringatan-1-table">
@@ -261,7 +321,7 @@
                                 @elseif($pertandingan->detailPointTanding?->peringatan_2 == 0)
                                     0
                                 @else
-                                    0
+                                    1
                                 @endif    
                             </p></div>
                         </div>
@@ -270,6 +330,8 @@
                             <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-teguran-2-table">
                                 @if ($pertandingan->detailPointTanding?->teguran_1 > 1 && $pertandingan->detailPointTanding?->teguran_1 < 3)
                                     1
+                                @elseif ($pertandingan->detailPointTanding?->teguran_1 > 0 && $pertandingan->detailPointTanding?->teguran_1 < 2)
+                                    0
                                 @elseif ($pertandingan->detailPointTanding?->teguran_1 == 0)
                                     0
                                 @else 
@@ -279,6 +341,8 @@
                             <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-teguran-2-table">
                                 @if ($pertandingan->detailPointTanding?->teguran_2 > 1 && $pertandingan->detailPointTanding?->teguran_2 < 3)
                                     1
+                                @elseif ($pertandingan->detailPointTanding?->teguran_2 > 0 && $pertandingan->detailPointTanding?->teguran_2 < 2)
+                                    0
                                 @elseif ($pertandingan->detailPointTanding?->teguran_2 == 0)
                                     0
                                 @else 
