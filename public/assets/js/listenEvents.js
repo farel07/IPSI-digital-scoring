@@ -21,12 +21,14 @@ function initializeListener(appKey, appCluster) {
   const pusher = new Pusher(appKey, {
     cluster: appCluster,
   });
+  
 
   // penilaian
   const yellowFilter = "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
   // binaan
   const binaanChannel = pusher.subscribe("kirim-binaan-channel");
   binaanChannel.bind("terima-binaan", function (data) {
+
     if (data.filter == "blue") {
       if (data.count == 1) {
         document.getElementById("blue-notif-binaan-1").style.filter = yellowFilter;
