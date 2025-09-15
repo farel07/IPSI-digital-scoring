@@ -35,6 +35,11 @@ class Pertandingan extends Model
         return $this->belongsTo(Pertandingan::class, 'next_match_id');
     }
 
+    public function arena()
+    {
+        return $this->belongsTo(Arena::class, 'arena_id');
+    }
+
     public function getPemainUnit1Attribute()
     {
         return BracketPeserta::where('kelas_pertandingan_id', $this->kelas_pertandingan_id)

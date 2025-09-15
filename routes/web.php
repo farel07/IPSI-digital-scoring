@@ -3,14 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use App\Events\NotifikasiDikirim;
 use App\Events\NotifikasiDikirim2;
-use App\Events\KirimBinaan;
-use App\Events\KirimPeringatan;
-use App\Events\KirimTeguran;
-use App\Events\KirimJatuh;
-use App\Events\kirimPukul;
-use App\Events\hapusPelanggaran;
-use App\Events\kirimTendang;
-use App\Events\hapusPoint;
+// use App\Events\KirimBinaan;
+// use App\Events\KirimPeringatan;
+// use App\Events\KirimTeguran;
+// use App\Events\KirimJatuh;
+// use App\Events\kirimPukul;
+// use App\Events\hapusPelanggaran;
+// use App\Events\kirimTendang;
+// use App\Events\hapusPoint;
+use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\dewanController;
 use App\Http\Controllers\juriController;
 use App\Http\Controllers\operatorController;
@@ -224,6 +225,21 @@ Route::prefix('scoring')->group(function () {
     // });
 });
 
-Route::get('/superadmin', function () {
+Route::get('/superadmin', [SuperAdminController::class, 'dashboard']);
+Route::get('/superadmin/kelola-peserta', [SuperAdminController::class, 'kelola_peserta']);
+Route::get('/superadmin/atur-arena',[SuperAdminController::class, 'atur_arena']);
+Route::get('/superadmin/example', function () {
     return view('superadmin.superadmin');
 });
+Route::get('/superadmin/kelola-panitia', [SuperAdminController::class, 'kelola_panitia'])->name('superadmin.kelola-panitia');
+// [ROUTE BARU] Route untuk menangani update arena via AJAX
+Route::post('/superadmin/update-arena/{user}', [SuperAdminController::class, 'updateArena'])->name('panitia.updateArena');
+// [ROUTE BARU] Route untuk menyimpan panitia baru dari modal
+Route::post('/superadmin/store', [SuperAdminController::class, 'store'])->name('panitia.store');
+
+// [ROUTE BARU] Route untuk meng-update data panitia
+Route::put('/superadmin/update/{user}', [SuperAdminController::class, 'update'])->name('panitia.update');
+// [ROUTE BARU] Route untuk menghapus panitia
+Route::delete('/superadmin/destroy/{user}', [SuperAdminController::class, 'destroy'])->name('panitia.destroy');
+
+Route::post('/superadmin/pindah-arena/{pertandingan}', [SuperAdminController::class, 'pindahArena'])->name('pertandingan.pindahArena');
