@@ -3,7 +3,7 @@
  * [FUNGSI BARU] Mengambil skor total terbaru dari server dan memperbarui UI.
  * @param {string} pertandinganId - ID pertandingan saat ini.
  */
-function fetchAndUpdateTotalPoints(pertandinganId) {
+function fetchAndUpdateAllPoints(pertandinganId) {
   if (!pertandinganId) return;
 
   fetch(`/get-total-points/${pertandinganId}`)
@@ -15,7 +15,7 @@ function fetchAndUpdateTotalPoints(pertandinganId) {
     })
     .then((data) => {
       if (data.status === "berhasil") {
-        // Targetkan elemen di halaman penilaian dan dewan
+        // 1. Perbarui Total Poin Utama (di halaman penilaian)
         const blueScoreElement = document.getElementById("total-point-blue");
         const redScoreElement = document.getElementById("total-point-red");
 
@@ -25,9 +25,39 @@ function fetchAndUpdateTotalPoints(pertandinganId) {
         if (redScoreElement) {
           redScoreElement.innerHTML = data.total_point_2;
         }
+
+        const bluePukulanTable = document.getElementById("blue-notif-pukulan-table");
+        const redPukulanTable = document.getElementById("red-notif-pukulan-table");
+
+        if (bluePukulanTable) {
+          bluePukulanTable.innerHTML = data.punch_point_1;
+        }
+        if (redPukulanTable) {
+          redPukulanTable.innerHTML = data.punch_point_2;
+        }
+
+        const blueTendanganTable = document.getElementById("blue-notif-tendangan-table");
+        const redTendanganTable = document.getElementById("red-notif-tendangan-table");
+
+        if (blueTendanganTable) {
+          blueTendanganTable.innerHTML = data.kick_point_1;
+        }
+        if (redTendanganTable) {
+          redTendanganTable.innerHTML = data.kick_point_2;
+        }
+
+        const blueJatuhanTable = document.getElementById("blue-notif-jatuhan-table");
+        const redJatuhanTable = document.getElementById("red-notif-jatuhan-table");
+
+        if (blueJatuhanTable) {
+          blueJatuhanTable.innerHTML = data.fall_point_1;
+        }
+        if (redJatuhanTable) {
+          redJatuhanTable.innerHTML = data.fall_point_2;
+        }
       }
     })
-    .catch((error) => console.error("Error saat fetch total poin:", error));
+    .catch((error) => console.error("Error saat fetch semua poin:", error));
 }
 
 /**
@@ -46,13 +76,21 @@ function initializeListener(appKey, appCluster, pertandinganId) {
   }
 
   Pusher.logToConsole = true;
-
   const pusher = new Pusher(appKey, {
     cluster: appCluster,
   });
 
-  // penilaian
   const yellowFilter = "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
+
+  // Listener untuk semua event yang mengubah skor
+  const channels = {
+    "kirim-binaan-channel": "terima-binaan",
+    "kirim-teguran-channel": "terima-teguran",
+    "kirim-peringatan-channel": "terima-peringatan",
+    "kirim-jatuh-channel": "terima-jatuh",
+    "kirim-hapus-pelanggaran-channel": "terima-hapus-pelanggaran",
+  };
+
   // binaan
   const binaanChannel = pusher.subscribe("kirim-binaan-channel");
   binaanChannel.bind("terima-binaan", function (data) {
@@ -76,7 +114,7 @@ function initializeListener(appKey, appCluster, pertandinganId) {
       alert("cuman 2 warna side aja yaa");
     }
 
-    fetchAndUpdateTotalPoints(pertandinganId); // [TAMBAHAN] Panggil fetch
+    fetchAndUpdateAllPoints(pertandinganId); // [TAMBAHAN] Panggil fetch
   });
 
   // teguran
@@ -106,7 +144,7 @@ function initializeListener(appKey, appCluster, pertandinganId) {
       alert("cuman 2 warna side aja yaa");
     }
 
-    fetchAndUpdateTotalPoints(pertandinganId);
+    fetchAndUpdateAllPoints(pertandinganId);
   });
 
   // peringatan
@@ -140,7 +178,7 @@ function initializeListener(appKey, appCluster, pertandinganId) {
       alert("cuman 2 warna side aja yaa");
     }
 
-    fetchAndUpdateTotalPoints(pertandinganId);
+    fetchAndUpdateAllPoints(pertandinganId);
   });
 
   // jatuhan
@@ -154,7 +192,7 @@ function initializeListener(appKey, appCluster, pertandinganId) {
       document.getElementById("red-notif-jatuhan-table").innerHTML = initRedJatuhan = initRedJatuhan + data.count;
     }
 
-    fetchAndUpdateTotalPoints(pertandinganId);
+    fetchAndUpdateAllPoints(pertandinganId);
   });
 
   // hapus Pelanggaran
@@ -212,7 +250,7 @@ function initializeListener(appKey, appCluster, pertandinganId) {
       }
     }
 
-    fetchAndUpdateTotalPoints(pertandinganId);
+    fetchAndUpdateAllPoints(pertandinganId);
   });
 
   // State untuk menyimpan pukulan yang sedang menunggu konfirmasi
@@ -335,7 +373,7 @@ function initializeListener(appKey, appCluster, pertandinganId) {
           })
           .then((data) => {
             console.log(`Data terkirim ke:`, data);
-            setTimeout(() => fetchAndUpdateTotalPoints(pertandinganId), 200);
+            setTimeout(() => fetchAndUpdateAllPoints(pertandinganId), 200);
           })
           .catch((error) => {
             console.error(`Terjadi masalah dengan operasi fetch ke:`, error);
@@ -465,7 +503,7 @@ function initializeListener(appKey, appCluster, pertandinganId) {
           })
           .then((data) => {
             console.log(`Data terkirim ke:`, data);
-            setTimeout(() => fetchAndUpdateTotalPoints(pertandinganId), 200);
+            setTimeout(() => fetchAndUpdateAllPoints(pertandinganId), 200);
           })
           .catch((error) => {
             console.error(`Terjadi masalah dengan operasi fetch ke:`, error);
@@ -574,7 +612,7 @@ function initializeListener(appKey, appCluster, pertandinganId) {
       // Langsung reset state setelah penghapusan berhasil agar siap untuk aksi berikutnya
       resetDeleteState(color, type);
 
-      fetchAndUpdateTotalPoints(pertandinganId);
+      fetchAndUpdateAllPoints(pertandinganId);
     } else {
       // Jika ini adalah juri PERTAMA yang meminta hapus, mulai timer 4 detik
       console.log("Menunggu konfirmasi juri kedua untuk penghapusan...");

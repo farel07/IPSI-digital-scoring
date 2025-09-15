@@ -391,15 +391,33 @@ class TandingController extends Controller
     public function getTotalPoints(Pertandingan $pertandingan)
     {
         $point_details = DetailPointTanding::where('pertandingan_id', $pertandingan->id)
-            ->where('round', $pertandingan->current_round) // Pastikan Anda memiliki kolom `current_round`
+            ->where('round', $pertandingan->current_round) // Pastikan Anda memiliki kolom `current_round` di tabel pertandingan
             ->first();
+
+        // Siapkan nilai default jika belum ada data poin sama sekali
         $total_point_1 = $point_details->total_point_1 ?? 0;
         $total_point_2 = $point_details->total_point_2 ?? 0;
 
+        // [TAMBAHAN] Ambil juga poin pukulan dan tendangan
+        $punch_point_1 = $point_details->punch_point_1 ?? 0;
+        $punch_point_2 = $point_details->punch_point_2 ?? 0;
+        $kick_point_1 = $point_details->kick_point_1 ?? 0;
+        $kick_point_2 = $point_details->kick_point_2 ?? 0;
+        $fall_point_1 = $point_details->fall_point_1 ?? 0;
+        $fall_point_2 = $point_details->fall_point_2 ?? 0;
+
+        // Kirim kembali semua data yang diperlukan sebagai JSON
         return response()->json([
             'status' => 'berhasil',
             'total_point_1' => $total_point_1,
             'total_point_2' => $total_point_2,
+            'punch_point_1' => $punch_point_1,
+            'punch_point_2' => $punch_point_2,
+            'kick_point_1'  => $kick_point_1,
+            'kick_point_2'  => $kick_point_2,
+            'fall_point_1'  => $fall_point_1,  // <-- Kirim data jatuhan biru
+            'fall_point_2'  => $fall_point_2,  // <-- Kirim data jatuhan merah
+
         ]);
     }
 
