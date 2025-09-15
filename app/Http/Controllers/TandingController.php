@@ -316,7 +316,7 @@ class TandingController extends Controller
                 // Kriteria pencarian
                 ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound],
                 // Nilai untuk di-update atau dibuat
-                [$fullColumnName => DB::raw("$fullColumnName + $value")]
+                [$fullColumnName => DB::raw("$fullColumnName" + $value)]
             );
         }
 

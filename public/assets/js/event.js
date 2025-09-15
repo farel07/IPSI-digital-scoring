@@ -4,11 +4,28 @@ const id_user = window.location.pathname.split("/").pop();
 // const juri_ket = document.getElementById('juri_ket').value;
 // console.log("ID User:", juri_ket);
 
-if (document.getElementById('juri_ket') !== null) {
-  // Do something with juri_ket
-  const juri_ket = document.getElementById('juri_ket').value;
-  console.log("ID User:", juri_ket);
+// if (document.getElementById('juri_ket') !== null) {
+//   // Do something with juri_ket
+//   const juri_ket = document.getElementById('juri_ket').value;
+//   console.log("ID User:", juri_ket);
+
+// 1. Deklarasikan variabel dengan `let` agar nilainya bisa diubah.
+//    Beri nilai awal null untuk menandakan "belum ada nilai".
+
+
+
+let juri_ket = null;
+
+// 2. Cari elemen berdasarkan ID-nya.
+const juriElement = document.getElementById('juri_ket');
+
+// 3. Buat kondisi: JIKA elemennya ditemukan (tidak null)...
+if (juriElement) {
+  // ...maka, baru definisikan variabel 'juri_ket' dengan nilainya.
+  juri_ket = juriElement.value;
 }
+
+// }
 
 function kirimBinaan(filter) {
   // alert("Fitur ini belum tersedia.");
