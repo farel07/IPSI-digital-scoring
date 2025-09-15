@@ -40,10 +40,10 @@ function fetchAndUpdateAllPoints(pertandinganId) {
         const redTendanganTable = document.getElementById("red-notif-tendangan-table");
 
         if (blueTendanganTable) {
-          blueTendanganTable.innerHTML = data.kick_point_1;
+          blueTendanganTable.innerHTML = data.kick_point_1 / 2;
         }
         if (redTendanganTable) {
-          redTendanganTable.innerHTML = data.kick_point_2;
+          redTendanganTable.innerHTML = data.kick_point_2 / 2;
         }
 
         const blueJatuhanTable = document.getElementById("blue-notif-jatuhan-table");
@@ -342,9 +342,9 @@ function initializeListener(appKey, appCluster, pertandinganId) {
 
         // Tambah skor
         if (color === "blue") {
-          document.getElementById("blue-notif-pukulan-table").innerHTML = initBluePukulan += 1;
+          document.getElementById("blue-notif-pukulan-table").innerHTML = "count";
         } else if (color === "red") {
-          document.getElementById("red-notif-pukulan-table").innerHTML = initRedPukulan += 1;
+          document.getElementById("red-notif-pukulan-table").innerHTML = "count";
         }
 
         // --- PERBAIKAN 2: BERI JEDA SEBELUM MERESET ---
@@ -473,9 +473,9 @@ function initializeListener(appKey, appCluster, pertandinganId) {
 
         // Tambah skor
         if (color === "blue") {
-          document.getElementById("blue-notif-tendangan-table").innerHTML = initBlueTendangan += 1;
+          document.getElementById("blue-notif-tendangan-table").innerHTML = "count";
         } else if (color === "red") {
-          document.getElementById("red-notif-tendangan-table").innerHTML = initRedTendangan += 1;
+          document.getElementById("red-notif-tendangan-table").innerHTML = "count";
         }
 
         // --- PERBAIKAN 2: BERI JEDA SEBELUM MERESET ---

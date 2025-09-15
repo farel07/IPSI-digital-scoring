@@ -374,8 +374,8 @@
                         </div>
                         <div class="d-flex flex-column mx-1">
                             <div class="border border-info bg-info rounded-top py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light">Tendangan</p></div>
-                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-tendangan-table">{{ $pertandingan->detailPointTanding?->kick_point_1 ?? 0 }}</p></div>
-                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-tendangan-table">{{ $pertandingan->detailPointTanding?->kick_point_2 ?? 0 }}</p></div>
+                            <div class="border border-primary bg-primary py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="blue-notif-tendangan-table">{{ $pertandingan->detailPointTanding?->kick_point_1 / 2 ?? 0 }}</p></div>
+                            <div class="border border-danger bg-danger rounded-bottom py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light" id="red-notif-tendangan-table">{{ $pertandingan->detailPointTanding?->kick_point_2 / 2 ?? 0 }}</p></div>
                         </div>
                         <div class="d-flex flex-column mx-1">
                             <div class="border border-info bg-info rounded-top py-2 px-1" style="width: 110px"><p class="m-0 text-center text-light">Pukulan</p></div>
