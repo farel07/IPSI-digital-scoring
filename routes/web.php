@@ -63,6 +63,9 @@ Route::post('/kirim-hapus-point/{user}', [TandingController::class, 'hapus_point
 
 Route::post('/get_point/{user}', [TandingController::class, 'get_point']);
 
+// total points
+Route::get('/get-total-points/{pertandingan}', [TandingController::class, 'getTotalPoints']);
+
 // route scoring
 Route::prefix('scoring')->group(function () {
     Route::get('/dewan/{user}', [dewanController::class, 'index']);

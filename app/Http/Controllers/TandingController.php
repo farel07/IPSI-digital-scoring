@@ -30,11 +30,11 @@ class TandingController extends Controller
             abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
         }
 
-        if($request->count < 1 || $request->count > 2){
+        if ($request->count < 1 || $request->count > 2) {
             return response()->json(['status' => 'gagal', 'message' => 'Count harus antara 1 dan 3']);
         }
 
-        
+
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
@@ -45,7 +45,7 @@ class TandingController extends Controller
         // Panggil helper dengan kolom 'binaan_point', nilai dari 'count', dan filter
         $this->updateOrCreatePoint($pertandingan, 'binaan_point', $request->filter, $request->count);
 
-        if ($request->count == 2){
+        if ($request->count == 2) {
             $this->updateOrCreatePoint($pertandingan, 'teguran', $request->filter, 1);
         }
 
@@ -61,7 +61,7 @@ class TandingController extends Controller
             abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
         }
 
-        if($request->count < 1 || $request->count > 3){
+        if ($request->count < 1 || $request->count > 3) {
             return response()->json(['status' => 'gagal', 'message' => 'Count harus antara 1 dan 3']);
         }
 
@@ -85,7 +85,7 @@ class TandingController extends Controller
             abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
         }
 
-        if($request->count < 1 || $request->count > 2){
+        if ($request->count < 1 || $request->count > 2) {
             return response()->json(['status' => 'gagal', 'message' => 'Count harus antara 1 dan 2']);
         }
 
@@ -162,7 +162,7 @@ class TandingController extends Controller
 
     public function kirim_tendang_insert(Request $request, User $user)
     {
-       $arenaId = $user->user_arena->first()->arena_id ?? null;
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
 
         if (!$arenaId) {
             abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
@@ -173,7 +173,7 @@ class TandingController extends Controller
             ->where('status', 'siap_dimulai')
             ->first();
         // Panggil helper dengan kolom 'kick_point', nilai tetap '1', dan filter
-        $this->updateOrCreatePoint($pertandingan, 'kick_point', $request->filter, 1);
+        $this->updateOrCreatePoint($pertandingan, 'kick_point', $request->filter, 2);
 
         return response()->json(['status' => 'berhasil']);
     }
@@ -198,11 +198,11 @@ class TandingController extends Controller
     }
 
     // --- FUNGSI HAPUS (Dibiarkan kosong sesuai permintaan) ---
-    
+
     public function hapus_pelanggaran(Request $request, User $user)
     {
 
-         $arenaId = $user->user_arena->first()->arena_id ?? null;
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
 
         if (!$arenaId) {
             abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
@@ -214,16 +214,16 @@ class TandingController extends Controller
             ->first();
 
 
-        if($request->type == 'binaan-1' || $request->type == 'binaan-2'){
+        if ($request->type == 'binaan-1' || $request->type == 'binaan-2') {
             $type = 'binaan_point';
             $point = -1;
-        } else if($request->type == 'peringatan-1' || $request->type == 'peringatan-2' || $request->type == 'peringatan-3'){
+        } else if ($request->type == 'peringatan-1' || $request->type == 'peringatan-2' || $request->type == 'peringatan-3') {
             $type = 'peringatan';
             $point = -1;
-        } else if($request->type == 'teguran-1' || $request->type == 'teguran-2'){
+        } else if ($request->type == 'teguran-1' || $request->type == 'teguran-2') {
             $type = 'teguran';
             $point = -1;
-        } else if($request->type == 'jatuhan'){
+        } else if ($request->type == 'jatuhan') {
             $type = 'fall_point';
             $point = -1;
         } else {
@@ -293,26 +293,23 @@ class TandingController extends Controller
 
         if ($fullColumnName == 'peringatan_1' || $fullColumnName == 'peringatan_2' || $fullColumnName == 'peringatan_3' || $fullColumnName == 'teguran_1' || $fullColumnName == 'teguran_2' || $fullColumnName == 'binaan_point_1' || $fullColumnName == 'binaan_point_2') {
 
-            if($value < 0){
+            if ($value < 0) {
 
                 DetailPointTanding::updateOrCreate(
-                // Kriteria pencarian
-                ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound],
-                // Nilai untuk di-update atau dibuat
-                [$fullColumnName => DB::raw("GREATEST(0, $fullColumnName + $value)")]
-            );
+                    // Kriteria pencarian
+                    ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound],
+                    // Nilai untuk di-update atau dibuat
+                    [$fullColumnName => DB::raw("GREATEST(0, $fullColumnName + $value)")]
+                );
             } else {
-            DetailPointTanding::updateOrCreate(
-            // Kriteria pencarian
-            ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound],
-            // Nilai untuk di-update atau dibuat
-            [$fullColumnName => DB::raw("$value")]
-        );
+                DetailPointTanding::updateOrCreate(
+                    // Kriteria pencarian
+                    ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound],
+                    // Nilai untuk di-update atau dibuat
+                    [$fullColumnName => DB::raw("$value")]
+                );
             }
-
-           
-        }
-        else {
+        } else {
 
             // 4. Logika utama: Cari atau buat record, lalu increment kolom yang sesuai dengan nilai yang diberikan.
             DetailPointTanding::updateOrCreate(
@@ -326,70 +323,82 @@ class TandingController extends Controller
         $this->countTotalPoint($pertandingan);
     }
 
-      public function countTotalPoint(Pertandingan $pertandingan){
+    public function countTotalPoint(Pertandingan $pertandingan)
+    {
 
-    $currentRound = $pertandingan->current_round;
-    $point = DetailPointTanding::firstOrNew(
-    ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound]
-);
+        $currentRound = $pertandingan->current_round;
+        $point = DetailPointTanding::firstOrNew(
+            ['pertandingan_id' => $pertandingan->id, 'round' => $currentRound]
+        );
 
-$punch_point_1 = $point->punch_point_1 ?? 0;
-$punch_point_2 = $point->punch_point_2 ?? 0;
-$kick_point_1 = $point->kick_point_1 ?? 0;
-$kick_point_2 = $point->kick_point_2 ?? 0;
+        $punch_point_1 = $point->punch_point_1 ?? 0;
+        $punch_point_2 = $point->punch_point_2 ?? 0;
+        $kick_point_1 = $point->kick_point_1 ?? 0;
+        $kick_point_2 = $point->kick_point_2 ?? 0;
 
-$fall_point_1 = $point->fall_point_1 * 2;
-$fall_point_2 = $point->fall_point_2 * 2;
+        $fall_point_1 = $point->fall_point_1 * 2;
+        $fall_point_2 = $point->fall_point_2 * 2;
 
-// $point_teguran_1 = $point->teguran_1 ?? 0;
+        // $point_teguran_1 = $point->teguran_1 ?? 0;
 
-if($point->teguran_1 == 1){
-    $teguran_1 = -1;
-} else if($point->teguran_1 == 2){
-    $teguran_1 = -1 - 2;
-} else {
-    $teguran_1 = 0;
-}
+        if ($point->teguran_1 == 1) {
+            $teguran_1 = -1;
+        } else if ($point->teguran_1 == 2) {
+            $teguran_1 = -1 - 2;
+        } else {
+            $teguran_1 = 0;
+        }
 
-if($point->teguran_2 == 1){
-    $teguran_2 = -1;
-} else if($point->teguran_2 == 2){
-    $teguran_2 = -1 - 2;
-} else {
-    $teguran_2 = 0;
-}
+        if ($point->teguran_2 == 1) {
+            $teguran_2 = -1;
+        } else if ($point->teguran_2 == 2) {
+            $teguran_2 = -1 - 2;
+        } else {
+            $teguran_2 = 0;
+        }
 
-if($point->peringatan_1 == 1){
-    $peringatan_1 = -5;
-} else if($point->peringatan_1 == 2){
-    $peringatan_1 = -5 - 10;
-} else if($point->peringatan_1 == 3){
-    $peringatan_1 = -5 - 10 - 15;
-} else {
-    $peringatan_1 = 0;
-}
+        if ($point->peringatan_1 == 1) {
+            $peringatan_1 = -5;
+        } else if ($point->peringatan_1 == 2) {
+            $peringatan_1 = -5 - 10;
+        } else if ($point->peringatan_1 == 3) {
+            $peringatan_1 = -5 - 10 - 15;
+        } else {
+            $peringatan_1 = 0;
+        }
 
-if($point->peringatan_2 == 1){
-    $peringatan_2 = -5;
-} else if($point->peringatan_2 == 2){
-    $peringatan_2 = -5 - 10;
-} else if($point->peringatan_2 == 3){
-    $peringatan_2 = -5 - 10 - 15;
-} else {
-    $peringatan_2 = 0;
-}
+        if ($point->peringatan_2 == 1) {
+            $peringatan_2 = -5;
+        } else if ($point->peringatan_2 == 2) {
+            $peringatan_2 = -5 - 10;
+        } else if ($point->peringatan_2 == 3) {
+            $peringatan_2 = -5 - 10 - 15;
+        } else {
+            $peringatan_2 = 0;
+        }
 
+        $total_point_1 = $punch_point_1 + $kick_point_1 + $fall_point_1 + $teguran_1 + $peringatan_1;
+        $total_point_2 = $punch_point_2 + $kick_point_2 + $fall_point_2 + $teguran_2 + $peringatan_2;
 
+        $point->total_point_1 = $total_point_1;
+        $point->total_point_2 = $total_point_2;
+        $point->save();
 
+        return response()->json(['status' => 'berhasil', 'total_point_1' => $total_point_1, 'total_point_2' => $total_point_2]);
+    }
 
-$total_point_1 = $punch_point_1 + $kick_point_1 + $fall_point_1 + $teguran_1 + $peringatan_1;
-$total_point_2 = $punch_point_2 + $kick_point_2 + $fall_point_2 + $teguran_2 + $peringatan_2;
+    public function getTotalPoints(Pertandingan $pertandingan)
+    {
+        $point_details = DetailPointTanding::where('pertandingan_id', $pertandingan->id)
+            ->where('round', $pertandingan->current_round) // Pastikan Anda memiliki kolom `current_round`
+            ->first();
+        $total_point_1 = $point_details->total_point_1 ?? 0;
+        $total_point_2 = $point_details->total_point_2 ?? 0;
 
-$point->total_point_1 = $total_point_1;
-$point->total_point_2 = $total_point_2;
-$point->save();
-
-return response()->json(['status' => 'berhasil', 'total_point_1' => $total_point_1, 'total_point_2' => $total_point_2]);
-
+        return response()->json([
+            'status' => 'berhasil',
+            'total_point_1' => $total_point_1,
+            'total_point_2' => $total_point_2,
+        ]);
     }
 }
