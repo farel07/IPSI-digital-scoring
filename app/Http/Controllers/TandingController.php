@@ -346,6 +346,7 @@ class TandingController extends Controller
         } else if ($point->teguran_1 == 2) {
             $teguran_1 = -1 - 2;
         } else {
+
             $teguran_1 = 0;
         }
 
@@ -401,4 +402,10 @@ class TandingController extends Controller
             'total_point_2' => $total_point_2,
         ]);
     }
+
+    public function getUserRole(User $user)
+    {
+        return response()->json(['role_id' => $user->role_id]);
+    }
+
 }

@@ -86,7 +86,7 @@
                 <i class="bi bi-person-plus-fill fs-1 text-success mb-3"></i>
                 <h4 class="card-title fw-bold">Kelola Panitia</h4>
                 <p class="card-text text-muted">Tambah dan atur panita dengan role Juri dan Dewan untuk setiap event pertandingan.</p>
-                <a href="#" class="btn btn-success btn-lg mt-auto">
+                <a href="/superadmin/kelola-panitia" class="btn btn-success btn-lg mt-auto">
                     Masuk ke Kelola Panitia <i class="bi bi-arrow-right-short"></i>
                 </a>
             </div>

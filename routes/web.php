@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Events\NotifikasiDikirim;
 use App\Events\NotifikasiDikirim2;
+use App\Http\Controllers\AuthController;
 // use App\Events\KirimBinaan;
 // use App\Events\KirimPeringatan;
 // use App\Events\KirimTeguran;
@@ -39,6 +40,12 @@ Route::view('/kirim-notifikasi', 'kirim');
 Route::view('/dashboard', 'dashboard');
 Route::view('/dashboard2', 'dashboard2');
 
+// Menampilkan halaman login
+Route::get('/login', [AuthController::class, 'index'])->name('login');
+
+// Memproses form login
+Route::post('/login', [AuthController::class, 'authenticate']);
+
 Route::post('/kirim-notifikasi', function (Request $request) {
     event(new NotifikasiDikirim($request->judul, $request->pesan));
     return response()->json(['status' => 'berhasil']);
@@ -63,6 +70,10 @@ Route::post('/kirim-tendang/{user}', [TandingController::class, 'kirim_tendang']
 Route::post('/kirim-hapus-point/{user}', [TandingController::class, 'hapus_point']);
 
 Route::post('/get_point/{user}', [TandingController::class, 'get_point']);
+
+
+// get user role
+Route::post('user-role/{user}', [TandingController::class, 'getUserRole']);
 
 // total points
 Route::get('/get-total-points/{pertandingan}', [TandingController::class, 'getTotalPoints']);
