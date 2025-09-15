@@ -117,7 +117,7 @@
                             <div class="col-7 h-100">
                                 {{-- [DINAMIS] Total Point Player 1 (Biru) --}}
                                 <div class="border bg-primary px-4 pb-3 rounded">
-                                    <p class="text-center text-light m-0" style="font-size: 150px">{{ $pertandingan->detailPointTanding?->total_point_1 ?? 0 }}</p>
+                                    <p id="total-point-blue" class="text-center text-light m-0" style="font-size: 150px">{{ $pertandingan->detailPointTanding?->total_point_1 ?? 0 }}</p>
                                 </div>
                             </div>
                         </div>
@@ -140,7 +140,7 @@
                             <div class="col-7 h-100">
                                 {{-- [DINAMIS] Total Point Player 2 (Merah) --}}
                                 <div class="border bg-danger px-4 pb-3 rounded">
-                                    <p class="text-center text-light m-0" style="font-size: 150px">{{ $pertandingan->detailPointTanding?->total_point_2 ?? 0 }}</p>
+                                    <p id="total-point-red" class="text-center text-light m-0" style="font-size: 150px">{{ $pertandingan->detailPointTanding?->total_point_2 ?? 0 }}</p>
                                 </div>
                             </div>
                             <div class="col-5">

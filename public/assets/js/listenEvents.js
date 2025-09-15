@@ -1,18 +1,47 @@
 // public/js/binaanListener.js
+/**
+ * [FUNGSI BARU] Mengambil skor total terbaru dari server dan memperbarui UI.
+ * @param {string} pertandinganId - ID pertandingan saat ini.
+ */
+function fetchAndUpdateTotalPoints(pertandinganId) {
+  if (!pertandinganId) return;
+
+  fetch(`/get-total-points/${pertandinganId}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Gagal mengambil data poin");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.status === "berhasil") {
+        // Targetkan elemen di halaman penilaian dan dewan
+        const blueScoreElement = document.getElementById("total-point-blue");
+        const redScoreElement = document.getElementById("total-point-red");
+
+        if (blueScoreElement) {
+          blueScoreElement.innerHTML = data.total_point_1;
+        }
+        if (redScoreElement) {
+          redScoreElement.innerHTML = data.total_point_2;
+        }
+      }
+    })
+    .catch((error) => console.error("Error saat fetch total poin:", error));
+}
 
 /**
  * Fungsi untuk memulai listener event binaan dari Pusher.
  * @param {string} appKey - Kunci aplikasi dari Pusher.
  * @param {string} appCluster - Cluster dari Pusher.
+ * @param {string} pertandinganId - ID pertandingan saat ini.
  */
-
 
 const user_id = window.location.pathname.split("/").pop();
 
-
-function initializeListener(appKey, appCluster) {
-  if (!appKey || !appCluster) {
-    console.error("Pusher Key atau Cluster tidak diberikan.");
+function initializeListener(appKey, appCluster, pertandinganId) {
+  if (!appKey || !appCluster || !pertandinganId) {
+    console.error("Pusher Key, Cluster, atau ID Pertandingan tidak diberikan.");
     return;
   }
 
@@ -21,14 +50,12 @@ function initializeListener(appKey, appCluster) {
   const pusher = new Pusher(appKey, {
     cluster: appCluster,
   });
-  
 
   // penilaian
   const yellowFilter = "brightness(0) saturate(100%) invert(89%) sepia(87%) saturate(375%) hue-rotate(359deg) brightness(104%) contrast(104%)";
   // binaan
   const binaanChannel = pusher.subscribe("kirim-binaan-channel");
   binaanChannel.bind("terima-binaan", function (data) {
-
     if (data.filter == "blue") {
       if (data.count == 1) {
         document.getElementById("blue-notif-binaan-1").style.filter = yellowFilter;
@@ -48,6 +75,8 @@ function initializeListener(appKey, appCluster) {
     } else {
       alert("cuman 2 warna side aja yaa");
     }
+
+    fetchAndUpdateTotalPoints(pertandinganId); // [TAMBAHAN] Panggil fetch
   });
 
   // teguran
@@ -76,6 +105,8 @@ function initializeListener(appKey, appCluster) {
     } else {
       alert("cuman 2 warna side aja yaa");
     }
+
+    fetchAndUpdateTotalPoints(pertandinganId);
   });
 
   // peringatan
@@ -108,6 +139,8 @@ function initializeListener(appKey, appCluster) {
     } else {
       alert("cuman 2 warna side aja yaa");
     }
+
+    fetchAndUpdateTotalPoints(pertandinganId);
   });
 
   // jatuhan
@@ -120,6 +153,8 @@ function initializeListener(appKey, appCluster) {
     } else if (data.filter == "red") {
       document.getElementById("red-notif-jatuhan-table").innerHTML = initRedJatuhan = initRedJatuhan + data.count;
     }
+
+    fetchAndUpdateTotalPoints(pertandinganId);
   });
 
   // hapus Pelanggaran
@@ -176,6 +211,8 @@ function initializeListener(appKey, appCluster) {
         notifElement.innerHTML = currentValue - 1;
       }
     }
+
+    fetchAndUpdateTotalPoints(pertandinganId);
   });
 
   // State untuk menyimpan pukulan yang sedang menunggu konfirmasi
@@ -281,28 +318,30 @@ function initializeListener(appKey, appCluster) {
         // ------------------------------------------------------
 
         // Kirim ke server
-  fetch(`/kirim_pukul_insert/` + id_user, {
-    method: "POST",
-    headers: {
-      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      filter: color,
-      juri_ket: juriId
-    })
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error('Respons jaringan bermasalah');
-      return res.json();
-    })
-    .then((data) => {
-      console.log(`Data terkirim ke ${endpoint}:`, data);
-    })
-    .catch((error) => {
-      console.error(`Terjadi masalah dengan operasi fetch ke ${endpoint}:`, error);
-    });
+        fetch(`/kirim-pukul-insert/` + id_user, {
+          method: "POST",
+          headers: {
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            filter: color,
+            juri_ket: juriId,
+          }),
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Respons jaringan bermasalah");
+            return res.json();
+          })
+          .then((data) => {
+            console.log(`Data terkirim ke:`, data);
+            setTimeout(() => fetchAndUpdateTotalPoints(pertandinganId), 200);
+          })
+          .catch((error) => {
+            console.error(`Terjadi masalah dengan operasi fetch ke:`, error);
+          });
 
+        // Panggil fetch setelah delay singkat untuk memastikan DB terupdate
       }
     }
   });
@@ -408,31 +447,29 @@ function initializeListener(appKey, appCluster) {
           resetVoteStateTendangan(color);
         }, 1500);
 
-        
         // Kirim ke server
-  fetch(`/kirim_pukul_insert/` + id_user, {
-    method: "POST",
-    headers: {
-      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      filter: color,
-      juri_ket: juriId
-    })
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error('Respons jaringan bermasalah');
-      return res.json();
-    })
-    .then((data) => {
-      console.log(`Data terkirim ke ${endpoint}:`, data);
-    })
-    .catch((error) => {
-      console.error(`Terjadi masalah dengan operasi fetch ke ${endpoint}:`, error);
-    });
-
-    
+        fetch(`/kirim-tendang-insert/` + id_user, {
+          method: "POST",
+          headers: {
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            filter: color,
+            juri_ket: juriId,
+          }),
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Respons jaringan bermasalah");
+            return res.json();
+          })
+          .then((data) => {
+            console.log(`Data terkirim ke:`, data);
+            setTimeout(() => fetchAndUpdateTotalPoints(pertandinganId), 200);
+          })
+          .catch((error) => {
+            console.error(`Terjadi masalah dengan operasi fetch ke:`, error);
+          });
       }
     }
   });
@@ -536,6 +573,8 @@ function initializeListener(appKey, appCluster) {
 
       // Langsung reset state setelah penghapusan berhasil agar siap untuk aksi berikutnya
       resetDeleteState(color, type);
+
+      fetchAndUpdateTotalPoints(pertandinganId);
     } else {
       // Jika ini adalah juri PERTAMA yang meminta hapus, mulai timer 4 detik
       console.log("Menunggu konfirmasi juri kedua untuk penghapusan...");
