@@ -16,7 +16,7 @@
 <!-- Breadcrumb -->
 <nav class="mb-4">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/dashboard"><i class="bi bi-house-door-fill"></i> Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/superadmin"><i class="bi bi-house-door-fill"></i> Dashboard</a></li>
         <li class="breadcrumb-item active" aria-current="page">Kelola Panitia</li>
     </ol>
 </nav>

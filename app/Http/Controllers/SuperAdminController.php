@@ -89,12 +89,12 @@ $daftar_pertandingan_pemasalan = Pertandingan::with([
     public function kelola_panitia()
     {
         // 1. Ambil semua user panitia beserta relasi arena mereka.
-        $panitia = User::whereIn('role_id', [4,5, 6]) // Sesuaikan role_id jika perlu
+        $panitia = User::whereIn('role_id', [4,5, 6, 7, 8]) // Sesuaikan role_id jika perlu
             ->with('user_arena.arena')
             ->orderBy('nama_lengkap', 'asc')
             ->get();
 
-        $roles = Role::whereIn('id', ['4', '5', '6'])->get();
+        $roles = Role::whereIn('id', ['4', '5', '6', '7', '8'])->get();
 
 
         // 2. Ambil SEMUA arena yang ada untuk mengisi pilihan dropdown.
@@ -210,7 +210,7 @@ $daftar_pertandingan_pemasalan = Pertandingan::with([
 
         $user->update($updateData);
 
-        return redirect()->route('panitia.index')->with('success', 'Data panitia berhasil diperbarui!');
+        return redirect()->route('superadmin.kelola-panitia')->with('success', 'Data panitia berhasil diperbarui!');
     }
 
 

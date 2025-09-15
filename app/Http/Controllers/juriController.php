@@ -13,7 +13,7 @@ class juriController extends Controller
 
     public function index(User $user)
     {
-        if ($user->role->id !== 4) {
+        if ($user->role->id !== 4 && $user->role->id !== 7 && $user->role->id !== 8) { // Pastikan role juri
             abort(403, 'Akses ditolak. User ini bukan juri.');
         }
         // 1. Dapatkan arena ID milik juri.
@@ -41,6 +41,7 @@ class juriController extends Controller
         // Data pemain akan diambil secara otomatis oleh Accessor saat dipanggil di view.
         return view("scoring.juri", [
             'pertandingan' => $pertandingan,
+            'user' => $user
         ]);
     }
 }

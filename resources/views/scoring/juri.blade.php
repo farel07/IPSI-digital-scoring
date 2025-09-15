@@ -41,6 +41,8 @@
             </div>
             {{-- end title --}}
 
+            <input type="hidden" id="juri_ket" value="{{ $user->role->name }}">
+
             {{-- score --}}
             <div class="row justify-content-between">
 

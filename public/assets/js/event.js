@@ -1,6 +1,14 @@
 const round = 1;
 const id_user = window.location.pathname.split("/").pop();
-const juri_ket = "juri-" + id_user;
+// const juri_ket = "juri-" + id_user;
+// const juri_ket = document.getElementById('juri_ket').value;
+// console.log("ID User:", juri_ket);
+
+if (document.getElementById('juri_ket') !== null) {
+  // Do something with juri_ket
+  const juri_ket = document.getElementById('juri_ket').value;
+  console.log("ID User:", juri_ket);
+}
 
 function kirimBinaan(filter) {
   // alert("Fitur ini belum tersedia.");
@@ -29,6 +37,7 @@ function kirimBinaan(filter) {
     document.getElementById("btn_binaan_" + filter).value = 2;
   } else {
     document.getElementById("btn_binaan_" + filter).value = 3;
+    document.getElementById("btn_teguran_" + filter).value = 2;
   }
 
   fetch("/kirim-binaan/" + id_user, {
