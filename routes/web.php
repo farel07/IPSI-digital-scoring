@@ -106,9 +106,9 @@ Route::prefix('scoring')->group(function () {
     Route::get('/seni/prestasi/tunggal/biru/penonton', function () {
         return view('seni.prestasi.tunggal.biru.penonton');
     });
-    Route::get('/seni/prestasi/tunggal/biru/penontonfinal', function () {
-        return view('seni.prestasi.tunggal.biru.penontonFinal');
-    });
+    // Route::get('/seni/prestasi/tunggal/biru/penontonfinal', function () {
+    //     return view('seni.prestasi.tunggal.biru.penontonFinal');
+    // });
     Route::get('/seni/prestasi/tunggal/merah/juri', function () {
         return view('seni.prestasi.tunggal.merah.juri');
     });
@@ -241,7 +241,7 @@ Route::prefix('scoring')->group(function () {
 
 Route::get('/superadmin', [SuperAdminController::class, 'dashboard']);
 Route::get('/superadmin/kelola-peserta', [SuperAdminController::class, 'kelola_peserta']);
-Route::get('/superadmin/atur-arena',[SuperAdminController::class, 'atur_arena']);
+Route::get('/superadmin/atur-arena', [SuperAdminController::class, 'atur_arena']);
 Route::get('/superadmin/example', function () {
     return view('superadmin.superadmin');
 });
