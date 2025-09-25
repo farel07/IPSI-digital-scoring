@@ -19,6 +19,7 @@ use App\Http\Controllers\operatorController;
 use App\Http\Controllers\penilaianController;
 use App\Http\Controllers\timerController;
 use App\Http\Controllers\TandingController;
+use App\Http\Controllers\SeniController;
 use Illuminate\Http\Request;
 
 /*
@@ -69,7 +70,15 @@ Route::post('/kirim-tendang-insert/{user}', [TandingController::class, 'kirim_te
 Route::post('/kirim-tendang/{user}', [TandingController::class, 'kirim_tendang']);
 Route::post('/kirim-hapus-point/{user}', [TandingController::class, 'hapus_point']);
 
+Route::post('/kirim-request-validation/{user}', [TandingController::class, 'request_validation'])
+     ->name('tanding.requestValidation');
+Route::post('/pertandingan/kirim-vote', [TandingController::class, 'submitVote'])
+     ->name('tanding.submitVote');
+
 Route::post('/get_point/{user}', [TandingController::class, 'get_point']);
+
+// route event seni
+Route::post('/kirim-poin-seni/{user}', [SeniController::class, 'kirim_poin_seni']);
 
 
 // get user role
@@ -245,6 +254,11 @@ Route::get('/superadmin/atur-arena',[SuperAdminController::class, 'atur_arena'])
 Route::get('/superadmin/example', function () {
     return view('superadmin.superadmin');
 });
+
+Route::get('/superadmin/atur-arena-pemasalan', [SuperAdminController::class, 'atur_arena_pemasalan']);
+Route::get('/superadmin/atur-arena-pemasalan', [SuperAdminController::class, 'atur_arena_pemasalan'])->name('arena.pemasalan.atur');
+Route::post('/superadmin/store-pertandingan-manual', [SuperAdminController::class, 'store_pertandingan_manual'])->name('pertandingan.manual.store');
+
 Route::get('/superadmin/kelola-panitia', [SuperAdminController::class, 'kelola_panitia'])->name('superadmin.kelola-panitia');
 // [ROUTE BARU] Route untuk menangani update arena via AJAX
 Route::post('/superadmin/update-arena/{user}', [SuperAdminController::class, 'updateArena'])->name('panitia.updateArena');

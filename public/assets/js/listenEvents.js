@@ -68,6 +68,8 @@ function fetchAndUpdateAllPoints(pertandinganId) {
  */
 
 const user_id = window.location.pathname.split("/").pop();
+const pertandingan_id = document.getElementById("pertandingan_id").value;
+console.log("pertandingan_id:", pertandingan_id);
 
 function initializeListener(appKey, appCluster, pertandinganId) {
   if (!appKey || !appCluster || !pertandinganId) {
@@ -92,8 +94,8 @@ function initializeListener(appKey, appCluster, pertandinganId) {
   };
 
   // binaan
-  const binaanChannel = pusher.subscribe("kirim-binaan-channel");
-  binaanChannel.bind("terima-binaan", function (data) {
+  const binaanChannel = pusher.subscribe("kirim-binaan-channel-" + pertandingan_id);
+  binaanChannel.bind("terima-binaan-" + pertandingan_id, function (data) {
     if (data.filter == "blue") {
       if (data.count == 1) {
         document.getElementById("blue-notif-binaan-1").style.filter = yellowFilter;
@@ -118,8 +120,8 @@ function initializeListener(appKey, appCluster, pertandinganId) {
   });
 
   // teguran
-  const teguranChannel = pusher.subscribe("kirim-teguran-channel");
-  teguranChannel.bind("terima-teguran", function (data) {
+  const teguranChannel = pusher.subscribe("kirim-teguran-channel-" + pertandingan_id);
+  teguranChannel.bind("terima-teguran-" + pertandingan_id, function (data) {
     if (data.filter == "blue") {
       if (data.count == 1) {
         document.getElementById("blue-notif-teguran-1").style.filter = yellowFilter;
@@ -148,8 +150,8 @@ function initializeListener(appKey, appCluster, pertandinganId) {
   });
 
   // peringatan
-  const peringatanChannel = pusher.subscribe("kirim-peringatan-channel");
-  peringatanChannel.bind("terima-peringatan", function (data) {
+  const peringatanChannel = pusher.subscribe("kirim-peringatan-channel-" + pertandingan_id);
+  peringatanChannel.bind("terima-peringatan-" + pertandingan_id, function (data) {
     if (data.filter == "blue") {
       if (data.count == 1) {
         document.getElementById("blue-notif-peringatan-1").style.filter = yellowFilter;
@@ -182,10 +184,10 @@ function initializeListener(appKey, appCluster, pertandinganId) {
   });
 
   // jatuhan
-  const jatuhanChannel = pusher.subscribe("kirim-jatuh-channel");
+  const jatuhanChannel = pusher.subscribe("kirim-jatuh-channel-" + pertandingan_id);
   let initBlueJatuhan = 0;
   let initRedJatuhan = 0;
-  jatuhanChannel.bind("terima-jatuh", function (data) {
+  jatuhanChannel.bind("terima-jatuh-" + pertandingan_id, function (data) {
     if (data.filter == "blue") {
       document.getElementById("blue-notif-jatuhan-table").innerHTML = initBlueJatuhan = initBlueJatuhan + data.count;
     } else if (data.filter == "red") {
@@ -196,8 +198,8 @@ function initializeListener(appKey, appCluster, pertandinganId) {
   });
 
   // hapus Pelanggaran
-  const hapusPelanggaranChannel = pusher.subscribe("kirim-hapus-pelanggaran-channel");
-  hapusPelanggaranChannel.bind("terima-hapus-pelanggaran", function (data) {
+  const hapusPelanggaranChannel = pusher.subscribe("kirim-hapus-pelanggaran-channel-" + pertandingan_id);
+  hapusPelanggaranChannel.bind("terima-hapus-pelanggaran-" + pertandingan_id, function (data) {
     if (data.filter == "blue") {
       // Reset filter ikon untuk Binaan
       if (data.type == "binaan-1") {
@@ -294,8 +296,8 @@ function initializeListener(appKey, appCluster, pertandinganId) {
   }
 
   // Subscribe ke channel Pusher
-  const kirimPukulanChannel = pusher.subscribe("kirim-pukul-channel");
-  kirimPukulanChannel.bind("terima-pukul", function (data) {
+  const kirimPukulanChannel = pusher.subscribe("kirim-pukul-channel-" + pertandingan_id);
+  kirimPukulanChannel.bind("terima-pukul-" + pertandingan_id, function (data) {
     const color = data.filter;
     const juriId = data.juri_ket;
     const currentState = voteStatePukulan[color];
@@ -425,8 +427,8 @@ function initializeListener(appKey, appCluster, pertandinganId) {
   }
 
   // Subscribe ke channel Pusher
-  const kirimTendanganChannel = pusher.subscribe("kirim-tendang-channel");
-  kirimTendanganChannel.bind("terima-tendang", function (data) {
+  const kirimTendanganChannel = pusher.subscribe("kirim-tendang-channel-" + pertandingan_id);
+  kirimTendanganChannel.bind("terima-tendang-" + pertandingan_id, function (data) {
     const color = data.filter;
     const juriId = data.juri_ket;
     const currentState = voteStateTendangan[color];
@@ -541,8 +543,8 @@ function initializeListener(appKey, appCluster, pertandinganId) {
   }
 
   // Subscribe ke channel Pusher
-  const kirimHapusPukulTendang = pusher.subscribe("kirim-hapus-point-channel");
-  kirimHapusPukulTendang.bind("terima-hapus-point", function (data) {
+  const kirimHapusPukulTendang = pusher.subscribe("kirim-hapus-point-channel-" + pertandingan_id);
+  kirimHapusPukulTendang.bind("terima-hapus-point-" + pertandingan_id, function (data) {
     const color = data.filter; // "blue" atau "red"
     const type = data.type; // "pukulan" atau "tendangan"
     const juriId = data.juri_ket; // "juri-1", "juri-2", dll.

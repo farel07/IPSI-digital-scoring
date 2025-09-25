@@ -36,12 +36,29 @@ class juriController extends Controller
             // return view("scoring.juri_menunggu", ['user' => $user]);
             return "belum ada pertandingan aktif di arena Anda.";
         }
+
+        // return $pertandingan->kelasPertandingan->jenisPertandingan->id;
+
+        if($pertandingan->kelasPertandingan->jenisPertandingan->id == 1){
+            return view("scoring.juri", [
+                'pertandingan' => $pertandingan,
+                'user' => $user
+            ]);
+        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2){
+            return view("seni.prestasi.tunggal.biru.juri", [
+                'pertandingan' => $pertandingan,
+                'user' => $user
+            ]);
+        } else {
+            return "jenis pertandingan tidak dikenali.";
+        }
+        
         
         // 5. Kirim objek pertandingan ke view.
         // Data pemain akan diambil secara otomatis oleh Accessor saat dipanggil di view.
-        return view("scoring.juri", [
-            'pertandingan' => $pertandingan,
-            'user' => $user
-        ]);
+        // return view("scoring.juri", [
+        //     'pertandingan' => $pertandingan,
+        //     'user' => $user
+        // ]);
     }
 }

@@ -13,24 +13,25 @@ class kirimBinaan implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     // public $judul;
-    public $count, $filter;
+    public $count, $filter, $pertandingan_id;
 
-    public function __construct($count, $filter)
+    public function __construct($count, $filter, $pertandingan_id)
     {
         // $this->judul = $judul;
         $this->count = $count;
         $this->filter = $filter;
+        $this->pertandingan_id = $pertandingan_id;
         // $this->pesan = $pesan;
     }
 
     public function broadcastOn()
     {
-        return new Channel('kirim-binaan-channel');
+        return new Channel('kirim-binaan-channel-' . $this->pertandingan_id);
     }
 
     public function broadcastAs()
     {
-        return 'terima-binaan';
+        return 'terima-binaan-' . $this->pertandingan_id;
     }
 }
 

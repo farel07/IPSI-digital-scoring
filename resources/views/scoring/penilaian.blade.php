@@ -2,9 +2,10 @@
 
 @section('content')
     <div class="container px-0 mt-2 mb-2 rounded pb-4" style="background-color: rgb(216, 216, 216)">
-
+       
         {{-- Pengecekan utama: Apakah controller berhasil mengirim objek pertandingan yang valid? --}}
         @if (isset($pertandingan) && $pertandingan)
+         <input type="hidden" name="pertandingan_id" id="pertandingan_id" value="{{ $pertandingan->id ?? '' }}">
             {{-- navbar --}}
             <div class="border rounded-top w-100" style="background-color: blueviolet; ">
                 <div class="container">
