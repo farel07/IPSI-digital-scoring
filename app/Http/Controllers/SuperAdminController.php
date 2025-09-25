@@ -8,7 +8,10 @@ use App\Models\Event;
 use App\Models\User;
 use App\Models\Pertandingan;
 use App\Models\UserArena;
+use App\Models\KelasPertandingan;
+use App\Models\BracketPeserta;
 use App\Models\Role;
+use App\Models\Player;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -31,14 +34,18 @@ class SuperAdminController extends Controller
     {
        // Query untuk Kategori PRESTASI (ID = 2)
 $daftar_pertandingan_prestasi = Pertandingan::with([
-        'kelasPertandingan.kelas',
-        'kelasPertandingan.kategoriPertandingan',
-        'arena',
+    'kelasPertandingan.kelas',
+    'kelasPertandingan.kategoriPertandingan',
+    'arena',
     ])
-    ->where('status', 'menunggu_peserta')
+    ->whereIn('status', ['menunggu_peserta', 'siap_dimulai']) // Tambahkan kondisi untuk status 'siap_dimulai'
     ->whereRelation('kelasPertandingan', 'kategori_pertandingan_id', 2) // <-- Lebih ringkas
-    ->orderBy('id', 'asc')
+    ->orderBy('id', 'desc')
     ->get();
+
+    // return $daftar_pertandingan_prestasi;
+
+    // return $daftar_pertandingan_prestasi;
 
 
 // Query untuk Kategori PEMASALAN (ID = 1)
@@ -47,10 +54,12 @@ $daftar_pertandingan_pemasalan = Pertandingan::with([
         'kelasPertandingan.kategoriPertandingan',
         'arena',
     ])
-    ->where('status', 'menunggu_peserta')
+    ->whereIn('status', ['menunggu_peserta', 'siap_dimulai']) // Tambahkan kondisi untuk status 'siap_dimulai'
     ->whereRelation('kelasPertandingan', 'kategori_pertandingan_id', 1) // <-- Lebih ringkas
     ->orderBy('id', 'asc')
     ->get();
+
+    // return $daftar_pertandingan_pemasalan;
 
     $arenas = Arena::all();
 
@@ -59,6 +68,81 @@ $daftar_pertandingan_pemasalan = Pertandingan::with([
         return view('superadmin.atur_arena', compact('daftar_pertandingan_prestasi', 'daftar_pertandingan_pemasalan', 'arenas'));
     }
 
+   public function atur_arena_pemasalan()
+    {
+               $kelas_pemasalan = KelasPertandingan::with('kelas', 'jenisPertandingan')
+            ->where('kategori_pertandingan_id', 1)
+            ->whereHas('players', function ($query) {
+                $query->where('status', 2);
+            })
+            ->get();
+
+        $pemain_pemasalan = Player::with('contingent')
+            ->whereIn('kelas_pertandingan_id', $kelas_pemasalan->pluck('id'))
+            ->where('status', 2)
+            ->get();
+
+        // [FIX] Kita akan memformat data pemain menjadi array yang lebih sederhana
+        // agar mudah diakses di JavaScript.
+        $pemain_grouped = [];
+        foreach ($pemain_pemasalan as $pemain) {
+            if (!isset($pemain_grouped[$pemain->kelas_pertandingan_id])) {
+                $pemain_grouped[$pemain->kelas_pertandingan_id] = [];
+            }
+            $pemain_grouped[$pemain->kelas_pertandingan_id][] = [
+                'id' => $pemain->id,
+                'name' => $pemain->name,
+                'contingent_name' => $pemain->contingent->name ?? 'N/A'
+            ];
+        }
+            
+        $semua_arena = Arena::all();
+
+        return view('superadmin.atur_arena_pemasalan', [
+            'daftar_kelas' => $kelas_pemasalan,
+            'daftar_pemain_per_kelas' => $pemain_grouped, // Kirim data yang sudah diformat
+            'daftar_arena' => $semua_arena,
+        ]);
+
+    }
+
+    /**
+     * Menyimpan pertandingan manual yang baru dibuat.
+     * (Metode ini tidak perlu diubah, sudah benar)
+     */
+    public function store_pertandingan_manual(Request $request)
+    {
+        // ... (Kode store Anda dari jawaban sebelumnya sudah benar, tidak perlu diubah)
+        $validated = $request->validate([
+            'kelas_pertandingan_id' => 'required|exists:kelas_pertandingan,id',
+            'arena_id' => 'nullable|exists:arenas,id',
+            'round_number' => 'required|integer|min:1',
+            'match_number' => 'required|integer|min:1',
+            'unit_1_pemain' => 'required|array|min:1',
+            'unit_1_pemain.*' => 'required|exists:players,id',
+            'unit_2_pemain' => 'required|array|min:1',
+            'unit_2_pemain.*' => 'required|exists:players,id',
+        ]);
+        DB::transaction(function () use ($validated) {
+            $kelas_id = $validated['kelas_pertandingan_id'];
+            $max_unit_id = BracketPeserta::where('kelas_pertandingan_id', $kelas_id)->max('unit_id') ?? 0;
+            $unit1_id_baru = $max_unit_id + 1;
+            $unit2_id_baru = $max_unit_id + 2;
+            foreach ($validated['unit_1_pemain'] as $player_id) {
+                BracketPeserta::create(['kelas_pertandingan_id' => $kelas_id, 'unit_id' => $unit1_id_baru, 'player_id' => $player_id]);
+            }
+            foreach ($validated['unit_2_pemain'] as $player_id) {
+                BracketPeserta::create(['kelas_pertandingan_id' => $kelas_id, 'unit_id' => $unit2_id_baru, 'player_id' => $player_id]);
+            }
+            Pertandingan::create([
+                'kelas_pertandingan_id' => $kelas_id, 'arena_id' => $validated['arena_id'],
+                'round_number' => $validated['round_number'], 'match_number' => $validated['match_number'],
+                'unit1_id' => $unit1_id_baru, 'unit2_id' => $unit2_id_baru,
+                'status' => 'siap_dimulai', 'current_round' => 1,
+            ]);
+        });
+        return redirect()->back()->with('success', 'Pertandingan manual berhasil dibuat!');
+    }
 
     /**
      * [METODE BARU] - Menangani permintaan AJAX untuk memindahkan arena pertandingan.

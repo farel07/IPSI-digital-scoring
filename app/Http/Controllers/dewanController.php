@@ -46,9 +46,21 @@ class dewanController extends Controller
             return "belum ada pertandingan aktif di arena Anda.";
         }
 
+        if($pertandingan->kelasPertandingan->jenisPertandingan->id == 1){
+            return view("scoring.dewan", [
+                'pertandingan' => $pertandingan,
+                'user' => $user
+            ]);
+        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2){
+            return view("seni.prestasi.tunggal.biru.dewan", [
+                'pertandingan' => $pertandingan,
+                'user' => $user
+            ]);
+        } else {
+            return "jenis pertandingan tidak dikenali.";
+        }
+
         // 4. Kirim objek pertandingan (atau null jika tidak ada) ke view.
-        return view("scoring.dewan", [
-            'pertandingan' => $pertandingan,
-        ]);
+        //     
     }
 }

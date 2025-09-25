@@ -13,24 +13,24 @@ class hapusPelanggaran implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     // public $judul;
-    public $type, $filter;
+    public $type, $filter, $pertandingan_id;
 
-    public function __construct($type, $filter)
+    public function __construct($type, $filter, $pertandingan_id)
     {
         // $this->judul = $judul;
         $this->type = $type;
         $this->filter = $filter;
-        // $this->pesan = $pesan;
+        $this->pertandingan_id = $pertandingan_id;
     }
 
     public function broadcastOn()
     {
-        return new Channel('kirim-hapus-pelanggaran-channel');
+        return new Channel('kirim-hapus-pelanggaran-channel-' . $this->pertandingan_id);
     }
 
     public function broadcastAs()
     {
-        return 'terima-hapus-pelanggaran';
+        return 'terima-hapus-pelanggaran-' . $this->pertandingan_id;
     }
 }
 

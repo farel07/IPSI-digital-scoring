@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Scoring Pencak Silat</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
     <div class="container mx-auto p-4 max-w-7xl">
@@ -31,7 +32,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             <!-- Wrong Move Card -->
             <div class="bg-red-500 rounded-xl shadow-md p-8 flex flex-col items-center justify-center min-h-64">
-                <button id="wrongMoveBtn" class="text-white font-bold py-8 px-12 text-3xl transition-colors duration-200 w-full h-full">
+                <button id="wrongMoveBtn" class="text-white font-bold py-8 px-12 text-3xl transition-colors duration-200 w-full h-full" onclick="kirimPoinSeni(1, -1)">
                     <div class="text-6xl mb-4">✗</div>
                     Wrong Move
                 </button>
@@ -86,6 +87,8 @@
             </div>
         </div>
     </div>
+
+    <script src="/assets/js/event_seni.js"></script>
 
     <script>
         // Game state

@@ -10,34 +10,35 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class kirimTendang implements ShouldBroadcast
+class KirimPoinSeni implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $filter, $juri_ket, $pertandingan_id;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($filter, $juri_ket, $pertandingan_id)
+    public $poin, $filter, $pertandingan_id, $type, $role;
+    public function __construct($poin, $filter, $pertandingan_id, $type, $role)
     {
+        $this->poin = $poin;
         $this->filter = $filter;
-        $this->juri_ket = $juri_ket;
         $this->pertandingan_id = $pertandingan_id;
+        $this->type = $type;
+        $this->role = $role;
     }
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn()
+     public function broadcastOn()
     {
-        return new Channel('kirim-tendang-channel-' . $this->pertandingan_id);
+        return new Channel('kirim-poin-seni-channel-' . $this->pertandingan_id);
     }
 
     public function broadcastAs()
     {
-        return 'terima-tendang-' . $this->pertandingan_id;
+        return 'terima-poin-seni-' . $this->pertandingan_id;
     }
 }

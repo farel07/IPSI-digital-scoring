@@ -20,8 +20,8 @@
                 <i class="bi bi-trophy-fill fs-2 text-primary me-3"></i>
                 <h3 class="mb-0 fw-bold">Kejuaraan Nasional 2024</h3>
             </div>
-            <a href="#" class="btn btn-success">
-                <i class="bi bi-plus-circle-fill me-2"></i> Tambah Pesilat
+            <a href="/superadmin/atur-arena-pemasalan" class="btn btn-success">
+                <i class="bi bi-plus-circle-fill me-2"></i> Tambah Pertandingan
             </a>
         </div>
 
@@ -36,22 +36,18 @@
         </ul>
 
         <div class="tab-content" id="pills-tabContent">
-            {{-- TAB PEMASALAN --}}
+            {{-- ================================================= --}}
+            {{-- TAB PEMASALAN (YANG SEKARANG SUDAH DIISI)         --}}
+            {{-- ================================================= --}}
             <div class="tab-pane fade show active" id="pills-pemasalan" role="tabpanel" aria-labelledby="pills-pemasalan-tab">
-                 <p class="text-muted">Konten untuk kategori Pemasalan akan ditampilkan di sini.</p>
-            </div>
-
-            {{-- TAB PRESTASI --}}
-            <div class="tab-pane fade" id="pills-prestasi" role="tabpanel" aria-labelledby="pills-prestasi-tab">
                 
-                <!-- Area Filter -->
+                <!-- Area Filter untuk Pemasalan -->
                 <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                    <h5 class="fw-semibold mb-0">Jadwal Pertandingan Prestasi</h5>
+                    <h5 class="fw-semibold mb-0">Jadwal Pertandingan Pemasalan</h5>
                     <div class="d-flex align-items-center">
-                        <label for="arena-filter" class="form-label me-2 mb-0 fw-semibold">Filter Arena:</label>
-                        <select class="form-select form-select-sm" id="arena-filter" style="width: 200px;">
+                        <label for="arena-filter-pemasalan" class="form-label me-2 mb-0 fw-semibold">Filter Arena:</label>
+                        <select class="form-select form-select-sm arena-filter" id="arena-filter-pemasalan" style="width: 200px;" data-table-body-id="pemasalan-table-body">
                             <option value="all" selected>Tampilkan Semua</option>
-                            {{-- [FIX 1] Tambahkan opsi untuk pertandingan tanpa arena --}}
                             <option value="unassigned">Belum Memiliki Arena</option>
                             @if(isset($arenas))
                                 @foreach ($arenas as $arena)
@@ -62,7 +58,7 @@
                     </div>
                 </div>
 
-                <!-- Konten Arena (Tabel) -->
+                <!-- Konten Arena (Tabel Pemasalan) -->
                 <div class="mt-4">
                     <div class="table-responsive-custom">
                         <table class="table table-custom">
@@ -79,9 +75,8 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody id="prestasi-table-body">
-                                @forelse ($daftar_pertandingan_prestasi as $pertandingan)
-                                {{-- [FIX 2] Gunakan `or` operator untuk menangani arena null --}}
+                            <tbody id="pemasalan-table-body">
+                                @forelse ($daftar_pertandingan_pemasalan as $pertandingan)
                                 <tr data-arena-id="{{ $pertandingan->arena_id ?? 'unassigned' }}">
                                     <td class="fw-bold">PARTAI {{ $pertandingan->id }}</td>
                                     <td>
@@ -108,7 +103,6 @@
                                     <td class="text-muted">--:--</td>
                                     <td>
                                         <select class="form-select form-select-sm arena-dropdown" data-id="{{ $pertandingan->id }}">
-                                            {{-- [FIX 3] Tambahkan opsi placeholder jika arena_id null --}}
                                             <option value="" {{ is_null($pertandingan->arena_id) ? 'selected' : 'disabled' }}>
                                                 Pilih Arena...
                                             </option>
@@ -131,7 +125,105 @@
                                 </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted py-4">Tidak ada pertandingan yang dijadwalkan.</td>
+                                        <td colspan="9" class="text-center text-muted py-4">Tidak ada pertandingan Pemasalan yang dijadwalkan.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {{-- ================================================= --}}
+            {{-- TAB PRESTASI                                      --}}
+            {{-- ================================================= --}}
+            <div class="tab-pane fade" id="pills-prestasi" role="tabpanel" aria-labelledby="pills-prestasi-tab">
+                
+                <!-- Area Filter untuk Prestasi -->
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+                    <h5 class="fw-semibold mb-0">Jadwal Pertandingan Prestasi</h5>
+                    <div class="d-flex align-items-center">
+                        <label for="arena-filter-prestasi" class="form-label me-2 mb-0 fw-semibold">Filter Arena:</label>
+                        <select class="form-select form-select-sm arena-filter" id="arena-filter-prestasi" style="width: 200px;" data-table-body-id="prestasi-table-body">
+                            <option value="all" selected>Tampilkan Semua</option>
+                            <option value="unassigned">Belum Memiliki Arena</option>
+                            @if(isset($arenas))
+                                @foreach ($arenas as $arena)
+                                    <option value="{{ $arena->id }}">{{ $arena->arena_name }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Konten Arena (Tabel Prestasi) -->
+                <div class="mt-4">
+                    <div class="table-responsive-custom">
+                        <table class="table table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Partai</th>
+                                    <th>Tim Merah</th>
+                                    <th>Tim Biru</th>
+                                    <th>Kelas Tanding</th>
+                                    <th>Babak</th>
+                                    <th>Status</th>
+                                    <th>Waktu</th>
+                                    <th style="width: 180px;">Arena</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="prestasi-table-body">
+                                @forelse ($daftar_pertandingan_prestasi as $pertandingan)
+                                <tr data-arena-id="{{ $pertandingan->arena_id ?? 'unassigned' }}">
+                                    <td class="fw-bold">PARTAI {{ $pertandingan->id }}</td>
+                                    <td>
+                                        @forelse ($pertandingan->pemain_unit_1 as $peserta)
+                                            <div><span class="color-box bg-danger"></span>{{ $peserta->player?->name ?? 'N/A' }}<br><small class="text-muted d-block ms-4">{{ $peserta->player?->contingent?->name }}</small></div>
+                                            @if(!$loop->last)<hr class="my-1">@endif
+                                        @empty
+                                            <span class="text-muted">-- Belum Ada --</span>
+                                        @endforelse
+                                    </td>
+                                    <td>
+                                        @forelse ($pertandingan->pemain_unit_2 as $peserta)
+                                            <div><span class="color-box bg-primary"></span>{{ $peserta->player?->name ?? 'N/A' }}<br><small class="text-muted d-block ms-4">{{ $peserta->player?->contingent?->name }}</small></div>
+                                            @if(!$loop->last)<hr class="my-1">@endif
+                                        @empty
+                                            <span class="text-muted">-- Belum Ada --</span>
+                                        @endforelse
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">{{ $pertandingan->kelasPertandingan?->kelas?->nama_kelas ?? 'N/A' }}</div>
+                                    </td>
+                                    <td><span class="badge badge-warning-custom">{{ 'Babak ' . $pertandingan->round_number }}</span></td>
+                                    <td><span>{{ ucwords(str_replace('_', ' ', $pertandingan->status)) }}</span></td>
+                                    <td class="text-muted">--:--</td>
+                                    <td>
+                                        <select class="form-select form-select-sm arena-dropdown" data-id="{{ $pertandingan->id }}">
+                                            <option value="" {{ is_null($pertandingan->arena_id) ? 'selected' : 'disabled' }}>
+                                                Pilih Arena...
+                                            </option>
+                                            @if ($arenas->isEmpty())
+                                                <option>Tidak ada arena</option>
+                                            @else
+                                                @foreach ($arenas as $arena)
+                                                    <option value="{{ $arena->id }}" {{ $pertandingan->arena_id == $arena->id ? 'selected' : '' }}>
+                                                        {{ $arena->arena_name }}
+                                                    </option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </td>
+                                    <td class="action-links">
+                                        <a href="#" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a>
+                                        <a href="#" class="text-danger"><i class="bi bi-trash-fill"></i> Hapus</a>
+                                        <a href="#" class="text-info"><i class="bi bi-arrow-left-right"></i> Pindah</a>
+                                    </td>
+                                </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="text-center text-muted py-4">Tidak ada pertandingan Prestasi yang dijadwalkan.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -145,16 +237,15 @@
 @endsection
 
 @push('scripts')
-{{-- JavaScript tidak perlu diubah, biarkan sama persis --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // AJAX untuk pindah arena
     const arenaDropdowns = document.querySelectorAll('.arena-dropdown');
     arenaDropdowns.forEach(dropdown => {
         dropdown.dataset.originalArena = dropdown.value;
         dropdown.addEventListener('change', function () {
             const pertandinganId = this.dataset.id;
             const newArenaId = this.value;
-            // Pastikan URL di-generate dengan benar oleh Laravel
             const url = "{{ url('/superadmin/pindah-arena') }}/" + pertandinganId; 
 
             if (!confirm(`Anda yakin ingin memindahkan Partai #${pertandinganId} ke ${this.options[this.selectedIndex].text}?`)) {
@@ -171,7 +262,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!ok) throw new Error(data.message || 'Gagal memindahkan arena.');
                 alert(data.message);
                 this.dataset.originalArena = newArenaId;
-                // Update juga data-arena-id di <tr> setelah berhasil pindah
                 this.closest('tr').dataset.arenaId = newArenaId;
             })
             .catch(error => {
@@ -182,20 +272,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // JavaScript UNTUK FILTER ARENA
-    const arenaFilter = document.getElementById('arena-filter');
-    const tableBody = document.getElementById('prestasi-table-body');
-    const tableRows = tableBody.querySelectorAll('tr');
+    // JavaScript UNTUK FILTER ARENA (Bekerja untuk kedua tab)
+    const allArenaFilters = document.querySelectorAll('.arena-filter');
+    allArenaFilters.forEach(filter => {
+        filter.addEventListener('change', function() {
+            const selectedArenaId = this.value;
+            const tableBodyId = this.dataset.tableBodyId;
+            const tableBody = document.getElementById(tableBodyId);
+            const tableRows = tableBody.querySelectorAll('tr');
 
-    arenaFilter.addEventListener('change', function() {
-        const selectedArenaId = this.value;
-
-        tableRows.forEach(row => {
-            if (selectedArenaId === 'all' || row.dataset.arenaId === selectedArenaId) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            tableRows.forEach(row => {
+                if (selectedArenaId === 'all' || row.dataset.arenaId === selectedArenaId) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         });
     });
 });

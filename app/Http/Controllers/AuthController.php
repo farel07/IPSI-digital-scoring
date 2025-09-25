@@ -32,7 +32,7 @@ class AuthController extends Controller
 
         if ($user->role_id == 1) {
             $redirectTo = 'superadmin/';
-        } elseif ($user->role_id == 4) {
+        } elseif ($user->role_id == 4 || $user->role_id == 7 || $user->role_id == 8) {
             $redirectTo = 'scoring/juri/' . $user->id;
         } else if ($user->role_id == 5) {
             $redirectTo = 'arena/dewan/' . $user->id;
