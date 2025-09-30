@@ -2,26 +2,15 @@
 
 namespace App\Http\Controllers;
 
-// Import model yang BENAR
 use Illuminate\Http\Request;
-use App\Models\Pertandingan;
 use App\Models\User;
+use App\Models\Pertandingan;
+use App\Models\UserArena;
 
-// Hapus model lama yang tidak terpakai
-// use App\Models\Matches;
-// use App\Models\UserMatch;
-
-class dewanController extends Controller
+class dewanOperatorController extends Controller
 {
-    /**
-     * [DIPERBARUI TOTAL] Menampilkan halaman Dewan untuk seorang User.
-     * Logika ini SAMA PERSIS dengan controller lain yang sudah bekerja.
-     *
-     * @param User $user Menerima objek Dewan (User) dari URL melalui Route Model Binding.
-     */
-    public function index(User $user)
-    {
-
+    //
+    public function index(User $user){
         if ($user->role->id !== 5) {
             abort(403, 'Akses ditolak. User ini bukan dewan.');
         }
@@ -33,6 +22,15 @@ class dewanController extends Controller
         if (!$arenaId) {
             abort(404, 'Dewan ini tidak ditugaskan ke arena manapun.');
         }
+
+        $daftar_juri = UserArena::with('user')
+            ->where('arena_id', $arenaId)
+            ->whereHas('user', function ($query) {
+                $query->whereIn('role_id', [4, 7, 8, 10]); // Role ID 4 untuk Juri
+            })
+            ->get()
+            ->pluck('user');
+        // return $juri;
 
         // 3. Cari satu pertandingan aktif di arena tersebut dan muat semua relasi yang diperlukan.
         // Accessor di model `Pertandingan` akan menangani pengambilan data pemain.
@@ -47,7 +45,7 @@ class dewanController extends Controller
         }
 
             $jumlah_pemain = $pertandingan->kelasPertandingan->kelas->jumlah_pemain;
-
+        // return $jumlah_pemain;
 
         if($pertandingan->kelasPertandingan->jenisPertandingan->id == 1){
             return view("scoring.dewan", [
@@ -55,22 +53,14 @@ class dewanController extends Controller
                 'user' => $user
             ]);
         } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)){
-            return view("seni.prestasi.tunggal.biru.dewan", [
-                'pertandingan' => $pertandingan,
-                'user' => $user
-            ]);
-           
+                    return view('seni.prestasi.tunggal.biru.dewanOperator', compact('user', 'pertandingan', 'daftar_juri'));
+
         } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && $jumlah_pemain == 2){
-             return view("seni.prestasi.ganda.merah.dewan", [
-                'pertandingan' => $pertandingan,
-                'user' => $user
-            ]);
-            
+                    return view('seni.prestasi.ganda.merah.dewanOperator', compact('user', 'pertandingan', 'daftar_juri'));
+           
         } else {
-            return "jenis pertandingan tidak dikenali.";
+            return "Jenis pertandingan tidak dikenali.";
         }
 
-        // 4. Kirim objek pertandingan (atau null jika tidak ada) ke view.
-        //     
     }
 }

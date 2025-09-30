@@ -13,7 +13,7 @@ class juriController extends Controller
 
     public function index(User $user)
     {
-        if ($user->role->id !== 4 && $user->role->id !== 7 && $user->role->id !== 8) { // Pastikan role juri
+        if ($user->role->id !== 4 && $user->role->id !== 7 && $user->role->id !== 8 && $user->role->id !== 10) { // Pastikan role juri
             abort(403, 'Akses ditolak. User ini bukan juri.');
         }
         // 1. Dapatkan arena ID milik juri.
@@ -28,8 +28,10 @@ class juriController extends Controller
         // Kita tidak perlu lagi `with()` yang kompleks di sini.
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
+
+            $jumlah_pemain = $pertandingan->kelasPertandingan->kelas->jumlah_pemain;
 
         // 4. Tangani jika tidak ada pertandingan aktif
         if (!$pertandingan) {
@@ -44,8 +46,22 @@ class juriController extends Controller
                 'pertandingan' => $pertandingan,
                 'user' => $user
             ]);
-        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2){
+        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)){
+
+            if($jumlah_pemain == 1){
+                $total_jurus = 14;
+            } else if($jumlah_pemain == 3){
+                $total_jurus = 12;
+            }
+            
+
             return view("seni.prestasi.tunggal.biru.juri", [
+                'pertandingan' => $pertandingan,
+                'user' => $user, 
+                'total_jurus' => $total_jurus
+            ]);
+        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && $jumlah_pemain == 2){
+            return view("seni.prestasi.ganda.biru.juri", [
                 'pertandingan' => $pertandingan,
                 'user' => $user
             ]);

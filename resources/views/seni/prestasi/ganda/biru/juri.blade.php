@@ -5,27 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Penilaian Pertandingan Silat</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- META TAG UNTUK CSRF TOKEN -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+
+    @php $unit_id = $_GET['unit'] ?? '0'  @endphp
+    {{-- {{ $unit_id }} --}}
+    
+    <!-- INPUT TERSEMBUNYI UNTUK DATA PENTING -->
+    <input type="hidden" id="pertandingan_id" value="{{ $pertandingan->id ?? '0' }}">
+    <input type="hidden" id="juri_id" value="{{ $user->id ?? '0' }}">
+    <input type="hidden" id="role_juri" value="{{ $user->role->name ?? '0' }}">
+
+    @if ($unit_id == 'unit_1')
+        
+    <input type="hidden" name="unit_id" id="unit_id" value="{{ $pertandingan->unit1_id ?? '0' }}">
+
+    @else
+    <input type="hidden" name="unit_id" id="unit_id" value="{{ $pertandingan->unit2_id ?? '0' }}">    
+
+    @endif
+
+
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 p-4">
-        <div class="flex justify-between items-center">
-            <div class="flex-col items-center space-x-3">
-                <div class="text-blue-600 px-3 py-1 rounded font-bold">
-                    MALAYSIA
-                </div>
-                <div class="flex items-start gap-3">
-                    <span class="text-blue-700 text-2xl font-medium">Ahmad Faizal,</span>
-                    <span class="text-blue-700 text-2xl font-medium">Ahmad Faizal,</span>
-                    {{-- <span class="text-blue-700 text-2xl font-medium">Ahmad Faizal</span> --}}
-                </div>
-            </div>
-            <div class="text-gray-600 text-sm">Arena A - Juri 1</div>
-        </div>
+        {{-- ... (Konten header Anda) ... --}}
     </header>
 
     <!-- Main Content -->
@@ -84,14 +93,8 @@
                     <div class="text-blue-100 mt-1">/ 10.00</div>
                 </div>
                 
-                <!-- Progress Bar -->
-                {{-- <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
-                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300" 
-                         id="progress-bar" style="width: 91%"></div>
-                </div> --}}
-                
                 <!-- Action Button -->
-                <button onclick="submitScores()" 
+                <button id="submit-button" onclick="submitScores()" 
                         class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
                     Submit Penilaian
                 </button>
@@ -100,12 +103,82 @@
     </main>
 
     <script>
-        // Score tracking
+        console.log(document.getElementById('unit_id').value);
+        // =====================================================================
+        // KONFIGURASI & STATE
+        // =====================================================================
         let scores = {
             teknik: 0,
             kekuatan: 0,
             penampilan: 0
         };
+        let isLoading = false; // Untuk anti-race condition
+        const BASE_SCORE = 9.10; // Skor dasar
+
+        // Ambil data dari HTML
+        const PERTANDINGAN_ID = document.getElementById('pertandingan_id').value;
+        const JURI_ID = document.getElementById('juri_id').value;
+        const ROLE_JURI = document.getElementById('role_juri').value;
+
+        // =====================================================================
+        // FUNGSI PENGIRIMAN DATA (ANTI-RACE CONDITION)
+        // =====================================================================
+        
+        function toggleAllButtons(disabled) {
+            isLoading = disabled;
+            const allButtons = document.querySelectorAll('button');
+            allButtons.forEach(button => {
+                button.disabled = disabled;
+                button.classList.toggle('opacity-75', disabled);
+                if (disabled) {
+                    button.classList.add('cursor-wait');
+                } else {
+                    button.classList.remove('cursor-wait');
+                }
+            });
+        }
+
+        function kirimPoinSeni(type, poin) {
+            if (isLoading) {
+                console.log("Request sedang diproses, mohon tunggu...");
+                return;
+            }
+            toggleAllButtons(true);
+
+            fetch(`/kirim-poin-seni/${JURI_ID}`, {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    poin: poin,
+                    type: type, // 'teknik', 'kekuatan', 'penampilan'
+                    filter: 'penilaian_ganda', // Filter statis untuk halaman ini
+                    pertandingan_id: PERTANDINGAN_ID,
+                    role: ROLE_JURI,
+                    unit_id: document.getElementById('unit_id').value,
+                }),
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            })
+            .then(data => {
+                console.log(`Data untuk ${type} berhasil dikirim:`, data);
+            })
+            .catch(error => {
+                console.error("Fetch error:", error);
+                alert("Terjadi kesalahan saat mengirim data. Silakan coba lagi.");
+            })
+            .finally(() => {
+                toggleAllButtons(false);
+            });
+        }
+        
+        // =====================================================================
+        // FUNGSI UI
+        // =====================================================================
 
         // Generate score buttons for each category
         function generateButtons(containerId, category) {
@@ -134,30 +207,28 @@
             // Add active state to selected button
             selectedButton.className = 'w-8 h-8 border-2 border-blue-600 bg-blue-600 text-white rounded text-xs font-bold transition-colors focus:outline-none';
 
-            // Update score
+            // Update local score
             scores[category] = value;
             document.getElementById(category + '-score').textContent = value.toFixed(2);
             
             // Update total
             updateTotal();
+            
+            // Kirim event ke server
+            kirimPoinSeni(category, value);
         }
 
         // Update total score
         function updateTotal() {
-            const total = 9.10 + scores.teknik + scores.kekuatan + scores.penampilan;
+            const total = BASE_SCORE + scores.teknik + scores.kekuatan + scores.penampilan;
             document.getElementById('total-score').textContent = total.toFixed(2);
-            
-            // Update progress bar
-            const percentage = (total / 10.00) * 100;
-            document.getElementById('progress-bar').style.width = Math.min(percentage, 100) + '%';
         }
 
-
-
-        // Submit scores
+        // Submit (konfirmasi akhir)
         function submitScores() {
-            const total = 9.10 + scores.teknik + scores.kekuatan + scores.penampilan;
-            alert(`Penilaian berhasil disubmit!\n\nTeknik Dasar: ${scores.teknik.toFixed(2)}\nKekuatan & Kecepatan: ${scores.kekuatan.toFixed(2)}\nPenampilan & Gaya: ${scores.penampilan.toFixed(2)}\n\nTotal Score: ${total.toFixed(2)}`);
+            const total = BASE_SCORE + scores.teknik + scores.kekuatan + scores.penampilan;
+            alert(`Penilaian berhasil disubmit!\n\nTotal Score: ${total.toFixed(2)}`);
+            // Di sini Anda bisa menambahkan logika fetch untuk konfirmasi akhir jika perlu
         }
 
         // Initialize buttons on page load
@@ -167,5 +238,5 @@
             generateButtons('penampilan-buttons', 'penampilan');
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97ac622534fc9fe5',t:'MTc1NzE0NTEwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>

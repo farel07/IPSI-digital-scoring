@@ -173,12 +173,12 @@ $daftar_pertandingan_pemasalan = Pertandingan::with([
     public function kelola_panitia()
     {
         // 1. Ambil semua user panitia beserta relasi arena mereka.
-        $panitia = User::whereIn('role_id', [4,5, 6, 7, 8]) // Sesuaikan role_id jika perlu
+        $panitia = User::whereIn('role_id', [4,5, 6, 7, 8, 9, 10]) // Sesuaikan role_id jika perlu
             ->with('user_arena.arena')
             ->orderBy('nama_lengkap', 'asc')
             ->get();
 
-        $roles = Role::whereIn('id', ['4', '5', '6', '7', '8'])->get();
+        $roles = Role::whereIn('id', ['4', '5', '6', '7', '8', '9', '10'])->get();
 
 
         // 2. Ambil SEMUA arena yang ada untuk mengisi pilihan dropdown.

@@ -13,6 +13,7 @@ use App\Http\Controllers\AuthController;
 // use App\Events\kirimTendang;
 // use App\Events\hapusPoint;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\dewanOperatorController;
 use App\Http\Controllers\dewanController;
 use App\Http\Controllers\juriController;
 use App\Http\Controllers\operatorController;
@@ -100,6 +101,8 @@ Route::prefix('scoring')->group(function () {
     Route::get('/penilaian/{user}', [penilaianController::class, 'index']);
 
     Route::get('/timer', [timerController::class, 'index']);
+
+    Route::get('/dewan-operator/{user}', [dewanOperatorController::class, 'index']);
 
 
     // seni & jurus baku

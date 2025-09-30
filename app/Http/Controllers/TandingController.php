@@ -26,6 +26,7 @@ class TandingController extends Controller
 
     public function kirim_binaan(Request $request, User $user)
     {
+        // return response()->json($request->all());
         $arenaId = $user->user_arena->first()->arena_id ?? null;
 
         if (!$arenaId) {
@@ -37,7 +38,6 @@ class TandingController extends Controller
         }
 
 
-
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
             ->where('status', 'siap_dimulai')
@@ -46,6 +46,7 @@ class TandingController extends Controller
 
         // Panggil helper dengan kolom 'binaan_point', nilai dari 'count', dan filter
         $this->updateOrCreatePoint($pertandingan, 'binaan_point', $request->filter, $request->count);
+        
 
         if ($request->count == 2) {
             $this->updateOrCreatePoint($pertandingan, 'teguran', $request->filter, 1);
@@ -368,8 +369,8 @@ class TandingController extends Controller
         $kick_point_1 = $point->kick_point_1 ?? 0;
         $kick_point_2 = $point->kick_point_2 ?? 0;
 
-        $fall_point_1 = $point->fall_point_1 * 2;
-        $fall_point_2 = $point->fall_point_2 * 2;
+        $fall_point_1 = $point->fall_point_1 * 3;
+        $fall_point_2 = $point->fall_point_2 * 3;
 
         // $point_teguran_1 = $point->teguran_1 ?? 0;
 

@@ -9,6 +9,11 @@
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
     <div class="container mx-auto p-4 max-w-7xl">
+
+        {{-- {{ $user->role->name }} --}}
+        {{-- <input type="hidden" name="role_juri" id="role_juri" value="{{ $user->role->name }}"> --}}
+        <input type="hidden" id="total-jurus-value" value="{{ $total_jurus }}">
+        <input type="hidden" name="filter" id="filter" value="penilaian_tunggal_regu">
         <!-- Header -->
         <div class="bg-white rounded-xl shadow-md p-6 mb-6">
             <div class="flex items-center justify-between">
@@ -17,13 +22,38 @@
                         AS
                     </div>
                     <div>
-                        <h2 class="text-xl font-bold text-gray-800">Ahmad Syahrul</h2>
-                        <p class="text-gray-600">Kontingen DKI Jakarta</p>
+                        {{ $_GET['unit'] == 'unit_1' ? 'Unit 1' : 'Unit 2' }}
+
+                        @if($_GET['unit'] == 'unit_1')
+
+                        <input type="hidden" name="unit_id" id="unit_id" value="{{ $pertandingan->unit1_id }}">
+                        {{-- {{ $pertandingan->pemain_unit_1 }} --}}
+                        @foreach($pertandingan->pemain_unit_1 as $unit)
+
+                        <h2 class="text-xl font-bold text-gray-800">{{ $unit->player->name }}</h2>
+                        <p class="text-gray-600">{{ $unit->player->contingent->name }}</p>
+
+                        @endforeach
+
+                        @else
+
+                        <input type="hidden" name="unit_id" id="unit_id" value="{{ $pertandingan->unit2_id }}">
+                        {{-- {{ $pertandingan->pemain_unit_2 }} --}}
+                        @foreach($pertandingan->pemain_unit_2 as $unit)
+
+                        <h2 class="text-xl font-bold text-gray-800">{{ $unit->player->name }}</h2>
+                        <p class="text-gray-600">{{ $unit->player->contingent->name }}</p>
+                        
+                        @endforeach
+                        @endif
                     </div>
                 </div>
                 <div class="text-right">
-                    <h1 class="text-2xl font-bold text-blue-600">Dewasa Tunggal Putra</h1>
-                    <p class="text-gray-600">Kategori Tanding</p>
+                    <h1 class="text-2xl font-bold text-blue-600">{{ $pertandingan->kelasPertandingan->kelas->nama_kelas }}</h1>
+                    <p class="text-gray-600">{{ $pertandingan->kelasPertandingan->kategoriPertandingan->nama_kategori }} 
+                        {{ $pertandingan->kelasPertandingan->jenisPertandingan->nama_jenis }} 
+                        
+                    </p>
                 </div>
             </div>
         </div>
@@ -32,7 +62,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             <!-- Wrong Move Card -->
             <div class="bg-red-500 rounded-xl shadow-md p-8 flex flex-col items-center justify-center min-h-64">
-                <button id="wrongMoveBtn" class="text-white font-bold py-8 px-12 text-3xl transition-colors duration-200 w-full h-full" onclick="kirimPoinSeni(1, -1)">
+                <button id="wrongMoveBtn" class="text-white font-bold py-8 px-12 text-3xl transition-colors duration-200 w-full h-full" onclick="kirimPoinSeni('wrong_move', -0.01)">
                     <div class="text-6xl mb-4">✗</div>
                     Wrong Move
                 </button>
@@ -82,140 +112,185 @@
                 <h3 class="text-xl font-semibold text-white mb-4 text-center">TOTAL NILAI AKHIR</h3>
                 <div class="text-center">
                     <div class="text-6xl font-bold text-white" id="finalScore">9.90</div>
+                    <input type="hidden" id="nilaiAkhir" value="9.90">
                     <p class="text-red-100 mt-2">Nilai Final</p>
                 </div>
             </div>
         </div>
     </div>
 
+
+  {{-- ... bagian HTML Anda ... --}}
+
+<script>
+    // =====================================================================
+    // KONFIGURASI & STATE
+    // =====================================================================
+    
+    // AMBIL NILAI DINAMIS DARI HTML
+    const TOTAL_JURUS = parseInt(document.getElementById('total-jurus-value').value) || 14; // Default ke 14 jika tidak ada
+
+    let currentMove = 1;
+    let moveErrors = {}; // Lacak kesalahan per jurus
+    let totalCategoryScore = 0.00; // Skor Kategori Stamina
+    const penaltyPerError = 0.01;
+    const baseScore = 9.90;
+
+    // Inisialisasi jurus pertama
+    moveErrors[currentMove] = 0;
+
+    // =====================================================================
+    // SELEKSI ELEMEN DOM
+    // =====================================================================
+    const currentMoveEl = document.getElementById('currentMove');
+    const currentErrorsEl = document.getElementById('currentErrors');
+    const totalErrorsEl = document.getElementById('totalErrors');
+    const finalScoreEl = document.getElementById('finalScore');
+    const categoryScoreEl = document.getElementById('categoryScore');
+    const wrongMoveBtn = document.getElementById('wrongMoveBtn');
+    const nextMoveBtn = document.getElementById('nextMoveBtn');
+    const scoreButtonsContainer = document.getElementById('scoreButtons');
+
+    // =====================================================================
+    // FUNGSI UTAMA
+    // =====================================================================
+
+    /**
+     * Generate tombol skor (0.01 - 0.10).
+     * Tombol hanya aktif jika jurus saat ini <= TOTAL_JURUS.
+     */
+    function generateScoreButtons() {
+        scoreButtonsContainer.innerHTML = '';
+        
+        // DIUBAH: Gunakan TOTAL_JURUS sebagai batas
+        if (currentMove <= TOTAL_JURUS) {
+            for (let i = 1; i <= 10; i++) {
+                const score = (i * 0.01).toFixed(2);
+                const button = document.createElement('button');
+                
+                if (totalCategoryScore === parseFloat(score)) {
+                    button.className = 'px-3 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-green-500 hover:bg-green-600 text-white';
+                } else {
+                    button.className = 'px-3 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 hover:bg-gray-300 text-gray-700';
+                }
+                
+                button.textContent = score;
+                button.onclick = () => {
+                    selectScore(button, parseFloat(score));
+                    kirimPoinSeni('flow_stamina', parseFloat(score));
+                };
+                scoreButtonsContainer.appendChild(button);
+            }
+        } else {
+            // Tampilkan pesan nonaktif jika sudah melewati batas jurus
+            const message = document.createElement('div');
+            message.className = 'text-center text-gray-500 italic py-4';
+            message.textContent = `Nilai kategori hanya untuk jurus 1-${TOTAL_JURUS}`;
+            scoreButtonsContainer.appendChild(message);
+        }
+    }
+
+    /**
+     * Fungsi saat tombol skor dipilih.
+     */
+    function selectScore(button, score) {
+        // DIUBAH: Gunakan TOTAL_JURUS sebagai batas
+        if (currentMove > TOTAL_JURUS) {
+            return;
+        }
+        
+        const buttons = scoreButtonsContainer.querySelectorAll('button');
+        buttons.forEach(btn => {
+            btn.className = 'px-3 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 hover:bg-gray-300 text-gray-700';
+        });
+        
+        button.className = 'px-3 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-green-500 hover:bg-green-600 text-white';
+        
+        totalCategoryScore = score;
+        categoryScoreEl.textContent = score.toFixed(2);
+        updateDisplay();
+    }
+
+    /**
+     * Menghitung total kesalahan dari semua jurus.
+     */
+    function getTotalErrors() {
+        return Object.values(moveErrors).reduce((sum, errors) => sum + errors, 0);
+    }
+
+    /**
+     * Memperbarui semua tampilan di layar.
+     */
+    function updateDisplay() {
+        currentMoveEl.textContent = currentMove;
+        currentErrorsEl.textContent = moveErrors[currentMove] || 0;
+        
+        const totalErrors = getTotalErrors();
+        totalErrorsEl.textContent = totalErrors;
+        
+        const finalScore = Math.max(0, baseScore - (totalErrors * penaltyPerError) + totalCategoryScore);
+        finalScoreEl.textContent = finalScore.toFixed(2);
+        document.getElementById('nilaiAkhir').value = finalScore.toFixed(2);
+
+        // Nonaktifkan tombol 'Next Move' jika sudah mencapai jurus terakhir
+        if (currentMove >= TOTAL_JURUS) {
+            nextMoveBtn.disabled = true;
+            nextMoveBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+            nextMoveBtn.disabled = false;
+            nextMoveBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
+    // =====================================================================
+    // EVENT LISTENERS
+    // =====================================================================
+
+    // Handler tombol "Wrong move"
+    wrongMoveBtn.addEventListener('click', () => {
+        // Hanya bisa menambah kesalahan jika belum melewati batas jurus
+        if (currentMove > TOTAL_JURUS) return;
+
+        if (!moveErrors[currentMove]) {
+            moveErrors[currentMove] = 0;
+        }
+        moveErrors[currentMove]++;
+        updateDisplay();
+        
+        wrongMoveBtn.classList.add('scale-95');
+        setTimeout(() => wrongMoveBtn.classList.remove('scale-95'), 150);
+    });
+
+    // Handler tombol "Next move"
+    nextMoveBtn.addEventListener('click', () => {
+        // Pastikan tidak melewati batas
+        if (currentMove >= TOTAL_JURUS) return;
+        
+        currentMove++;
+        moveErrors[currentMove] = 0;
+        
+        // Panggil updateDisplay() SEBELUM generateScoreButtons()
+        // agar tombol 'Next Move' bisa dinonaktifkan tepat pada jurus terakhir.
+        updateDisplay(); 
+        
+        generateScoreButtons();
+        categoryScoreEl.textContent = totalCategoryScore.toFixed(2);
+        
+        nextMoveBtn.classList.add('scale-95');
+        setTimeout(() => nextMoveBtn.classList.remove('scale-95'), 150);
+    });
+
+    // =====================================================================
+    // INISIALISASI
+    // =====================================================================
+    generateScoreButtons();
+    updateDisplay();
+</script>
+
+
+{{-- ... sisa kode ... --}}
     <script src="/assets/js/event_seni.js"></script>
 
-    <script>
-        // Game state
-        let currentMove = 1;
-        let moveErrors = {}; // Track errors per move
-        let totalCategoryScore = 0.00; // Category score (can be changed within moves 1-14)
-        const penaltyPerError = 0.01;
-        const baseScore = 9.90;
 
-        // Initialize first move
-        moveErrors[currentMove] = 0;
-
-        // DOM elements
-        const currentMoveEl = document.getElementById('currentMove');
-        const currentErrorsEl = document.getElementById('currentErrors');
-        const totalErrorsEl = document.getElementById('totalErrors');
-        const finalScoreEl = document.getElementById('finalScore');
-        const categoryScoreEl = document.getElementById('categoryScore');
-        const wrongMoveBtn = document.getElementById('wrongMoveBtn');
-        const nextMoveBtn = document.getElementById('nextMoveBtn');
-        const scoreButtonsContainer = document.getElementById('scoreButtons');
-
-
-        // Generate score buttons (0.01 - 0.10)
-        function generateScoreButtons() {
-            scoreButtonsContainer.innerHTML = '';
-            
-            // Show buttons if we're within moves 1-14
-            if (currentMove <= 14) {
-                for (let i = 1; i <= 10; i++) {
-                    const score = (i * 0.01).toFixed(2);
-                    const button = document.createElement('button');
-                    
-                    // Check if this score is currently selected
-                    if (totalCategoryScore === parseFloat(score)) {
-                        button.className = 'px-3 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-green-500 hover:bg-green-600 text-white';
-                    } else {
-                        button.className = 'px-3 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 hover:bg-gray-300 text-gray-700';
-                    }
-                    
-                    button.textContent = score;
-                    button.onclick = () => selectScore(button, parseFloat(score));
-                    scoreButtonsContainer.appendChild(button);
-                }
-            } else {
-                // Show disabled message for moves beyond 14
-                const message = document.createElement('div');
-                message.className = 'text-center text-gray-500 italic py-4';
-                message.textContent = 'Nilai kategori hanya untuk jurus 1-14';
-                scoreButtonsContainer.appendChild(message);
-            }
-        }
-
-        // Select score button
-        function selectScore(button, score) {
-            // Only allow selection if we're within moves 1-14
-            if (currentMove > 14) {
-                return;
-            }
-            
-            // Reset all buttons
-            const buttons = scoreButtonsContainer.querySelectorAll('button');
-            buttons.forEach(btn => {
-                btn.className = 'px-3 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 hover:bg-gray-300 text-gray-700';
-            });
-            
-            // Highlight selected button
-            button.className = 'px-3 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-green-500 hover:bg-green-600 text-white';
-            
-            // Update category score (can be changed anytime within moves 1-14)
-            totalCategoryScore = score;
-            categoryScoreEl.textContent = score.toFixed(2);
-            updateDisplay();
-        }
-
-        // Calculate total errors
-        function getTotalErrors() {
-            return Object.values(moveErrors).reduce((sum, errors) => sum + errors, 0);
-        }
-
-
-
-        // Update displays
-        function updateDisplay() {
-            currentMoveEl.textContent = currentMove;
-            currentErrorsEl.textContent = moveErrors[currentMove] || 0;
-            
-            const totalErrors = getTotalErrors();
-            totalErrorsEl.textContent = totalErrors;
-            
-            const finalScore = Math.max(0, baseScore - (totalErrors * penaltyPerError) + totalCategoryScore);
-            finalScoreEl.textContent = finalScore.toFixed(2);
-        }
-
-        // Wrong move button handler
-        wrongMoveBtn.addEventListener('click', () => {
-            if (!moveErrors[currentMove]) {
-                moveErrors[currentMove] = 0;
-            }
-            moveErrors[currentMove]++;
-            updateDisplay();
-            
-            // Add visual feedback
-            wrongMoveBtn.classList.add('scale-95');
-            setTimeout(() => wrongMoveBtn.classList.remove('scale-95'), 150);
-        });
-
-        // Next move button handler
-        nextMoveBtn.addEventListener('click', () => {
-            currentMove++;
-            moveErrors[currentMove] = 0;
-            updateDisplay();
-            
-            // Regenerate score buttons (will show disabled if beyond move 14)
-            generateScoreButtons();
-            
-            // Keep showing the category score
-            categoryScoreEl.textContent = totalCategoryScore.toFixed(2);
-            
-            // Add visual feedback
-            nextMoveBtn.classList.add('scale-95');
-            setTimeout(() => nextMoveBtn.classList.remove('scale-95'), 150);
-        });
-
-        // Initialize
-        generateScoreButtons();
-        updateDisplay();
-    </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97ac9dcc870e4112',t:'MTc1NzE0NzU1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

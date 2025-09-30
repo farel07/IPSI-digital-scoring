@@ -1,7 +1,13 @@
 const id_user = window.location.pathname.split("/").pop();
+// const role_juri = document.getElementById("role_juri").value;
+const filter = document.getElementById("filter").value;
+// const nilaiAkhir = document.getElementById("nilaiAkhir").value;
+const unit_id = document.getElementById("unit_id").value;
 
+function kirimPoinSeni(type, poin, unit_id){
 
-function kirimPoinSeni(juri, poin){
+  // Ambil elemen dengan ID finalScore
+
     fetch("/kirim-poin-seni/" + id_user, {
     method: "POST",
     headers: {
@@ -9,7 +15,12 @@ function kirimPoinSeni(juri, poin){
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      count: parseInt(poin),
+      poin: parseFloat(poin),
+      type: type,
+      unit_id: document.getElementById("unit_id").value,
+      // role_juri: role_juri,
+      filter: filter,
+      // nilaiAkhir: nilaiAkhir
     }),
   })
     .then((res) => res.json())
@@ -18,3 +29,4 @@ function kirimPoinSeni(juri, poin){
       console.log(data);
     });
 }
+
