@@ -2,8 +2,9 @@
 @section('content')
 
 <div id="match-data" 
-     data-pertandingan-id="{{ $pertandingan->id }}" 
-     data-current-round="{{ $pertandingan->current_round }}">
+    data-pertandingan-id="{{ $pertandingan->id }}" 
+    data-current-round="{{ $pertandingan->current_round }}"
+    data-kategori="{{ $pertandingan->kelasPertandingan?->kategoriPertandingan?->nama_kategori ?? 'Prestasi' }}">>
 </div>
 
     <div class="container">
@@ -57,22 +58,22 @@
                                 <div class="col-3 ps-2 p-0"><div class="p-3 border bg-primary text-light text-center" style="font-size:14px; border-radius: 10px; width: 90px">JATUH</div></div>
                             </div>
                             <div class="row mt-2">
-                                <div class="col-3 pe-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-blue-1">bina</div></div>
-                                <div class="col-3 ps-0 pe-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-blue-1">teguran</div></div>
-                                <div class="col-3 ps-1 p-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-blue-1">peringatan</div></div>
-                                <div class="col-3 ps-2 p-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-blue-1">jatuh</div></div>
+                                <div class="col-3 pe-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-blue-1">-</div></div>
+                                <div class="col-3 ps-0 pe-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-blue-1">-</div></div>
+                                <div class="col-3 ps-1 p-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-blue-1">-</div></div>
+                                <div class="col-3 ps-2 p-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-blue-1">-</div></div>
                             </div>
                             <div class="row mt-2">
-                                <div class="col-3 pe-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-blue-2">bina 2</div></div>
-                                <div class="col-3 ps-0 pe-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-blue-2">teguran 2</div></div>
-                                <div class="col-3 ps-1 p-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-blue-2">peringatan 2</div></div>
-                                <div class="col-3 ps-2 p-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-blue-2">jatuh 2</div></div>
+                                <div class="col-3 pe-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-blue-2">-</div></div>
+                                <div class="col-3 ps-0 pe-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-blue-2">-</div></div>
+                                <div class="col-3 ps-1 p-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-blue-2">-</div></div>
+                                <div class="col-3 ps-2 p-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-blue-2">-</div></div>
                             </div>
                             <div class="row mt-2">
-                                <div class="col-3 pe-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-blue-3">bina 3</div></div>
-                                <div class="col-3 ps-0 pe-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-blue-3">teguran 3</div></div>
-                                <div class="col-3 ps-1 p-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-blue-3">peringatan 3</div></div>
-                                <div class="col-3 ps-2 p-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-blue-3">jatuh 3</div></div>
+                                <div class="col-3 pe-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-blue-3">-</div></div>
+                                <div class="col-3 ps-0 pe-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-blue-3">-</div></div>
+                                <div class="col-3 ps-1 p-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-blue-3">-</div></div>
+                                <div class="col-3 ps-2 p-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-blue-3">-</div></div>
                             </div>
 
                             <div class="row justify-content-between me-4">
@@ -88,19 +89,33 @@
                         {{-- scoring --}}
                         <div class="col-2">
                             <div class="p-3 border bg-success text-light text-center" style="border-radius: 10px; height:55px">SCORE</div>
-                            @php $currentRound = $pertandingan->round_number ?? 1; @endphp
-                            <div class="p-3 mt-2 border {{ $currentRound == 1 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px; height:55px">I</div>
-                            <div class="p-3 mt-2 border {{ $currentRound == 2 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px; height:55px">II</div>
-                            <div class="p-3 mt-2 border {{ $currentRound == 3 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px; height:55px">III</div>
-                            
+                            <div id="round-box-1" class="p-3 mt-2 border {{ $pertandingan->current_round >= 1 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px; height:55px">I</div>
+                            <div id="round-box-2" class="p-3 mt-2 border {{ $pertandingan->current_round >= 2 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px; height:55px">II</div>
+                            @if ($pertandingan->kelasPertandingan?->kategoriPertandingan?->nama_kategori != 'Pemasalan')
+                                <div id="round-box-3" class="p-3 mt-2 border {{ $pertandingan->current_round >= 3 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px; height:55px">III</div>
+                            @endif
                             <div class="mt-5">
                                 <button type="button" class="btn btn-warning text-light" data-bs-toggle="modal" data-bs-target="#validationModal">
-    REQUEST VALIDATION
-</button>
+                                    REQUEST VALIDATION
+                                </button>
                                 {{-- Modal Content Here --}}
-                                <div class="btn btn-success mt-2">TENTUKAN PEMENANG</div>
+                                <div id="btn-tentukan-pemenang" class="btn btn-success mt-2 
+                                    @php
+                                        $kategori = $pertandingan->kelasPertandingan?->kategoriPertandingan?->nama_kategori;
+                                        $currentRound = $pertandingan->current_round;
+                                        $isDisabled = true;
+                                        if ($kategori == 'Pemasalan' && $currentRound >= 2) {
+                                            $isDisabled = false;
+                                        } elseif ($kategori != 'Pemasalan' && $currentRound >= 3) {
+                                            $isDisabled = false;
+                                        }
+                                        if ($isDisabled) {
+                                            echo 'disabled';
+                                        }
+                                    @endphp">TENTUKAN PEMENANG
+                                </div>
                                 <div class="border bg-dark p-2 mt-2 rounded-top"><p class="m-0 text-center text-light">LAST VALIDATION</p></div>
-                                <div class="border bg-light p-2 mb-2 rounded-bottom"><p class="m-0 text-center">NO RESULT</p></div>
+                                <div id="final-result-display" class="border bg-light p-2 mb-2 rounded-bottom"><p class="m-0 text-center">NO RESULT</p></div>
                             </div>
                         </div>
 
@@ -113,10 +128,10 @@
                                 <div class="col-3 ps-2 p-0"><div class="p-3 border bg-danger text-light text-center" style="font-size:14px; border-radius: 10px; width: 90px">JATUH</div></div>
                             </div>
                             <div class="row justify-content-end mt-2">
-                                <div class="col-3 pe-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-red-1">bina</div></div>
-                                <div class="col-3 ps-0 pe-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-red-1">teguran</div></div>
-                                <div class="col-3 ps-1 p-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-red-1">peringatan</div></div>
-                                <div class="col-3 ps-2 p-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-red-1">jatuh</div></div>
+                                <div class="col-3 pe-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-bina-red-1">-</div></div>
+                                <div class="col-3 ps-0 pe-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-teguran-red-1">-</div></div>
+                                <div class="col-3 ps-1 p-0" style="width: 98px"><div class="py-3 border bg-light text-dark text-center" style="font-size:14px;border-radius: 10px; width: 90px" id="point-peringatan-red-1">-</div></div>
+                                <div class="col-3 ps-2 p-0"><div class="p-3 border bg-light text-dark text-center" style="font-size:14px; border-radius: 10px; width: 90px" id="point-jatuh-red-1">-</div></div>
                             </div>
                             {{-- Baris point 2 & 3 untuk Merah --}}
                             <div class="row justify-content-end mt-2">
@@ -152,135 +167,212 @@
 
     {{-- modal request validation (kode tidak berubah) --}}
     <div class="modal fade" id="validationModal" tabindex="-1" aria-labelledby="validationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title" id="validationModalLabel">Request Validasi Poin</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
-                <div class="modal-body">
-                    
-                    {{-- Letakkan ini di view Blade Anda, misalnya di kolom tengah --}}
-@if(auth()->user()->role_id == 5)
-    <div id="dewan-vote-display" class="border bg-dark p-2 mt-2 rounded" style="display: none;">
-        <p class="m-0 text-center text-light">
-            Voting: <span id="vote-request-info" class="fw-bold">...</span>
-        </p>
-        <p class="m-0 text-center text-warning" style="font-size: 1.5rem;">
-            <span id="vote-count">0</span> / 3 Juri Setuju
-        </p>
-    </div>
-@endif
-
-                    <div class="row">
-                        <div class="col-6 text-center">
-                            <h4 class="team-merah mb-3">Tim Merah</h4>
-                            <div class="d-grid gap-2">
-                                <button type="button" class="btn btn-danger btn-lg" onclick="handleValidationRequest('merah', 'tendangan', 2)">Tendangan (2 Poin)</button>
-                                <button type="button" class="btn btn-danger btn-lg" onclick="handleValidationRequest('merah', 'jatuhan', 3)">Jatuhan (3 Poin)</button>
-                            </div>
-                        </div>
-                        <div class="col-6 text-center">
-                            <h4 class="team-biru mb-3">Tim Biru</h4>
-                            <div class="d-grid gap-2">
-                                <button type="button" class="btn btn-primary btn-lg" onclick="handleValidationRequest('biru', 'tendangan', 2)">Tendangan (2 Poin)</button>
-                                <button type="button" class="btn btn-primary btn-lg" onclick="handleValidationRequest('biru', 'jatuhan', 3)">Jatuhan (3 Poin)</button>
-                            </div>
-                        </div>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="validationModalLabel">Request Validasi Juri</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="dewan-request-section">
+                    <p class="text-center lead">Kirim permintaan validasi ke Juri untuk:</p>
+                    <div class="d-grid gap-3">
+                        <button type="button" class="btn btn-primary btn-lg" onclick="sendValidationRequest('Jatuhan')">Jatuhan</button>
+                        <button type="button" class="btn btn-danger btn-lg" onclick="sendValidationRequest('Pelanggaran')">Pelanggaran</button>
                     </div>
                 </div>
-                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button></div>
+
+                <div id="dewan-vote-tracker-section" class="d-none mt-3">
+                    <h5 class="text-center">Menunggu Vote dari Juri untuk: <strong id="requested-validation-type"></strong></h5>
+                    <table class="table table-bordered text-center mt-3">
+                        <thead>
+                            <tr>
+                                <th>Juri 1</th>
+                                <th>Juri 2</th>
+                                <th>Juri 3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span id="juri-1-vote" class="badge bg-secondary fs-6">Menunggu</span></td>
+                                <td><span id="juri-2-vote" class="badge bg-secondary fs-6">Menunggu</span></td>
+                                <td><span id="juri-3-vote" class="badge bg-secondary fs-6">Menunggu</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     <div class="d-grid mt-4">
+                        <button class="btn btn-secondary" type="button" onclick="resetValidation()">Reset Validasi</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
 
    {{-- Letakkan di dalam file dewan.blade.php, idealnya sebelum </body> --}}
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.2/dist/echo.iife.js"></script>
+<script src="{{ asset('assets') }}/js/listenEvents.js"></script>
 
 <script>
-    // =================================================================
-    // SETUP UNTUK HALAMAN DEWAN
-    // =================================================================
-    
-    // 1. DEKLARASI VARIABEL UTAMA
-    const dewanMatchDataEl = document.getElementById('match-data');
-    const dewanPertandinganId = dewanMatchDataEl.dataset.pertandinganId;
-    const dewanUserId = {{ auth()->id() ?? 'null' }};
-
-    // Inisialisasi Pusher
-    const pusher = new Pusher('{{ config('broadcasting.connections.pusher.key') }}', {
-        cluster: '{{ config('broadcasting.connections.pusher.options.cluster') }}'
-    });
-
-    // =================================================================
-    // FUNGSI UNTUK DEWAN MENGIRIM REQUEST VALIDASI
-    // =================================================================
-    function handleValidationRequest(sudut, jenisPoin, nilaiPoin) {
-        if (!dewanPertandinganId || !dewanUserId) {
-            alert('Error: Data Pertandingan atau User Dewan tidak ditemukan. Gagal mengirim request.');
+    var jenis_validation = '';
+    document.addEventListener('DOMContentLoaded', function() {
+        const dewanMatchDataEl = document.getElementById('match-data');
+        if (!dewanMatchDataEl || !dewanMatchDataEl.dataset.pertandinganId) {
+            console.warn("DEWAN: Tidak ada data pertandingan, listener tidak diaktifkan.");
             return;
         }
 
-        const targetUrl = `{{ route('tanding.requestValidation', ['user' => ':userId']) }}`.replace(':userId', dewanUserId);
-        const payload = {
-            pertandingan_id: parseInt(dewanPertandinganId),
-            sudut: sudut,
-            jenis_poin: jenisPoin,
-            nilai: nilaiPoin
+        const pertandinganId = dewanMatchDataEl.dataset.pertandinganId;
+        const kategori = dewanMatchDataEl.dataset.kategori;
+
+        // --- State Management ---
+        let votes = {};
+        const requiredVotes = 2;
+
+        // --- Element Selectors ---
+        const requestSection = document.getElementById('dewan-request-section');
+        const trackerSection = document.getElementById('dewan-vote-tracker-section');
+        const validationTypeEl = document.getElementById('requested-validation-type');
+        const finalResultEl = document.getElementById('final-result-display').querySelector('p');
+        const btnPemenang = document.getElementById('btn-tentukan-pemenang');
+        const voteSpans = {
+            'juri-1': document.getElementById('juri-1-vote'),
+            'juri-2': document.getElementById('juri-2-vote'),
+            'juri-3': document.getElementById('juri-3-vote'),
+        };
+        
+        // --- UI Functions ---
+        window.resetValidation = function() {
+            votes = {};
+            Object.values(voteSpans).forEach(span => {
+                if(span) {
+                    span.className = 'badge bg-secondary fs-6';
+                    span.textContent = 'Menunggu';
+                }
+            });
+            trackerSection.classList.add('d-none');
+            requestSection.classList.remove('d-none');
+            finalResultEl.textContent = 'NO RESULT';
+            finalResultEl.className = 'm-0 text-center';
         };
 
-        console.log('DEWAN: Mengirim request validasi:', payload);
+        // --- Logic Functions ---
+        function checkVotes() {
+            const voteCounts = { merah: 0, biru: 0, invalid: 0 };
+            Object.values(votes).forEach(vote => {
+                if(vote) voteCounts[vote]++;
+            });
 
-        fetch(targetUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
-            body: JSON.stringify(payload)
-        })
-        .then(response => {
-            if (!response.ok) { return response.json().then(err => { throw err; }); }
-            return response.json();
-        })
-        .then(result => {
-            console.log('DEWAN: Respons server:', result.message);
-
-            // Tampilkan panel voting dan reset counter
-            const dewanVoteDisplay = document.getElementById('dewan-vote-display');
-            if (dewanVoteDisplay) {
-                document.getElementById('vote-request-info').textContent = `${jenisPoin.toUpperCase()} ${sudut.toUpperCase()}`;
-                document.getElementById('vote-count').textContent = '0';
-                dewanVoteDisplay.style.display = 'block';
+            for (const vote in voteCounts) {
+                if (voteCounts[vote] >= requiredVotes) {
+                    const resultText = vote.toUpperCase() + ' || ' + jenis_validation;
+                    const colorClass = vote === 'merah' ? 'text-danger fw-bold' : (vote === 'biru' ? 'text-primary fw-bold' : '');
+                    
+                    finalResultEl.innerHTML = resultText;
+                    finalResultEl.className = `m-0 text-center ${colorClass}`;
+                    console.log(`DEWAN: Final result determined: ${resultText}`);
+                    
+                    // setTimeout(() => {
+                    //     const validationModal = bootstrap.Modal.getInstance(document.getElementById('validationModal'));
+                    //     if (validationModal) validationModal.hide();
+                    //     resetValidation();
+                    // }, 3000);
+                    return;
+                } else {
+                    const resultText = 'INVALID';
+                    
+                    finalResultEl.innerHTML = resultText;
+                    console.log(`DEWAN: Final result determined: ${resultText}`);
+                }
             }
-            // Sembunyikan modal pengirim
-            const modalElement = document.getElementById('validationModal');
-            const modalInstance = bootstrap.Modal.getInstance(modalElement);
-            if (modalInstance) modalInstance.hide();
-        })
-        .catch(error => {
-            console.error('DEWAN: Gagal mengirim request validasi.', error);
-            alert('Gagal mengirim request validasi.');
-        });
-    }
-
-    // =================================================================
-    // LOGIKA UNTUK DEWAN MENERIMA VOTE DARI JURI
-    // =================================================================
-    if (dewanPertandinganId) {
-        const dewanChannel = pusher.subscribe(`pertandingan.${dewanPertandinganId}`);
+        }
         
-        dewanChannel.bind('pusher:subscription_succeeded', () => {
-            console.log(`DEWAN: Berhasil subscribe ke channel pertandingan.${dewanPertandinganId}`);
+        // --- WebSocket & Event Handling ---
+        const echo = new window.Echo({
+            broadcaster: 'pusher',
+            key: "{{ config('broadcasting.connections.pusher.key') }}",
+            cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
+            forceTLS: true
         });
 
-        dewanChannel.bind("terima-vote-juri", function (eventData) {
-            console.log("DEWAN: Menerima vote dari juri:", eventData);
-            
-            const dewanVoteDisplay = document.getElementById('dewan-vote-display');
-            if (dewanVoteDisplay && eventData.data.vote === 'setuju') {
-                const voteCountEl = document.getElementById('vote-count');
-                let currentCount = parseInt(voteCountEl.textContent) || 0;
-                voteCountEl.textContent = currentCount + 1;
+        const channel = echo.private(`pertandingan.${pertandinganId}`);
+
+        channel.error(err => console.error("DEWAN: Gagal koneksi ke channel.", err));
+
+        channel.listen('JuriVoteSubmitted', (data) => {
+            console.log("DEWAN: Menerima vote dari juri", data);
+            if (voteSpans[data.juriName]) {
+                votes[data.juriName] = data.vote;
+                
+                const span = voteSpans[data.juriName];
+                span.textContent = data.vote.toUpperCase();
+                if(data.vote === 'merah') span.className = 'badge bg-danger fs-6';
+                else if (data.vote === 'biru') span.className = 'badge bg-primary fs-6';
+                else span.className = 'badge bg-dark fs-6';
+
+                checkVotes();
             }
         });
-    } else {
-        console.error("DEWAN: ID Pertandingan tidak ditemukan, tidak bisa subscribe ke Pusher.");
-    }
+        
+        channel.listen('RoundUpdated', (data) => {
+            console.log("DEWAN: Menerima event RoundUpdated", data);
+            const newRoundNumber = data.newRoundNumber;
+            const roundBoxes = {
+                1: document.getElementById('round-box-1'),
+                2: document.getElementById('round-box-2'),
+                3: document.getElementById('round-box-3')
+            };
+
+            Object.values(roundBoxes).forEach(box => {
+                if (box) {
+                    box.classList.remove('bg-warning');
+                    box.classList.add('bg-light');
+                }
+            });
+            for (let i = 1; i <= newRoundNumber; i++) {
+                if (roundBoxes[i]) {
+                    roundBoxes[i].classList.remove('bg-light');
+                    roundBoxes[i].classList.add('bg-warning');
+                }
+            }
+            
+            const isPemasalanDone = (kategori === 'Pemasalan' && newRoundNumber >= 2);
+            const isPrestasiDone = (kategori !== 'Pemasalan' && newRoundNumber >= 3);
+            if (btnPemenang && (isPemasalanDone || isPrestasiDone)) {
+                btnPemenang.classList.remove('disabled');
+            }
+        });
+
+        // --- Action Functions ---
+        window.sendValidationRequest = function(jenis) {
+            console.log(jenis)
+            jenis_validation = jenis;
+            fetch("{{ route('dewan.requestValidation') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    pertandingan_id: pertandinganId,
+                    jenis_validasi: jenis
+                })
+            })
+            .then(res => res.json())
+            .then(result => {
+                if(result.status === 'success') {
+                    // console.log('asdsad')
+                    resetValidation();
+                    validationTypeEl.textContent = jenis;
+                    requestSection.classList.add('d-none');
+                    trackerSection.classList.remove('d-none');
+                } else {
+                    alert('Gagal mengirim request validasi.');
+                }
+            }).catch(err => console.error(err));
+        }
+    });
 </script>
 @endsection

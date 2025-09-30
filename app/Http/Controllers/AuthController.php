@@ -35,9 +35,11 @@ class AuthController extends Controller
         } elseif ($user->role_id == 4 || $user->role_id == 7 || $user->role_id == 8) {
             $redirectTo = 'scoring/juri/' . $user->id;
         } else if ($user->role_id == 5) {
-            $redirectTo = 'arena/dewan/' . $user->id;
+            $redirectTo = 'scoring/dewan/' . $user->id;
         } else if ($user->role_id == 6) {
-            $redirectTo = 'arena/operator/' . $user->id;
+            $redirectTo = 'scoring/operator/' . $user->id;
+        } else if ($user->role_id == 9) {
+            $redirectTo = 'scoring/timer/' . $user->id;
         } else {
             $redirectTo = '/login'; // Atau halaman lain jika peran tidak dikenali
         }

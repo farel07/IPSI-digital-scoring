@@ -68,12 +68,13 @@
             <table class="table table-bordered table-hover align-middle text-center">
                 <thead class="table-dark">
                     <tr>
-                        <th scope="col">Partai</th>
+                        <th scope="col">ID</th>
                         <th scope="col">Kelas & Kategori</th>
                         <th scope="col">Babak</th>
                         <th scope="col" class="table-primary">Sudut Biru</th>
                         <th scope="col" class="table-danger">Sudut Merah</th>
                         <th scope="col" style="width: 180px;">Status</th>
+                        <th scope="col" style="width: 180px;">Penilaian</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -122,6 +123,14 @@
                                     @endforeach
                                 </select>
                             </td>
+
+                            @if ($pertandingan->status == 'berlangsung')
+                                <td>
+                                    <a href="{{ url('scoring/penilaian/' . Auth::user()->id) }}" class="btn btn-info">Lihat Match</a>
+                                </td>
+                            @else
+                                NaN  
+                            @endif
                         </tr>
                     @empty
                         <tr>
@@ -188,6 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // [PERBAIKAN] Panggil fungsi untuk update warna dan status original
                 this.dataset.originalStatus = newStatus;
                 updateDropdownColor(this);
+                location.reload();
             })
             .catch(error => {
                 console.error('Error:', error);

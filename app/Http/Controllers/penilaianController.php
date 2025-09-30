@@ -36,7 +36,7 @@ class penilaianController extends Controller
             'detailPointTanding'
         ])
             ->where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
 
         // 4. Tangani jika TIDAK ADA pertandingan aktif di arena tersebut.

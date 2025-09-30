@@ -3,6 +3,10 @@
 @section('content')
     <div class="container px-0 mt-2 mb-2 rounded pb-4" style="background-color: rgb(216, 216, 216)">
        
+        @if(isset($pertandingan))
+            <input type="hidden" name="pertandingan_id" id="pertandingan_id" value="{{ $pertandingan->id ?? '' }}">
+        @endif
+
         {{-- Pengecekan utama: Apakah controller berhasil mengirim objek pertandingan yang valid? --}}
         @if (isset($pertandingan) && $pertandingan)
          <input type="hidden" name="pertandingan_id" id="pertandingan_id" value="{{ $pertandingan->id ?? '' }}">
@@ -127,12 +131,17 @@
                     {{-- scoring --}}
                     <div class="col-2 justify-content-center">
                         {{-- [DINAMIS] Round Number --}}
-                        <div class="px-2 pt-2 mx-auto mt-4 mb-4 border bg-warning rounded-circle text-light text-center" style="width: 60px; height:60px; font-size: 25px">
+                        {{-- <div class="px-2 pt-2 mx-auto mt-4 mb-4 border bg-warning rounded-circle text-light text-center" style="width: 60px; height:60px; font-size: 25px">
                             {{ $pertandingan->detailPointTanding?->round ?? 1 }}
+                        </div> --}}
+                        <div class="scoring">
+                        {{-- TAMBAHKAN ID UNIK DI SETIAP INDIKATOR --}}
+                            <div id="round-box-1" class="p-1 mt-3 border {{ $pertandingan->current_round >= 1 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px">I</div>
+                            <div id="round-box-2" class="p-1 mt-3 border {{ $pertandingan->current_round >= 2 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px">II</div>
+                            @if ($pertandingan->kelasPertandingan?->kategoriPertandingan?->nama_kategori != 'Pemasalan')    
+                                <div id="round-box-3" class="p-1 mt-3 border {{ $pertandingan->current_round >= 3 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px">III</div>
+                            @endif
                         </div>
-                        <div class="p-1 mt-3 border bg-light text-center" style="border-radius: 10px">I</div>
-                        <div class="p-1 mt-3 border bg-light text-center" style="border-radius: 10px">II</div>
-                        <div class="p-1 mt-3 border bg-light text-center" style="border-radius: 10px">III</div>
                     </div>
 
                     {{-- team red --}}
@@ -386,6 +395,14 @@
                     </div>
                 </div>
             </div>
+
+        </div>
+
+        <div class="d-flex justify-content-center mt-3 mb-5">
+            <a href="{{ url('scoring/operator/' . Auth::user()->id) }}" class="btn btn-success btn-lg shadow-sm">
+                <i class="fas fa-user-cog me-2"></i>Back to Operator
+            </a>
+        </div>
         @else
             {{-- Ini akan ditampilkan jika controller tidak menemukan pertandingan aktif --}}
             <div class="text-center p-5">
@@ -396,16 +413,105 @@
     </div>
 
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
-    <script src="{{ asset('assets') }}/js/listenEvents.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.2/dist/echo.iife.js"></script>
+
+    {{-- Memuat script Anda yang sudah ada --}}
+    <script src="{{ asset('assets') }}/js/listenEvents.js"></script> 
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            @if (isset($pertandingan))
-                initializeListener(
-                    "{{ env('PUSHER_APP_KEY') }}",
-                    "{{ env('PUSHER_APP_CLUSTER') }}",
-                    "{{ $pertandingan->id }}"
-                );
-            @endif
+    document.addEventListener('DOMContentLoaded', () => {
+        // Jalankan listener event skor dari file listenEvents.js
+
+        const pertandinganIdInput = document.getElementById('pertandingan_id');
+
+        if (pertandinganIdInput && pertandinganIdInput.value) {
+            const pertandinganId = pertandinganIdInput.value;
+            
+            // Memanggil fungsi dari listenEvents.js (untuk skor)
+            initializeListener(
+                "{{ config('broadcasting.connections.pusher.key') }}",    // CARA YANG LEBIH BAIK
+                "{{ config('broadcasting.connections.pusher.options.cluster') }}", // CARA YANG LEBIH BAIK
+                pertandinganId
+            );
+
+                const timerElement = document.getElementById("timer");
+                let timerInterval = null;
+                let localCurrentSeconds = 0;
+
+                function updateTimerDisplay(time) {
+                    if (!timerElement) return; // Tambah pengaman jika elemen timer tidak ada
+                    const minutes = Math.floor(time / 60);
+                    const seconds = time % 60;
+                    timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                }
+
+                function startLocalCountdown() {
+                    if (timerInterval) clearInterval(timerInterval);
+                    timerInterval = setInterval(() => {
+                        if (localCurrentSeconds > 0) {
+                            localCurrentSeconds--;
+                            updateTimerDisplay(localCurrentSeconds);
+                        } else {
+                            clearInterval(timerInterval);
+                            timerInterval = null;
+                        }
+                    }, 1000);
+                }
+
+                function stopLocalCountdown() {
+                    if (timerInterval) clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+
+                // 1. Inisialisasi Laravel Echo
+                 const echo = new window.Echo({
+                    broadcaster: 'pusher',
+                    key: "{{ config('broadcasting.connections.pusher.key') }}",
+                    cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
+                    forceTLS: true
+                });
+
+                // 2. Dengarkan event di channel privat
+                echo.private(`pertandingan.${pertandinganId}`)
+                    .listen('TimerUpdated', (e) => {
+                        console.log('Event Timer diterima:', e);
+                        localCurrentSeconds = e.currentTime;
+                        updateTimerDisplay(localCurrentSeconds);
+                        if (e.state === 'playing') { startLocalCountdown(); }
+                        else if (e.state === 'paused') { stopLocalCountdown(); }
+                        else if (e.state === 'reset') {
+                            stopLocalCountdown();
+                            localCurrentSeconds = e.total_duration;
+                            updateTimerDisplay(localCurrentSeconds);
+                        }
+                    });
+
+                echo.private(`pertandingan.${pertandinganId}`)
+                    .listen('RoundUpdated', (e) => {
+                        console.log('Event RoundUpdated diterima:', e);
+                        
+                        const round1Box = document.getElementById('round-box-1');
+                        const round2Box = document.getElementById('round-box-2');
+                        const round3Box = document.getElementById('round-box-3');
+                        
+                        if(round1Box) round1Box.classList.replace('bg-warning', 'bg-light');
+                        if(round2Box) round2Box.classList.replace('bg-warning', 'bg-light');
+                        if(round3Box) round3Box.classList.replace('bg-warning', 'bg-light');
+
+                        if (e.newRoundNumber >= 1 && round1Box) {
+                            round1Box.classList.replace('bg-light', 'bg-warning');
+                        }
+                        if (e.newRoundNumber >= 2 && round2Box) {
+                            round2Box.classList.replace('bg-light', 'bg-warning');
+                        }
+                        if (e.newRoundNumber >= 3 && round3Box) {
+                            round3Box.classList.replace('bg-light', 'bg-warning');
+                        }
+                    });
+            } else {
+                console.warn("Tidak ada pertandingan aktif untuk didengarkan event-nya.");
+            }
         });
     </script>
+    
 @endsection

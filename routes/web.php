@@ -34,7 +34,7 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', function () {
-    return view('scoring.home');
+    return redirect('login');
 });
 
 Route::view('/kirim-notifikasi', 'kirim');
@@ -70,10 +70,13 @@ Route::post('/kirim-tendang-insert/{user}', [TandingController::class, 'kirim_te
 Route::post('/kirim-tendang/{user}', [TandingController::class, 'kirim_tendang']);
 Route::post('/kirim-hapus-point/{user}', [TandingController::class, 'hapus_point']);
 
-Route::post('/kirim-request-validation/{user}', [TandingController::class, 'request_validation'])
-     ->name('tanding.requestValidation');
-Route::post('/pertandingan/kirim-vote', [TandingController::class, 'submitVote'])
-     ->name('tanding.submitVote');
+// Route::post('/kirim-request-validation/{user}', [TandingController::class, 'request_validation'])
+//     ->name('tanding.requestValidation');
+// Route::post('/pertandingan/kirim-vote', [TandingController::class, 'submitVote'])
+//     ->name('tanding.submitVote');
+
+Route::post('/dewan/request-validation', [\App\Http\Controllers\DewanController::class, 'sendValidationRequest'])->name('dewan.requestValidation');
+Route::post('/juri/submit-vote', [\App\Http\Controllers\JuriController::class, 'submitVote'])->name('juri.submitVote');
 
 Route::post('/get_point/{user}', [TandingController::class, 'get_point']);
 
@@ -99,7 +102,9 @@ Route::prefix('scoring')->group(function () {
 
     Route::get('/penilaian/{user}', [penilaianController::class, 'index']);
 
-    Route::get('/timer', [timerController::class, 'index']);
+    Route::get('/timer/{user}', [timerController::class, 'index']);
+    Route::post('/timer/broadcast', [timerController::class, 'broadcastEvent'])->name('timer.broadcast');
+    Route::post('/timer/update-round', [timerController::class, 'updateRound'])->name('timer.updateRound');
 
 
     // seni & jurus baku

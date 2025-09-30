@@ -40,7 +40,7 @@ class TandingController extends Controller
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
 
 
@@ -69,7 +69,7 @@ class TandingController extends Controller
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
 
         $this->updateOrCreatePoint($pertandingan, 'peringatan', $request->filter, $request->count);
@@ -93,7 +93,7 @@ class TandingController extends Controller
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
 
         $this->updateOrCreatePoint($pertandingan, 'teguran', $request->filter, $request->count);
@@ -112,7 +112,7 @@ class TandingController extends Controller
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
         $this->updateOrCreatePoint($pertandingan, 'fall_point', $request->filter, $request->count);
 
@@ -132,7 +132,7 @@ class TandingController extends Controller
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
         // Panggil helper dengan kolom 'punch_point', nilai tetap '1', dan filter
         // $this->updateOrCreatePoint($pertandingan, 'punch_point', $request->filter, 1);
@@ -153,7 +153,7 @@ class TandingController extends Controller
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
         // Panggil helper dengan kolom 'punch_point', nilai tetap '1', dan filter
         $this->updateOrCreatePoint($pertandingan, 'punch_point', $request->filter, 1);
@@ -172,7 +172,7 @@ class TandingController extends Controller
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
         // Panggil helper dengan kolom 'kick_point', nilai tetap '1', dan filter
         $this->updateOrCreatePoint($pertandingan, 'kick_point', $request->filter, 2);
@@ -190,7 +190,7 @@ class TandingController extends Controller
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
         // Panggil helper dengan kolom 'kick_point', nilai tetap '2', dan filter
         // $this->updateOrCreatePoint($pertandingan, 'kick_point', $request->filter, 2);
@@ -212,7 +212,7 @@ class TandingController extends Controller
 
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
 
 
@@ -239,52 +239,52 @@ class TandingController extends Controller
         return response()->json(['status' => 'berhasil', 'data' => $type]);
     }
 
-    public function submitVote(Request $request)
-    {
-        // 1. Validasi data yang dikirim oleh juri
-        $validated = $request->validate([
-            'pertandingan_id' => 'required|integer|exists:pertandingan,id',
-            'user_id' => 'required|integer|exists:users,id',
-            'vote' => 'required|string|in:setuju,tolak',
+    // public function submitVote(Request $request)
+    // {
+    //     // 1. Validasi data yang dikirim oleh juri
+    //     $validated = $request->validate([
+    //         'pertandingan_id' => 'required|integer|exists:pertandingan,id',
+    //         'user_id' => 'required|integer|exists:users,id',
+    //         'vote' => 'required|string|in:setuju,tolak',
 
-            // Sertakan juga data original request untuk konteks
-            'original_request' => 'required|array',
-            'original_request.sudut' => 'required|string',
-            'original_request.jenis_poin' => 'required|string',
-        ]);
+    //         // Sertakan juga data original request untuk konteks
+    //         'original_request' => 'required|array',
+    //         'original_request.sudut' => 'required|string',
+    //         'original_request.jenis_poin' => 'required|string',
+    //     ]);
 
-        // 2. Siarkan keputusan juri ini ke semua listener (termasuk Dewan)
-        event(new JuryVoteSubmitted($validated));
+    //     // 2. Siarkan keputusan juri ini ke semua listener (termasuk Dewan)
+    //     event(new JuryVoteSubmitted($validated));
 
-        // 3. Kirim respons kembali ke juri yang mengirim vote
-        return response()->json(['status' => 'sukses', 'message' => 'Vote Anda telah terkirim.']);
-    }
+    //     // 3. Kirim respons kembali ke juri yang mengirim vote
+    //     return response()->json(['status' => 'sukses', 'message' => 'Vote Anda telah terkirim.']);
+    // }
 
-    public function request_validation(Request $request, User $user)
-    {
-        // 1. Validasi data yang masuk dari frontend. Ini adalah langkah keamanan penting.
-        $validated = $request->validate([
-            'pertandingan_id' => 'required|integer|exists:pertandingan,id',
-            'sudut' => 'required|string|in:merah,biru',
-            'jenis_poin' => 'required|string|in:tendangan,jatuhan',
-            'nilai' => 'required|integer|min:1',
-        ]);
+    // public function request_validation(Request $request, User $user)
+    // {
+    //     // 1. Validasi data yang masuk dari frontend. Ini adalah langkah keamanan penting.
+    //     $validated = $request->validate([
+    //         'pertandingan_id' => 'required|integer|exists:pertandingan,id',
+    //         'sudut' => 'required|string|in:merah,biru',
+    //         'jenis_poin' => 'required|string|in:tendangan,jatuhan',
+    //         'nilai' => 'required|integer|min:1',
+    //     ]);
 
-        // 2. Temukan pertandingan berdasarkan ID yang dikirim.
-        // Ini lebih andal daripada mencoba menebak pertandingan berdasarkan status.
-        $pertandingan = Pertandingan::findOrFail($validated['pertandingan_id']);
+    //     // 2. Temukan pertandingan berdasarkan ID yang dikirim.
+    //     // Ini lebih andal daripada mencoba menebak pertandingan berdasarkan status.
+    //     $pertandingan = Pertandingan::findOrFail($validated['pertandingan_id']);
 
-        // 3. Panggil event dengan data yang sudah bersih dan terstruktur.
-        // Event Anda sekarang menerima array yang jelas, bukan string `filter`.
-        event(new RequestValidation($validated));
+    //     // 3. Panggil event dengan data yang sudah bersih dan terstruktur.
+    //     // Event Anda sekarang menerima array yang jelas, bukan string `filter`.
+    //     event(new RequestValidation($validated));
 
-        // 4. Berikan respons yang jelas ke frontend.
-        return response()->json([
-            'status' => 'berhasil',
-            'message' => 'Permintaan validasi telah dikirim ke juri.',
-            'data' => $validated // Kirim kembali data yang divalidasi sebagai konfirmasi
-        ]);
-    }
+    //     // 4. Berikan respons yang jelas ke frontend.
+    //     return response()->json([
+    //         'status' => 'berhasil',
+    //         'message' => 'Permintaan validasi telah dikirim ke juri.',
+    //         'data' => $validated // Kirim kembali data yang divalidasi sebagai konfirmasi
+    //     ]);
+    // }
 
 
     public function get_point(Request $request, user $user)
@@ -296,7 +296,7 @@ class TandingController extends Controller
         }
 
         $pertandingan = Pertandingan::where('arena_id', $arenaId)
-            ->where('status', 'siap_dimulai')
+            ->where('status', 'berlangsung')
             ->first();
 
         $points = DetailPointTanding::where('pertandingan_id', $pertandingan->id)->get();

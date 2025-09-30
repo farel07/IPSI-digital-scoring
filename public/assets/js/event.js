@@ -12,12 +12,10 @@ const id_user = window.location.pathname.split("/").pop();
 // 1. Deklarasikan variabel dengan `let` agar nilainya bisa diubah.
 //    Beri nilai awal null untuk menandakan "belum ada nilai".
 
-
-
 let juri_ket = null;
 
 // 2. Cari elemen berdasarkan ID-nya.
-const juriElement = document.getElementById('juri_ket');
+const juriElement = document.getElementById("juri_ket");
 
 // 3. Buat kondisi: JIKA elemennya ditemukan (tidak null)...
 if (juriElement) {
@@ -290,7 +288,7 @@ function kirimHapus(type, filter) {
     .then((res) => res.json())
     .then((data) => {
       // alert(type + filter);
-      console.log(data)
+      console.log(data);
     });
 }
 
