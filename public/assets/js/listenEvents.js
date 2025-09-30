@@ -73,9 +73,12 @@ console.log("pertandingan_id:", pertandingan_id);
 
 function initializeListener(appKey, appCluster, pertandinganId) {
   if (!appKey || !appCluster || !pertandinganId) {
-    console.error("Pusher Key, Cluster, atau ID Pertandingan tidak diberikan.");
-    return;
+    console.error("Pusher Key, Cluster, atau ID Pertandingan tidak valid saat memanggil initializeListener.");
+    return; // Hentikan fungsi jika ada yang kosong
   }
+
+  console.log("Mendengarkan event untuk pertandingan ID:", pertandinganId);
+  const user_id = window.location.pathname.split("/").pop(); // Ini aman di sini
 
   Pusher.logToConsole = true;
   const pusher = new Pusher(appKey, {
@@ -101,6 +104,8 @@ function initializeListener(appKey, appCluster, pertandinganId) {
         document.getElementById("blue-notif-binaan-1").style.filter = yellowFilter;
       } else if (data.count == 2) {
         document.getElementById("blue-notif-binaan-2").style.filter = yellowFilter;
+        document.getElementById("blue-notif-teguran-1").style.filter = yellowFilter;
+        document.getElementById("blue-notif-teguran-1-table").innerHTML = 1;
       } else {
         alert("binaan cuman 2x banh");
       }
@@ -109,6 +114,8 @@ function initializeListener(appKey, appCluster, pertandinganId) {
         document.getElementById("red-notif-binaan-1").style.filter = yellowFilter;
       } else if (data.count == 2) {
         document.getElementById("red-notif-binaan-2").style.filter = yellowFilter;
+        document.getElementById("red-notif-teguran-1").style.filter = yellowFilter;
+        document.getElementById("red-notif-teguran-1-table").innerHTML = 1;
       } else {
         alert("binaan cuman 2x banh");
       }

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 // Import model yang BENAR
-use Illuminate\Http\Request;
-use App\Models\Pertandingan;
 use App\Models\User;
+use App\Models\Pertandingan;
+use Illuminate\Http\Request;
+use App\Events\DewanRequestValidation;
 
 // Hapus model lama yang tidak terpakai
 // use App\Models\Matches;
@@ -39,9 +40,10 @@ class dewanController extends Controller
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
             ->where('status', 'berlangsung')
+            ->where('status', 'berlangsung')
             ->first();
 
-            if (!$pertandingan) {
+        if (!$pertandingan) {
             // return view("scoring.juri_menunggu", ['user' => $user]);
             return "belum ada pertandingan aktif di arena Anda.";
         }
@@ -72,5 +74,20 @@ class dewanController extends Controller
 
         // 4. Kirim objek pertandingan (atau null jika tidak ada) ke view.
         //     
+    }
+
+    public function sendValidationRequest(Request $request)
+    {
+        $validated = $request->validate([
+            'pertandingan_id' => 'required|integer|exists:pertandingan,id',
+            'jenis_validasi'  => 'required|string|in:Jatuhan,Pelanggaran',
+        ]);
+
+        broadcast(new DewanRequestValidation(
+            $validated['pertandingan_id'],
+            $validated['jenis_validasi']
+        ))->toOthers();
+
+        return response()->json(['status' => 'success', 'message' => 'Request validasi terkirim ke para juri.']);
     }
 }

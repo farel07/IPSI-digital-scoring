@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Auth;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,20 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
+// Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
+//     return (int) $user->id === (int) $id;
+// });
+
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
+});
+
+/**
+ * [TAMBAHKAN INI]
+ * Channel otorisasi untuk setiap pertandingan.
+ * Ini mengizinkan semua pengguna yang sudah login untuk mendengarkan
+ * event dari channel pertandingan yang spesifik.
+ */
+Broadcast::channel('pertandingan.{pertandinganId}', function ($user, $pertandinganId) {
+    return Auth::check();
 });

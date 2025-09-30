@@ -26,7 +26,7 @@
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
     </script>
     @stack('scripts')
-    <script src="{{ asset('assets') }}/js/timer.js"></script>
+    {{-- <script src="{{ asset('assets') }}/js/timer.js"></script> --}}
     <script src="{{ asset('assets') }}/js/event.js"></script>
 </body>
 

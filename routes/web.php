@@ -35,7 +35,7 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', function () {
-    return view('scoring.home');
+    return redirect('login');
 });
 
 Route::view('/kirim-notifikasi', 'kirim');
@@ -71,10 +71,13 @@ Route::post('/kirim-tendang-insert/{user}', [TandingController::class, 'kirim_te
 Route::post('/kirim-tendang/{user}', [TandingController::class, 'kirim_tendang']);
 Route::post('/kirim-hapus-point/{user}', [TandingController::class, 'hapus_point']);
 
-Route::post('/kirim-request-validation/{user}', [TandingController::class, 'request_validation'])
-     ->name('tanding.requestValidation');
-Route::post('/pertandingan/kirim-vote', [TandingController::class, 'submitVote'])
-     ->name('tanding.submitVote');
+// Route::post('/kirim-request-validation/{user}', [TandingController::class, 'request_validation'])
+//     ->name('tanding.requestValidation');
+// Route::post('/pertandingan/kirim-vote', [TandingController::class, 'submitVote'])
+//     ->name('tanding.submitVote');
+
+Route::post('/dewan/request-validation', [\App\Http\Controllers\DewanController::class, 'sendValidationRequest'])->name('dewan.requestValidation');
+Route::post('/juri/submit-vote', [\App\Http\Controllers\JuriController::class, 'submitVote'])->name('juri.submitVote');
 
 Route::post('/get_point/{user}', [TandingController::class, 'get_point']);
 
@@ -100,7 +103,9 @@ Route::prefix('scoring')->group(function () {
 
     Route::get('/penilaian/{user}', [penilaianController::class, 'index']);
 
-    Route::get('/timer', [timerController::class, 'index']);
+    Route::get('/timer/{user}', [timerController::class, 'index']);
+    Route::post('/timer/broadcast', [timerController::class, 'broadcastEvent'])->name('timer.broadcast');
+    Route::post('/timer/update-round', [timerController::class, 'updateRound'])->name('timer.updateRound');
 
     Route::get('/dewan-operator/{user}', [dewanOperatorController::class, 'index']);
 
@@ -118,9 +123,9 @@ Route::prefix('scoring')->group(function () {
     Route::get('/seni/prestasi/tunggal/biru/penonton', function () {
         return view('seni.prestasi.tunggal.biru.penonton');
     });
-    Route::get('/seni/prestasi/tunggal/biru/penontonfinal', function () {
-        return view('seni.prestasi.tunggal.biru.penontonFinal');
-    });
+    // Route::get('/seni/prestasi/tunggal/biru/penontonfinal', function () {
+    //     return view('seni.prestasi.tunggal.biru.penontonFinal');
+    // });
     Route::get('/seni/prestasi/tunggal/merah/juri', function () {
         return view('seni.prestasi.tunggal.merah.juri');
     });
@@ -253,7 +258,7 @@ Route::prefix('scoring')->group(function () {
 
 Route::get('/superadmin', [SuperAdminController::class, 'dashboard']);
 Route::get('/superadmin/kelola-peserta', [SuperAdminController::class, 'kelola_peserta']);
-Route::get('/superadmin/atur-arena',[SuperAdminController::class, 'atur_arena']);
+Route::get('/superadmin/atur-arena', [SuperAdminController::class, 'atur_arena']);
 Route::get('/superadmin/example', function () {
     return view('superadmin.superadmin');
 });

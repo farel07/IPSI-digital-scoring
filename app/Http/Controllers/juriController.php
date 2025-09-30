@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Matches;
 use App\Models\User;
+use App\Models\Matches;
 use App\Models\UserMatch;
 use App\Models\Pertandingan;
+use Illuminate\Http\Request;
+use App\Events\JuriVoteSubmitted;
 
 class juriController extends Controller
 {
@@ -29,6 +30,7 @@ class juriController extends Controller
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
             ->where('status', 'berlangsung')
+            ->where('status', 'berlangsung')
             ->first();
 
             $jumlah_pemain = $pertandingan->kelasPertandingan->kelas->jumlah_pemain;
@@ -41,7 +43,7 @@ class juriController extends Controller
 
         // return $pertandingan->kelasPertandingan->jenisPertandingan->id;
 
-        if($pertandingan->kelasPertandingan->jenisPertandingan->id == 1){
+        if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 1) {
             return view("scoring.juri", [
                 'pertandingan' => $pertandingan,
                 'user' => $user
@@ -68,13 +70,30 @@ class juriController extends Controller
         } else {
             return "jenis pertandingan tidak dikenali.";
         }
-        
-        
+
+
         // 5. Kirim objek pertandingan ke view.
         // Data pemain akan diambil secara otomatis oleh Accessor saat dipanggil di view.
         // return view("scoring.juri", [
         //     'pertandingan' => $pertandingan,
         //     'user' => $user
         // ]);
+    }
+
+    public function submitVote(Request $request)
+    {
+        $validated = $request->validate([
+            'pertandingan_id' => 'required|integer|exists:pertandingan,id',
+            'juri_name'       => 'required|string',
+            'vote'            => 'required|string|in:merah,biru,invalid',
+        ]);
+
+        broadcast(new JuriVoteSubmitted(
+            $validated['pertandingan_id'],
+            $validated['juri_name'],
+            $validated['vote']
+        ))->toOthers();
+
+        return response()->json(['status' => 'success', 'message' => 'Vote Anda telah dikirim ke dewan.']);
     }
 }

@@ -2,8 +2,8 @@
 @section('content')
 
 <div id="match-data" 
-     data-pertandingan-id="{{ $pertandingan->id }}" 
-     data-current-round="{{ $pertandingan->current_round }}">
+    data-pertandingan-id="{{ $pertandingan->id }}" 
+    data-juri-name="{{ $user->role->name }}"> {{-- Menambahkan nama juri --}}
 </div>
 
     <div class="container mt-2 mb-2 rounded pb-4" style="background-color: rgb(216, 216, 216)">
@@ -76,9 +76,11 @@
                 {{-- scoring --}}
                 <div class="col-3">
                     <div class="p-3 border bg-warning text-light text-center" style="border-radius: 10px">SCORE</div>
-                    <div class="p-3 mt-3 border bg-light text-center" style="border-radius: 10px">I</div>
-                    <div class="p-3 mt-3 border bg-light text-center" style="border-radius: 10px">II</div>
-                    <div class="p-3 mt-3 border bg-light text-center" style="border-radius: 10px">III</div>
+                    <div id="round-box-1" class="p-3 mt-2 border {{ $pertandingan->current_round >= 1 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px; height:55px">I</div>
+                    <div id="round-box-2" class="p-3 mt-2 border {{ $pertandingan->current_round >= 2 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px; height:55px">II</div>
+                    @if ($pertandingan->kelasPertandingan?->kategoriPertandingan?->nama_kategori != 'Pemasalan')
+                        <div id="round-box-3" class="p-3 mt-2 border {{ $pertandingan->current_round >= 3 ? 'bg-warning' : 'bg-light' }} text-center" style="border-radius: 10px; height:55px">III</div>
+                    @endif
                 </div>
                 {{-- end scoring --}}
 
@@ -112,27 +114,22 @@
         </div>
     </div>
 
-    <div class="modal fade" id="validationApprovalModal" tabindex="-1" aria-labelledby="validationApprovalModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-warning border-3">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title" id="validationApprovalModalLabel">
-                    <i class="bi bi-exclamation-triangle-fill"></i> PERMINTAAN VALIDASI POIN
-                </h5>
-            </div>
-            <div class="modal-body text-center">
-                <p class="lead">Ketua Pertandingan meminta validasi untuk:</p>
-                
-                {{-- Placeholder untuk data dinamis --}}
-                <div class="display-4 fw-bold" id="modal-sudut">SUDUT</div>
-                <div class="h2" id="modal-jenis-poin">JENIS POIN</div>
-                <div class="h3 text-muted" id="modal-nilai">(+X Poin)</div>
-
-            </div>
-            <div class="modal-footer d-flex justify-content-center">
-                {{-- Tombol aksi untuk Juri --}}
-                <button type="button" class="btn btn-danger btn-lg" onclick="handleApproval('tolak')">Tolak</button>
-                <button type="button" class="btn btn-success btn-lg" onclick="handleApproval('setuju')">Setujui</button>
+    <div class="modal fade" id="juriVoteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="juriVoteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-warning border-3">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" id="juriVoteModalLabel">Permintaan Validasi Dewan</h5>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="lead">Dewan meminta validasi untuk:</p>
+                    <h2 id="validation-type-display" class="fw-bold mb-4">...</h2>
+                    <p>Silakan berikan penilaian Anda:</p>
+                    <div class="d-grid gap-3">
+                        <button type="button" class="btn btn-primary btn-lg" onclick="submitVote('biru')">Tim Biru</button>
+                        <button type="button" class="btn btn-danger btn-lg" onclick="submitVote('merah')">Tim Merah</button>
+                        <button type="button" class="btn btn-dark btn-lg" onclick="submitVote('invalid')">Invalid</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -140,93 +137,117 @@
 
 
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script src="{{ asset('assets') }}/js/listenEvents.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.2/dist/echo.iife.js"></script>
 {{-- Letakkan di dalam file juri.blade.php, idealnya sebelum </body> --}}
 
 <script>
-    // =================================================================
-    // SETUP UNTUK HALAMAN JURI
-    // =================================================================
-    
-    // 1. DEKLARASI VARIABEL UTAMA
+document.addEventListener('DOMContentLoaded', function() {
+    // Ambil elemen HTML yang menyimpan data dari server
     const juriMatchDataEl = document.getElementById('match-data');
-    const juriPertandinganId = juriMatchDataEl.dataset.pertandinganId;
-    const juriUserId = {{ auth()->id() ?? 'null' }};
+    
+    // Hentikan eksekusi jika tidak ada pertandingan aktif
+    if (!juriMatchDataEl || !juriMatchDataEl.dataset.pertandinganId) {
+        console.warn("JURI: Tidak ada data pertandingan, listener tidak diaktifkan.");
+        return;
+    }
+    
+    // Ambil data penting dari elemen HTML
+    const pertandinganId = juriMatchDataEl.dataset.pertandinganId;
+    const juriName = juriMatchDataEl.dataset.juriName; // e.g., 'juri-1'
 
-    // Inisialisasi Pusher
-    const pusher = new Pusher('{{ config('broadcasting.connections.pusher.key') }}', {
-        cluster: '{{ config('broadcasting.connections.pusher.options.cluster') }}'
+    // --- Pengaturan Modal Bootstrap ---
+    const juriVoteModalEl = document.getElementById('juriVoteModal');
+    const juriVoteModal = new bootstrap.Modal(juriVoteModalEl);
+    const validationTypeDisplay = document.getElementById('validation-type-display');
+
+    // --- Inisialisasi Laravel Echo ---
+    const echo = new window.Echo({
+        broadcaster: 'pusher',
+        key: "{{ config('broadcasting.connections.pusher.key') }}",
+        cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
+        forceTLS: true
     });
 
-    // =================================================================
-    // FUNGSI UNTUK JURI MENGIRIM VOTE
-    // =================================================================
-    function handleApproval(action) {
-        if (!juriPertandinganId || !juriUserId) {
-            alert('Error: Data Pertandingan atau User Juri tidak ditemukan. Gagal mengirim vote.');
-            return;
-        }
+    // --- Berlangganan ke Channel Privat Pertandingan ---
+    const channel = echo.private(`pertandingan.${pertandinganId}`);
+    
+    console.log(`JURI (${juriName}): Mencoba subscribe ke channel private-pertandingan.${pertandinganId}`);
+    
+    // Untuk debugging jika koneksi gagal
+    channel.error((error) => {
+        console.error(`JURI: Gagal terhubung ke channel, error otorisasi:`, error);
+        alert("JURI: Koneksi real-time GAGAL! Periksa console untuk detail.");
+    });
 
-        const modalEl = document.getElementById('validationApprovalModal');
-        const requestData = JSON.parse(modalEl.dataset.requestData);
-        const payload = {
-            pertandingan_id: parseInt(juriPertandinganId),
-            user_id: juriUserId,
-            vote: action, // 'setuju' or 'tolak'
-            original_request: requestData
+    // --- Event Listener  ---
+
+    channel.listen('DewanRequestValidation', (data) => {
+        console.log("JURI: Menerima request validasi dari Dewan", data);
+        if (validationTypeDisplay) {
+            validationTypeDisplay.textContent = data.jenisValidasi.toUpperCase();
+        }
+        juriVoteModal.show();
+    });
+
+    // 2. Mendengarkan perubahan ronde (fungsionalitas yang sudah ada)
+    channel.listen('RoundUpdated', (data) => {
+        console.log("JURI: Menerima event RoundUpdated via Echo", data);
+        
+        const newRoundNumber = data.newRoundNumber;
+        const roundBoxes = {
+            1: document.getElementById('round-box-1'),
+            2: document.getElementById('round-box-2'),
+            3: document.getElementById('round-box-3')
         };
 
-        console.log('JURI: Mengirim vote:', payload);
+        Object.values(roundBoxes).forEach(box => {
+            if (box) {
+                box.classList.remove('bg-warning');
+                box.classList.add('bg-light');
+            }
+        });
+
+        for (let i = 1; i <= newRoundNumber; i++) {
+            if (roundBoxes[i]) {
+                roundBoxes[i].classList.remove('bg-light');
+                roundBoxes[i].classList.add('bg-warning');
+            }
+        }
+    });
+
+    // Fungsi ini akan mengirimkan pilihan Juri ke backend
+    window.submitVote = function(vote) {
+        console.log(`JURI (${juriName}) mengirim vote: ${vote}`);
         
-        fetch("{{ route('tanding.submitVote') }}", {
+        fetch("{{ route('juri.submitVote') }}", {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
-            body: JSON.stringify(payload)
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                pertandingan_id: pertandinganId,
+                juri_name: juriName,
+                vote: vote
+            })
         })
         .then(response => response.json())
         .then(result => {
-            console.log('JURI: Respons server:', result);
-            alert('Vote Anda telah berhasil dikirim!');
-        })
-        .catch(error => {
-            console.error('JURI: Gagal mengirim vote:', error);
-            alert('Gagal mengirim vote.');
+            if(result.status === 'success') {
+                console.log('Vote berhasil terkirim ke Dewan.');
+                // Sembunyikan modal setelah vote berhasil dikirim
+                juriVoteModal.hide();
+            } else {
+                alert('Gagal mengirim vote. Coba lagi.');
+                console.error('Server response:', result);
+            }
+        }).catch(error => {
+            console.error('Error saat mengirim vote:', error);
+            alert('Terjadi kesalahan jaringan saat mengirim vote.');
         });
-
-        // Sembunyikan modal setelah vote
-        const modalInstance = bootstrap.Modal.getInstance(modalEl);
-        if (modalInstance) modalInstance.hide();
-    }
-
-    // =================================================================
-    // LOGIKA UNTUK JURI MENERIMA REQUEST DARI DEWAN
-    // =================================================================
-    if (juriPertandinganId) {
-        const juriChannel = pusher.subscribe(`pertandingan.${juriPertandinganId}`);
-
-        juriChannel.bind('pusher:subscription_succeeded', () => {
-            console.log(`JURI: Berhasil subscribe ke channel pertandingan.${juriPertandinganId}`);
-        });
-
-        juriChannel.bind("terima-request-validation", function (eventData) {
-            console.log("JURI: Menerima request validasi:", eventData);
-            
-            const data = eventData.data;
-            const modalEl = document.getElementById('validationApprovalModal');
-            
-            // Simpan data request ke modal agar bisa dibaca saat vote
-            modalEl.dataset.requestData = JSON.stringify(data);
-
-            // Isi dan tampilkan modal
-            document.getElementById('modal-sudut').textContent = data.sudut.toUpperCase();
-            document.getElementById('modal-jenis-poin').textContent = data.jenis_poin.toUpperCase();
-            document.getElementById('modal-nilai').textContent = `(+${data.nilai} Poin)`;
-            document.getElementById('modal-sudut').className = `display-4 fw-bold text-${data.sudut === 'merah' ? 'danger' : 'primary'}`;
-            
-            new bootstrap.Modal(modalEl).show();
-        });
-    } else {
-        console.error("JURI: ID Pertandingan tidak ditemukan, tidak bisa subscribe ke Pusher.");
-    }
+    };
+});
 </script>
 
 
