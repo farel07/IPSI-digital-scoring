@@ -50,9 +50,9 @@
                 <div class="col-4">
                     <div class="p-3 border bg-primary text-light text-center" style="border-radius: 10px">TEAM BLUE
                     </div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-1" style="border-radius: 10px">-</div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-2" style="border-radius: 10px">-</div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-3" style="border-radius: 10px">-</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-1" style="border-radius: 10px">.</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-2" style="border-radius: 10px">.</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-3" style="border-radius: 10px">.</div>
                     <div class="row justify-content-between">
                         <div class="col-6 mb-3">
                             <button class="mt-3 btn btn-primary w-100" type="button" value="1" onclick="kirimPukul('blue')"  id="btn_pukul_blue" 
@@ -87,9 +87,9 @@
                 {{-- team red --}}
                 <div class="col-4">
                     <div class="p-3 border bg-danger text-light text-center" style="border-radius: 10px">TEAM RED</div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-1" style="border-radius: 10px">-</div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-2" style="border-radius: 10px">-</div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-3" style="border-radius: 10px">-</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-1" style="border-radius: 10px">.</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-2" style="border-radius: 10px">.</div>
+                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-3" style="border-radius: 10px">.</div>
                     <div class="row justify-content-between">
                         <div class="col-6">
                             <button class="mt-3 btn btn-danger w-100 text-light" type="button" onclick="kirimHapusPoint('red')" id="btn_hapus_point_red" disabled
@@ -154,14 +154,63 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Ambil data penting dari elemen HTML
     const pertandinganId = juriMatchDataEl.dataset.pertandinganId;
-    const juriName = juriMatchDataEl.dataset.juriName; // e.g., 'juri-1'
+    const juriName = juriMatchDataEl.dataset.juriName;
 
-    // --- Pengaturan Modal Bootstrap ---
     const juriVoteModalEl = document.getElementById('juriVoteModal');
     const juriVoteModal = new bootstrap.Modal(juriVoteModalEl);
     const validationTypeDisplay = document.getElementById('validation-type-display');
 
-    // --- Inisialisasi Laravel Echo ---
+    // ======================================================================
+    // LOGIKA SESSIONSTORAGE & MANAJEMEN RONDE
+    // ======================================================================
+    window.currentRound = {{ $pertandingan->current_round }};
+    const storageKey = `juriScoreHistory_${pertandinganId}`;
+
+    window.saveHistoryToSession = function() {
+        const dataToSave = {
+            pertandingan_id: pertandinganId,
+            history: {
+                blue: {
+                    1: document.getElementById('total-point-blue-1').innerHTML,
+                    2: document.getElementById('total-point-blue-2').innerHTML,
+                    3: document.getElementById('total-point-blue-3').innerHTML
+                },
+                red: {
+                    1: document.getElementById('total-point-red-1').innerHTML,
+                    2: document.getElementById('total-point-red-2').innerHTML,
+                    3: document.getElementById('total-point-red-3').innerHTML
+                }
+            }
+        };
+        sessionStorage.setItem(storageKey, JSON.stringify(dataToSave));
+        console.log('Riwayat skor disimpan ke sessionStorage.');
+    };
+
+    function loadHistoryFromSession() {
+        const savedDataJSON = sessionStorage.getItem(storageKey);
+        if (savedDataJSON) {
+            const savedData = JSON.parse(savedDataJSON);
+            if (savedData.pertandingan_id == pertandinganId) {
+                console.log('Memuat riwayat skor dari sessionStorage.');
+                document.getElementById('total-point-blue-1').innerHTML = savedData.history.blue['1'] || '.';
+                document.getElementById('total-point-blue-2').innerHTML = savedData.history.blue['2'] || '.';
+                document.getElementById('total-point-blue-3').innerHTML = savedData.history.blue['3'] || '.';
+                document.getElementById('total-point-red-1').innerHTML = savedData.history.red['1'] || '.';
+                document.getElementById('total-point-red-2').innerHTML = savedData.history.red['2'] || '.';
+                document.getElementById('total-point-red-3').innerHTML = savedData.history.red['3'] || '.';
+            } else {
+                console.warn('Data sessionStorage dari pertandingan sebelumnya ditemukan. Mengabaikan.');
+                sessionStorage.removeItem(storageKey);
+            }
+        }
+    }
+
+    loadHistoryFromSession();
+    
+    // ======================================================================
+    // ... KODE ECHO DAN PUSHER ANDA ...
+    // ======================================================================
+
     const echo = new window.Echo({
         broadcaster: 'pusher',
         key: "{{ config('broadcasting.connections.pusher.key') }}",
@@ -169,18 +218,14 @@ document.addEventListener('DOMContentLoaded', function() {
         forceTLS: true
     });
 
-    // --- Berlangganan ke Channel Privat Pertandingan ---
     const channel = echo.private(`pertandingan.${pertandinganId}`);
     
     console.log(`JURI (${juriName}): Mencoba subscribe ke channel private-pertandingan.${pertandinganId}`);
     
-    // Untuk debugging jika koneksi gagal
     channel.error((error) => {
         console.error(`JURI: Gagal terhubung ke channel, error otorisasi:`, error);
         alert("JURI: Koneksi real-time GAGAL! Periksa console untuk detail.");
     });
-
-    // --- Event Listener  ---
 
     channel.listen('DewanRequestValidation', (data) => {
         console.log("JURI: Menerima request validasi dari Dewan", data);
@@ -190,36 +235,13 @@ document.addEventListener('DOMContentLoaded', function() {
         juriVoteModal.show();
     });
 
-    // 2. Mendengarkan perubahan ronde (fungsionalitas yang sudah ada)
     channel.listen('RoundUpdated', (data) => {
-        console.log("JURI: Menerima event RoundUpdated via Echo", data);
-        
-        const newRoundNumber = data.newRoundNumber;
-        const roundBoxes = {
-            1: document.getElementById('round-box-1'),
-            2: document.getElementById('round-box-2'),
-            3: document.getElementById('round-box-3')
-        };
-
-        Object.values(roundBoxes).forEach(box => {
-            if (box) {
-                box.classList.remove('bg-warning');
-                box.classList.add('bg-light');
-            }
-        });
-
-        for (let i = 1; i <= newRoundNumber; i++) {
-            if (roundBoxes[i]) {
-                roundBoxes[i].classList.remove('bg-light');
-                roundBoxes[i].classList.add('bg-warning');
-            }
-        }
+        console.log('Round Telah diubah oleh operator timer', data);
+        alert('Round telah diubah oleh operator timer');
+        window.location.reload();
     });
 
-    // Fungsi ini akan mengirimkan pilihan Juri ke backend
     window.submitVote = function(vote) {
-        console.log(`JURI (${juriName}) mengirim vote: ${vote}`);
-        
         fetch("{{ route('juri.submitVote') }}", {
             method: 'POST',
             headers: {
@@ -235,12 +257,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(result => {
             if(result.status === 'success') {
-                console.log('Vote berhasil terkirim ke Dewan.');
-                // Sembunyikan modal setelah vote berhasil dikirim
                 juriVoteModal.hide();
             } else {
                 alert('Gagal mengirim vote. Coba lagi.');
-                console.error('Server response:', result);
             }
         }).catch(error => {
             console.error('Error saat mengirim vote:', error);

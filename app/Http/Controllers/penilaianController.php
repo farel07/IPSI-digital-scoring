@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 // Import model yang BENAR
-use Illuminate\Http\Request;
 use App\Models\Pertandingan;
+use Illuminate\Http\Request;
+use App\Models\DetailPointTanding;
 use App\Models\User; // Digunakan untuk menerima juri/penilai dari URL
 use App\Models\UserArena;
 
@@ -21,20 +22,15 @@ class penilaianController extends Controller
         if ($user->role->id !== 6) {
             abort(403, 'Akses ditolak. User ini bukan operator.');
         }
-        // 1. Dapatkan arena ID milik Penilai/Juri ini.
-        $arenaId = $user->user_arena->first()->arena_id ?? null;
 
-        // 2. Tangani jika Penilai tidak punya arena.
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
         if (!$arenaId) {
             abort(404, 'Pengguna ini tidak ditugaskan ke arena manapun.');
         }
 
-        // 3. Cari satu pertandingan yang aktif di arena tersebut.
-        // [MODIFIKASI] Menambahkan 'detailPointTanding' untuk efisiensi di view.
         $pertandingan = Pertandingan::with([
-            'kelasPertandingan.kelas',
             'kelasPertandingan.kategoriPertandingan',
-            'detailPointTanding'
+            'kelasPertandingan.kelas',
         ])
             ->where('arena_id', $arenaId)
             ->where('status', 'berlangsung')

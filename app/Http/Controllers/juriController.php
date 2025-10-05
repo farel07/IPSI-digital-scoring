@@ -8,6 +8,8 @@ use App\Models\UserMatch;
 use App\Models\Pertandingan;
 use Illuminate\Http\Request;
 use App\Events\JuriVoteSubmitted;
+use App\Models\SkorJuriTanding;
+use Illuminate\Support\Facades\DB;
 use App\Models\DetailPoinSeniJuriGanda;
 use App\Models\DetailPoinSeniJuriTunggalRegu;
 use Illuminate\Support\Facades\Redis;
@@ -33,10 +35,9 @@ class juriController extends Controller
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
             ->where('status', 'berlangsung')
-            ->where('status', 'berlangsung')
             ->first();
 
-            $jumlah_pemain = $pertandingan->kelasPertandingan->kelas->jumlah_pemain;
+        $jumlah_pemain = $pertandingan->kelasPertandingan->kelas->jumlah_pemain;
 
         // 4. Tangani jika tidak ada pertandingan aktif
         if (!$pertandingan) {
@@ -51,6 +52,7 @@ class juriController extends Controller
                 'pertandingan' => $pertandingan,
                 'user' => $user
             ]);
+        } else if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)) {
         } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)){
 
             if($request->unit == 'unit_1'){
@@ -64,19 +66,24 @@ class juriController extends Controller
             $detail_poin = DetailPoinSeniJuriTunggalRegu::where('pertandingan_id', $pertandingan->id)->where('user_id', $user->id)->where('unit_id', $unit_id)->first();
             // return $detail_poin;
 
-            if($jumlah_pemain == 1){
+            if ($jumlah_pemain == 1) {
                 $total_jurus = 14;
-            } else if($jumlah_pemain == 3){
+            } else if ($jumlah_pemain == 3) {
                 $total_jurus = 12;
             }
+
+
             
             // return $request;
             return view("seni.prestasi.tunggal.biru.juri", [
                 'pertandingan' => $pertandingan,
+                'user' => $user,
+                'total_jurus' => $total_jurus
                 'user' => $user, 
                 'total_jurus' => $total_jurus,
                 'detail_poin' => $detail_poin
             ]);
+        } else if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && $jumlah_pemain == 2) {
         } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && $jumlah_pemain == 2){
 
              if($request->unit == 'unit_1'){

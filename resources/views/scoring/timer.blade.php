@@ -144,9 +144,10 @@
                         <span class="text-light fs-2">ROUND 2</span>
                     </div>
                 </div>
+
                 <div class="col-4">
                     {{-- TAMBAHKAN ID --}}
-                    <div class="btn btn-primary w-100 pt-4" style="height: 100px; " id="round3Btn" data-round="3">
+                    <div class="btn btn-primary w-100 pt-4 @if($pertandingan->kelasPertandingan->kategoriPertandingan->nama_kategori == "Pemasalan") disabled @endif" style="height: 100px; " id="round3Btn" data-round="3">
                         <span class="text-light fs-2">ROUND 3</span>
                     </div>
                 </div>
