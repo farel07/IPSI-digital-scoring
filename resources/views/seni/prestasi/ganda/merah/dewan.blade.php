@@ -42,8 +42,25 @@
             </div>
         </div>
 
+        
+
         <div class="p-6">
             <div class="border border-gray-300 rounded-md shadow-sm overflow-hidden">
+
+                 <select name="unit" id="unit">
+    <option value="unit_1" {{ request('unit') == 'unit_1' ? 'selected' : '' }}>Unit 1</option>
+    <option value="unit_2" {{ request('unit') == 'unit_2' ? 'selected' : '' }}>Unit 2</option>
+</select>
+
+     <script>
+                    document.getElementById('unit').addEventListener('change', function () {
+    const selected = this.value; // ambil value option
+    // misalnya default path /1
+    const newUrl = "?unit=" + encodeURIComponent(selected);
+    window.location.href = newUrl; // redirect (otomatis refresh)
+});
+                </script>
+
                 <table class="w-full">
                     <thead class="bg-gray-50">
                         <tr>
@@ -101,12 +118,17 @@
         </div>
     </div>
 
-    <script>
+   <script>
+        // Perubahan 1: Mengubah struktur data untuk menyimpan 'total' bukan 'active'
         let penalties = [
-            { active: false, value: -0.50 }, { active: false, value: -0.50 },
-            { active: false, value: -0.50 }, { active: false, value: -0.50 },
-            { active: false, value: -0.50 }, { active: false, value: -0.50 }
+            { value: -0.50, total: 0.00 },
+            { value: -0.50, total: 0.00 },
+            { value: -0.50, total: 0.00 },
+            { value: -0.50, total: 0.00 },
+            { value: -0.50, total: 0.00 },
+            { value: -0.50, total: 0.00 }
         ];
+
         let isLoading = false;
         const PERTANDINGAN_ID = document.getElementById('pertandingan_id').value;
         const USER_ID = document.getElementById('user_id').value;
@@ -148,45 +170,71 @@
             .finally(() => toggleAllButtons(false));
         }
 
+        // Perubahan 2: 'addPenalty' sekarang mengakumulasi nilai
         function addPenalty(index) {
-            if (penalties[index].active) return;
-            penalties[index].active = true;
+            penalties[index].total += penalties[index].value; // Tambahkan nilai penalti ke total
             
             const penaltyType = document.querySelector(`#penaltyTable tr:nth-child(${index + 1})`).dataset.type;
+            // Kirim nilai penalti (-0.50), backend yang akan menjumlahkan
             kirimPoinSeni(penaltyType, penalties[index].value);
             updateUI();
         }
 
+        // Perubahan 3: 'clearPenalty' sekarang mereset total menjadi 0
         function clearPenalty(index) {
-            if (!penalties[index].active) return;
-            penalties[index].active = false;
+            // Hanya kirim jika ada penalti yang perlu dihapus
+            if (penalties[index].total === 0) return;
+
+            penalties[index].total = 0.00; // Reset total di sisi klien
             
             const penaltyType = document.querySelector(`#penaltyTable tr:nth-child(${index + 1})`).dataset.type;
-            kirimPoinSeni('clear_' + penaltyType, Math.abs(penalties[index].value));
+            // Kirim perintah 'clear' ke backend untuk mereset total di database menjadi 0
+            kirimPoinSeni('clear_' + penaltyType, 0); // Mengirim 0 sebagai nilai
             updateUI();
         }
 
+        // Perubahan 4: 'updateUI' membaca dari 'total' bukan 'active'
         function updateUI() {
             let grandTotal = 0;
             penalties.forEach((penalty, index) => {
                 const row = document.querySelector(`#penaltyTable tr:nth-child(${index + 1})`);
                 const totalCell = document.getElementById(`total-${index}`);
                 
-                if (penalty.active) {
+                totalCell.textContent = penalty.total.toFixed(2);
+                grandTotal += penalty.total;
+                
+                if (penalty.total < 0) {
                     row.classList.add('bg-red-50');
-                    totalCell.textContent = penalty.value.toFixed(2);
                     totalCell.classList.add('text-red-600');
-                    grandTotal += penalty.value;
                 } else {
                     row.classList.remove('bg-red-50');
-                    totalCell.textContent = '0.00';
                     totalCell.classList.remove('text-red-600');
                 }
             });
             document.getElementById('grandTotal').textContent = grandTotal.toFixed(2);
         }
 
-        document.addEventListener('DOMContentLoaded', updateUI);
+        // Perubahan 5: Inisialisasi data berdasarkan total dari database
+        document.addEventListener('DOMContentLoaded', () => {
+            const penaltiDariDatabase = @json($penalti_terakhir);
+
+            if (penaltiDariDatabase) {
+                const mappingPenalti = {
+                    'waktu_terlampaui': 0,
+                    'keluar_garis': 1,
+                    'senjata_jatuh': 2, 
+                    'senjata_tidak_jatuh': 3,
+                    'tidak_ada_salam': 4, 
+                    'baju_senjata': 5
+                };
+
+                for (const [key, index] of Object.entries(mappingPenalti)) {
+                    // Isi nilai 'total' dari database, jika tidak ada maka 0
+                    penalties[index].total = parseFloat(penaltiDariDatabase[key]) || 0.00;
+                }
+            }
+            updateUI();
+        });
     </script>
 </body>
 </html>

@@ -14,6 +14,12 @@
         {{-- <input type="hidden" name="role_juri" id="role_juri" value="{{ $user->role->name }}"> --}}
         <input type="hidden" id="total-jurus-value" value="{{ $total_jurus }}">
         <input type="hidden" name="filter" id="filter" value="penilaian_tunggal_regu">
+
+
+
+        {{-- detail poin --}}
+        <input type="hidden" id="initial-total-kesalahan" value="{{ $detail_poin->total_kesalahan ?? 0.00 }}">
+        <input type="hidden" id="initial-poin-stamina" value="{{ $detail_poin->poin_stamina ?? 0.00 }}">
         <!-- Header -->
         <div class="bg-white rounded-xl shadow-md p-6 mb-6">
             <div class="flex items-center justify-between">
@@ -49,6 +55,19 @@
                     </div>
                 </div>
                 <div class="text-right">
+                     <select name="unit" id="unit">
+    <option value="unit_1" {{ request('unit') == 'unit_1' ? 'selected' : '' }}>Unit 1</option>
+    <option value="unit_2" {{ request('unit') == 'unit_2' ? 'selected' : '' }}>Unit 2</option>
+</select>
+
+     <script>
+                    document.getElementById('unit').addEventListener('change', function () {
+    const selected = this.value; // ambil value option
+    // misalnya default path /1
+    const newUrl = "?unit=" + encodeURIComponent(selected);
+    window.location.href = newUrl; // redirect (otomatis refresh)
+});
+                </script>
                     <h1 class="text-2xl font-bold text-blue-600">{{ $pertandingan->kelasPertandingan->kelas->nama_kelas }}</h1>
                     <p class="text-gray-600">{{ $pertandingan->kelasPertandingan->kategoriPertandingan->nama_kategori }} 
                         {{ $pertandingan->kelasPertandingan->jenisPertandingan->nama_jenis }} 
@@ -130,15 +149,18 @@
     // AMBIL NILAI DINAMIS DARI HTML
     const TOTAL_JURUS = parseInt(document.getElementById('total-jurus-value').value) || 14; // Default ke 14 jika tidak ada
 
+     const initialTotalKesalahan = parseFloat(document.getElementById('initial-total-kesalahan').value) || 0;
+    const initialPoinStamina = parseFloat(document.getElementById('initial-poin-stamina').value) || 0;
+
     let currentMove = 1;
     let moveErrors = {}; // Lacak kesalahan per jurus
-    let totalCategoryScore = 0.00; // Skor Kategori Stamina
+    let totalCategoryScore = initialPoinStamina; // Skor Kategori Stamina
     const penaltyPerError = 0.01;
     const baseScore = 9.90;
 
     // Inisialisasi jurus pertama
-    moveErrors[currentMove] = 0;
-
+    const initialErrorClicks = Math.round(initialTotalKesalahan / penaltyPerError);
+    moveErrors[currentMove] = initialErrorClicks;
     // =====================================================================
     // SELEKSI ELEMEN DOM
     // =====================================================================

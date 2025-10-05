@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Pertandingan;
 use Illuminate\Http\Request;
 use App\Events\DewanRequestValidation;
+use App\Models\HasilPoinSeniGanda;
+use App\Models\HasilPoinSeniTunggalRegu;
 
 // Hapus model lama yang tidak terpakai
 // use App\Models\Matches;
@@ -20,7 +22,7 @@ class dewanController extends Controller
      *
      * @param User $user Menerima objek Dewan (User) dari URL melalui Route Model Binding.
      */
-    public function index(User $user)
+    public function index(User $user, Request $request)
     {
 
         if ($user->role->id !== 5) {
@@ -40,7 +42,6 @@ class dewanController extends Controller
         $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
             ->where('arena_id', $arenaId)
             ->where('status', 'berlangsung')
-            ->where('status', 'berlangsung')
             ->first();
 
         if (!$pertandingan) {
@@ -57,15 +58,42 @@ class dewanController extends Controller
                 'user' => $user
             ]);
         } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)){
+
+            if($request->unit == 'unit_1'){
+                $unit_id = $pertandingan->unit1_id;
+            } else if ($request->unit == 'unit_2'){
+                $unit_id = $pertandingan->unit2_id;
+            } 
+
+            $hasil_poin = HasilPoinSeniTunggalRegu::where('pertandingan_id', $pertandingan->id)->where('unit_id', $unit_id)->first();
+
+            // return $hasil_poin;
+
+
+            // return $hasil_poin;
+
             return view("seni.prestasi.tunggal.biru.dewan", [
                 'pertandingan' => $pertandingan,
-                'user' => $user
+                'user' => $user,
+                'penalti_terakhir' => $hasil_poin
             ]);
            
         } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && $jumlah_pemain == 2){
+
+            if($request->unit == 'unit_1'){
+                $unit_id = $pertandingan->unit1_id;
+            } else if ($request->unit == 'unit_2'){
+                $unit_id = $pertandingan->unit2_id;
+            } 
+
+            $hasil_poin = HasilPoinSeniGanda::where('pertandingan_id', $pertandingan->id)->where('unit_id', $unit_id)->first();
+
+            // return $hasil_poin;
+
              return view("seni.prestasi.ganda.merah.dewan", [
                 'pertandingan' => $pertandingan,
-                'user' => $user
+                'user' => $user,
+                'penalti_terakhir' => $hasil_poin
             ]);
             
         } else {

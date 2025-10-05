@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pertandingan;
 use App\Models\User; // Digunakan untuk menerima juri/penilai dari URL
+use App\Models\UserArena;
 
 class penilaianController extends Controller
 {
@@ -39,14 +40,34 @@ class penilaianController extends Controller
             ->where('status', 'berlangsung')
             ->first();
 
+               $daftar_juri = UserArena::with('user')
+            ->where('arena_id', $arenaId)
+            ->whereHas('user', function ($query) {
+                $query->whereIn('role_id', [4, 7, 8, 10]); // Role ID 4 untuk Juri
+            })
+            ->get()
+            ->pluck('user');
+
         // 4. Tangani jika TIDAK ADA pertandingan aktif di arena tersebut.
         if (!$pertandingan) {
             return "Saat ini belum ada pertandingan aktif di Arena Anda.";
         }
 
-        // 5. Kirim objek pertandingan yang ditemukan ke view 'scoring.penilaian'.
-        return view("scoring.penilaian", [
-            'pertandingan' => $pertandingan,
-        ]);
+        $jumlah_pemain = $pertandingan->kelasPertandingan->kelas->jumlah_pemain;
+
+
+        if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)){
+            return view('seni.prestasi.tunggal.biru.penonton', compact('user', 'pertandingan', 'daftar_juri'));
+        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && $jumlah_pemain == 2){
+            return view('seni.prestasi.ganda.biru.penonton', compact('user', 'pertandingan', 'daftar_juri'));
+        }
+        else {
+
+            // 5. Kirim objek pertandingan yang ditemukan ke view 'scoring.penilaian'.
+            return view("scoring.penilaian", [
+                'pertandingan' => $pertandingan,
+            ]);
+        }
+
     }
 }

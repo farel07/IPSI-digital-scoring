@@ -21,36 +21,42 @@
         <div class="bg-white px-6 pb-4 pt-6 border-b border-gray-200">
             <div class="flex justify-between items-start">
                 <div>
-
-                    @if($_GET['unit'] == 'unit_1')
-                    <input type="hidden" name="unit_id" id="unit_id" value="{{ $pertandingan->unit1_id }}">
-
-                     @foreach ($pertandingan->pemain_unit_1 as $unit)
-                        
-                    <h1 class="text-xl font-bold text-gray-800">{{ $unit->player->name }}</h1>
-                    <h1 class="text-2xl font-bold text-blue-500">{{ $unit->player->contingent->name }}</h1>
-                
-                    @endforeach
-
+                    {{-- Logika untuk menampilkan nama dan kontingen --}}
+                    @if(request('unit') == 'unit_1' || !request('unit'))
+                        <input type="hidden" name="unit_id" id="unit_id" value="{{ $pertandingan->unit1_id }}">
+                        @foreach ($pertandingan->pemain_unit_1 as $unit)
+                            <h1 class="text-xl font-bold text-gray-800">{{ $unit->player->name }}</h1>
+                            <h1 class="text-2xl font-bold text-blue-500">{{ $unit->player->contingent->name }}</h1>
+                        @endforeach
                     @else
-                    <input type="hidden" name="unit_id" id="unit_id" value="{{ $pertandingan->unit2_id }}">
-
-                     @foreach ($pertandingan->pemain_unit_2 as $unit)
-                        
-                    <h1 class="text-xl font-bold text-gray-800">{{ $unit->player->name }}</h1>
-                    <h1 class="text-2xl font-bold text-blue-500">{{ $unit->player->contingent->name }}</h1>
-                
-                    @endforeach
-
+                        <input type="hidden" name="unit_id" id="unit_id" value="{{ $pertandingan->unit2_id }}">
+                        @foreach ($pertandingan->pemain_unit_2 as $unit)
+                            <h1 class="text-xl font-bold text-gray-800">{{ $unit->player->name }}</h1>
+                            <h1 class="text-2xl font-bold text-blue-500">{{ $unit->player->contingent->name }}</h1>
+                        @endforeach
                     @endif
 
-                   
+                    {{-- Dropdown untuk memilih unit --}}
+                    <select name="unit" id="unit" class="mt-2 border-gray-300 rounded-md shadow-sm">
+                        <option value="unit_1" {{ request('unit', 'unit_1') == 'unit_1' ? 'selected' : '' }}>Unit 1</option>
+                        <option value="unit_2" {{ request('unit') == 'unit_2' ? 'selected' : '' }}>Unit 2</option>
+                    </select>
+
+                    <script>
+                        document.getElementById('unit').addEventListener('change', function () {
+                            const selected = this.value;
+                            // Membuat URL baru dengan parameter 'unit'
+                            const currentUrl = new URL(window.location.href);
+                            currentUrl.searchParams.set('unit', selected);
+                            window.location.href = currentUrl.toString();
+                        });
+                    </script>
                 </div>
                 <div class="text-right">
                     <p class="text-sm text-gray-600 font-medium">{{ $pertandingan->kelasPertandingan->kelas->nama_kelas }}</p>
                     <p>{{ $pertandingan->kelasPertandingan->kategoriPertandingan->nama_kategori }} 
-                        {{ $pertandingan->kelasPertandingan->jenisPertandingan->nama_jenis }} 
-                        </p>
+                       {{ $pertandingan->kelasPertandingan->jenisPertandingan->nama_jenis }} 
+                    </p>
                 </div>
             </div>
         </div>
@@ -67,7 +73,8 @@
                         </tr>
                     </thead>
                     <tbody id="penaltyTableBody">
-                        <!-- Baris 0 -->
+                        <!-- Baris 0: Waktu -->
+                        @php $nilai_waktu = $penalti_terakhir->waktu_terlampaui ?? 0.00; @endphp
                         <tr class="hover:bg-gray-50" data-type="waktu">
                             <td class="border border-gray-300 p-3 text-sm">WAKTU</td>
                             <td class="border border-gray-300 p-2 text-center">
@@ -76,9 +83,11 @@
                                     <button onclick="applyPenalty(0)" class="bg-red-500 hover:bg-red-600 text-white px-10 py-3 rounded-lg font-bold text-sm transition-colors">-0.50</button>
                                 </div>
                             </td>
-                            <td class="border border-gray-300 p-3 text-center font-medium text-lg penalty-value" data-value="0.00">0.00</td>
+                            <td class="border border-gray-300 p-3 text-center font-medium text-lg penalty-value" data-value="{{ number_format($nilai_waktu, 2, '.', '') }}">{{ number_format($nilai_waktu, 2) }}</td>
                         </tr>
-                        <!-- Baris 1 -->
+                        
+                        <!-- Baris 1: Keluar Garis -->
+                        @php $nilai_garis = $penalti_terakhir->keluar_garis ?? 0.00; @endphp
                         <tr class="hover:bg-gray-50" data-type="keluar_garis">
                             <td class="border border-gray-300 p-3 text-sm">SETIAP KALI KELUAR GARIS</td>
                             <td class="border border-gray-300 p-2 text-center">
@@ -87,9 +96,11 @@
                                     <button onclick="applyPenalty(1)" class="bg-red-500 hover:bg-red-600 text-white px-10 py-3 rounded-lg font-bold text-sm transition-colors">-0.50</button>
                                 </div>
                             </td>
-                            <td class="border border-gray-300 p-3 text-center font-medium text-lg penalty-value" data-value="0.00">0.00</td>
+                            <td class="border border-gray-300 p-3 text-center font-medium text-lg penalty-value" data-value="{{ number_format($nilai_garis, 2, '.', '') }}">{{ number_format($nilai_garis, 2) }}</td>
                         </tr>
-                        <!-- Baris 2 -->
+                        
+                        <!-- Baris 2: Pakaian -->
+                        @php $nilai_pakaian = $penalti_terakhir->pakaian ?? 0.00; @endphp
                         <tr class="hover:bg-gray-50" data-type="pakaian">
                             <td class="border border-gray-300 p-3 text-sm">PAKAIAN TIDAK SEMPURNA</td>
                             <td class="border border-gray-300 p-2 text-center">
@@ -98,9 +109,11 @@
                                     <button onclick="applyPenalty(2)" class="bg-red-500 hover:bg-red-600 text-white px-10 py-3 rounded-lg font-bold text-sm transition-colors">-0.50</button>
                                 </div>
                             </td>
-                            <td class="border border-gray-300 p-3 text-center font-medium text-lg penalty-value" data-value="0.00">0.00</td>
+                            <td class="border border-gray-300 p-3 text-center font-medium text-lg penalty-value" data-value="{{ number_format($nilai_pakaian, 2, '.', '') }}">{{ number_format($nilai_pakaian, 2) }}</td>
                         </tr>
-                        <!-- Baris 3 -->
+
+                        <!-- Baris 3: Senjata Jatuh -->
+                        @php $nilai_senjata = $penalti_terakhir->senjata_jatuh ?? 0.00; @endphp
                         <tr class="hover:bg-gray-50" data-type="senjata_jatuh">
                             <td class="border border-gray-300 p-3 text-sm">SETIAP KALI SENJATA JATUH</td>
                             <td class="border border-gray-300 p-2 text-center">
@@ -109,9 +122,11 @@
                                     <button onclick="applyPenalty(3)" class="bg-red-500 hover:bg-red-600 text-white px-10 py-3 rounded-lg font-bold text-sm transition-colors">-0.50</button>
                                 </div>
                             </td>
-                            <td class="border border-gray-300 p-3 text-center font-medium text-lg penalty-value" data-value="0.00">0.00</td>
+                            <td class="border border-gray-300 p-3 text-center font-medium text-lg penalty-value" data-value="{{ number_format($nilai_senjata, 2, '.', '') }}">{{ number_format($nilai_senjata, 2) }}</td>
                         </tr>
-                        <!-- Baris 4 -->
+
+                        <!-- Baris 4: Berhenti -->
+                        @php $nilai_berhenti = $penalti_terakhir->stop ?? 0.00; @endphp
                         <tr class="hover:bg-gray-50" data-type="berhenti">
                             <td class="border border-gray-300 p-3 text-sm">ATLIT BERHENTI 5 DETIK DISETIAP GERAKAN</td>
                             <td class="border border-gray-300 p-2 text-center">
@@ -120,7 +135,7 @@
                                     <button onclick="applyPenalty(4)" class="bg-red-500 hover:bg-red-600 text-white px-10 py-3 rounded-lg font-bold text-sm transition-colors">-0.50</button>
                                 </div>
                             </td>
-                            <td class="border border-gray-300 p-3 text-center font-medium text-lg penalty-value" data-value="0.00">0.00</td>
+                            <td class="border border-gray-300 p-3 text-center font-medium text-lg penalty-value" data-value="{{ number_format($nilai_berhenti, 2, '.', '') }}">{{ number_format($nilai_berhenti, 2) }}</td>
                         </tr>
                     </tbody>
                 </table>

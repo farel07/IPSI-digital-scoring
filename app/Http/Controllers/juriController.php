@@ -8,11 +8,14 @@ use App\Models\UserMatch;
 use App\Models\Pertandingan;
 use Illuminate\Http\Request;
 use App\Events\JuriVoteSubmitted;
+use App\Models\DetailPoinSeniJuriGanda;
+use App\Models\DetailPoinSeniJuriTunggalRegu;
+use Illuminate\Support\Facades\Redis;
 
 class juriController extends Controller
 {
 
-    public function index(User $user)
+    public function index(User $user, Request $request)
     {
         if ($user->role->id !== 4 && $user->role->id !== 7 && $user->role->id !== 8 && $user->role->id !== 10) { // Pastikan role juri
             abort(403, 'Akses ditolak. User ini bukan juri.');
@@ -50,25 +53,49 @@ class juriController extends Controller
             ]);
         } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)){
 
+            if($request->unit == 'unit_1'){
+                $unit_id = $pertandingan->unit1_id;
+            } else if ($request->unit == 'unit_2'){
+                $unit_id = $pertandingan->unit2_id;
+            } 
+            
+            // return "unit id : ".$unit_id;
+
+            $detail_poin = DetailPoinSeniJuriTunggalRegu::where('pertandingan_id', $pertandingan->id)->where('user_id', $user->id)->where('unit_id', $unit_id)->first();
+            // return $detail_poin;
+
             if($jumlah_pemain == 1){
                 $total_jurus = 14;
             } else if($jumlah_pemain == 3){
                 $total_jurus = 12;
             }
             
-
+            // return $request;
             return view("seni.prestasi.tunggal.biru.juri", [
                 'pertandingan' => $pertandingan,
                 'user' => $user, 
-                'total_jurus' => $total_jurus
+                'total_jurus' => $total_jurus,
+                'detail_poin' => $detail_poin
             ]);
         } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && $jumlah_pemain == 2){
+
+             if($request->unit == 'unit_1'){
+                $unit_id = $pertandingan->unit1_id;
+            } else if ($request->unit == 'unit_2'){
+                $unit_id = $pertandingan->unit2_id;
+            } 
+
+            $detail_poin = DetailPoinSeniJuriGanda::where('pertandingan_id', $pertandingan->id)->where('user_id', $user->id)->where('unit_id', $unit_id)->first();
+            // return $detail_poin;
+
             return view("seni.prestasi.ganda.biru.juri", [
                 'pertandingan' => $pertandingan,
-                'user' => $user
+                'user' => $user,
+                'detail_poin' => $detail_poin
             ]);
         } else {
-            return "jenis pertandingan tidak dikenali.";
+            // return "jenis pertandingan tidak dikenali.";
+            return $pertandingan->kelasPertandingan;
         }
 
 
