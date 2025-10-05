@@ -115,7 +115,6 @@ class timerController extends Controller
         $pertandinganId = $validated['pertandingan_id'];
         $newRoundNumber = $validated['round_number'];
 
-        // 1. Ambil data pertandingan yang sedang berlangsung
         $pertandingan = Pertandingan::find($pertandinganId);
         if (!$pertandingan) {
             return response()->json(['status' => 'error', 'message' => 'Pertandingan tidak ditemukan.'], 404);
@@ -123,7 +122,6 @@ class timerController extends Controller
 
         $currentRoundNumber = $pertandingan->current_round;
 
-        // Mencegah update jika ronde baru lebih kecil atau sama dengan ronde saat ini
         if ($newRoundNumber <= $currentRoundNumber) {
             return response()->json([
                 'status' => 'info',
@@ -132,53 +130,73 @@ class timerController extends Controller
             ]);
         }
 
-        // 2. Cari baris detail point berdasarkan pertandingan DAN ronde saat ini
-        $detailPoint = DetailPointTanding::where('pertandingan_id', $pertandinganId)
+        // 1. Dapatkan detail poin dari ronde SEBELUMNYA.
+        $previousRoundDetail = DetailPointTanding::where('pertandingan_id', $pertandinganId)
             ->where('round', $currentRoundNumber)
             ->first();
 
-        // 3. Jika baris detail untuk ronde saat ini ditemukan, UPDATE ronde-nya
-        if ($detailPoint) {
-            $detailPoint->round = $newRoundNumber;
-            $detailPoint->save();
-        } else {
-            // Sebagai pengaman, jika tidak ada entri untuk ronde saat ini, buat entri baru untuk ronde BARU.
-            // Ini menangani kasus jika ronde 1 belum pernah dimulai secara formal.
-            DetailPointTanding::create([
-                'pertandingan_id' => $pertandinganId,
-                'round'           => $newRoundNumber,
-                // Inisialisasi poin ke 0 jika diperlukan oleh skema database Anda
-                'punch_point_1' => 0,
-                'kick_point_1' => 0,
-                'fall_point_1' => 0,
-                'fall_point_2' => 0,
-                'binaan_point_1' => 0,
-                'binaan_point_2' => 0,
-                'teguran_point_1' => 0,
-                'teguran_point_2' => 0,
-                'peringatan_point_1' => 0,
-                'peringatan_point_2' => 0,
-                'punch_point_2' => 0,
-                'kick_point_2' => 0,
-                'total_point_1' => 0,
-                'total_point_2' => 0,
-            ]);
+        // 2. Siapkan data untuk baris ronde BARU.
+        $newRoundData = [
+            'pertandingan_id' => $pertandinganId,
+            'round'           => $newRoundNumber,
+            // Nilai default (akan di-override jika ada data dari ronde sebelumnya)
+            'punch_point_1' => 0,
+            'kick_point_1' => 0,
+            'fall_point_1' => 0,
+            'peringatan_1' => 0,
+            'punch_point_2' => 0,
+            'kick_point_2' => 0,
+            'fall_point_2' => 0,
+            'peringatan_2' => 0,
+            'total_point_1' => 0,
+            'total_point_2' => 0,
+            // Nilai yang selalu direset ke 0
+            'binaan_point_1' => 0,
+            'teguran_1' => 0,
+            'binaan_point_2' => 0,
+            'teguran_2' => 0,
+        ];
+
+        // 3. Jika ada data dari ronde sebelumnya, WARISI nilainya.
+        if ($previousRoundDetail) {
+            // Fields yang nilainya diwariskan
+            $newRoundData['punch_point_1'] = $previousRoundDetail->punch_point_1;
+            $newRoundData['kick_point_1'] = $previousRoundDetail->kick_point_1;
+            $newRoundData['fall_point_1'] = $previousRoundDetail->fall_point_1;
+            $newRoundData['peringatan_1'] = $previousRoundDetail->peringatan_1;
+
+            $newRoundData['punch_point_2'] = $previousRoundDetail->punch_point_2;
+            $newRoundData['kick_point_2'] = $previousRoundDetail->kick_point_2;
+            $newRoundData['fall_point_2'] = $previousRoundDetail->fall_point_2;
+            $newRoundData['peringatan_2'] = $previousRoundDetail->peringatan_2;
+
+            // Penting: Total poin juga harus diwariskan sebagai titik awal ronde baru
+            $newRoundData['total_point_1'] = $previousRoundDetail->total_point_1;
+            $newRoundData['total_point_2'] = $previousRoundDetail->total_point_2;
         }
 
-        // 4. Update field 'current_round' di tabel pertandingan utama
+        // 4. BUAT BARIS BARU di database menggunakan data yang sudah disiapkan.
+        // `updateOrCreate` digunakan sebagai pengaman untuk mencegah duplikasi jika
+        // halaman di-refresh dan request terkirim lagi.
+        DetailPointTanding::updateOrCreate(
+            ['pertandingan_id' => $pertandinganId, 'round' => $newRoundNumber],
+            $newRoundData
+        );
+
+        // 5. Update ronde saat ini di tabel pertandingan utama.
         $pertandingan->current_round = $newRoundNumber;
         $pertandingan->save();
 
-        // -->> LOGIKA BARU: BROADCAST EVENT PERUBAHAN RONDE <<--
+        // 6. Siarkan event ke frontend.
         broadcast(new RoundUpdated($pertandinganId, $newRoundNumber))->toOthers();
 
-        // 5. Kirim response berhasil
         return response()->json([
             'status' => 'success',
             'message' => 'Ronde berhasil diperbarui menjadi ' . $newRoundNumber,
             'current_round' => $newRoundNumber,
         ]);
     }
+
 
     /**
      * Helper function untuk mengubah nomor ronde menjadi nama babak.

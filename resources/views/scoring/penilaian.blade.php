@@ -16,7 +16,8 @@
                     <p class="text-light text-center m-0 p-2" style="font-size: 20px">
                         SCORING DIGITAL
                         {{ $pertandingan->kelasPertandingan?->kelas?->nama_kelas ?? 'Kelas Tanding' }} -
-                        {{ $pertandingan->kelasPertandingan?->kategoriPertandingan?->nama_kategori ?? 'Kategori' }}
+                        {{ $pertandingan->kelasPertandingan?->kategoriPertandingan?->nama_kategori ?? 'Kategori' }} -
+                        {{ $pertandingan->id }}
                     </p>
                 </div>
             </div>
@@ -464,17 +465,18 @@
                 }
 
                 // 1. Inisialisasi Laravel Echo
-                 const echo = new window.Echo({
+                const echo = new window.Echo({
                     broadcaster: 'pusher',
                     key: "{{ config('broadcasting.connections.pusher.key') }}",
                     cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
                     forceTLS: true
                 });
 
-                // 2. Dengarkan event di channel privat
-                echo.private(`pertandingan.${pertandinganId}`)
-                    .listen('TimerUpdated', (e) => {
-                        console.log('Event Timer diterima:', e);
+                const channel = echo.private(`pertandingan.${pertandinganId}`);
+                console.log(`PENILAIAN: Mencoba subscribe ke channel private-pertandingan.${pertandinganId}`);
+
+                channel.listen('TimerUpdated', (e) => {
+                    console.log('Event Timer diterima:', e);
                         localCurrentSeconds = e.currentTime;
                         updateTimerDisplay(localCurrentSeconds);
                         if (e.state === 'playing') { startLocalCountdown(); }
@@ -483,31 +485,59 @@
                             stopLocalCountdown();
                             localCurrentSeconds = e.total_duration;
                             updateTimerDisplay(localCurrentSeconds);
-                        }
-                    });
+                    }
+                });
 
-                echo.private(`pertandingan.${pertandinganId}`)
-                    .listen('RoundUpdated', (e) => {
-                        console.log('Event RoundUpdated diterima:', e);
-                        
-                        const round1Box = document.getElementById('round-box-1');
-                        const round2Box = document.getElementById('round-box-2');
-                        const round3Box = document.getElementById('round-box-3');
-                        
-                        if(round1Box) round1Box.classList.replace('bg-warning', 'bg-light');
-                        if(round2Box) round2Box.classList.replace('bg-warning', 'bg-light');
-                        if(round3Box) round3Box.classList.replace('bg-warning', 'bg-light');
+                channel.listen('RoundUpdated', (e) => {
+                    console.log('Round Telah diubah oleh operator timer', e);
+                    // alert('Round telah diubah oleh operator timer');
+                    
+                    // Cara paling sederhana dan andal untuk menyinkronkan semua data
+                    // dari ronde baru adalah dengan me-refresh halaman.
+                    // Ini akan memaksa controller untuk mengambil data dari ronde yang baru
+                    // dan merender ulang semua nilai di Blade dengan benar.
+                    window.location.reload();
+                });
 
-                        if (e.newRoundNumber >= 1 && round1Box) {
-                            round1Box.classList.replace('bg-light', 'bg-warning');
-                        }
-                        if (e.newRoundNumber >= 2 && round2Box) {
-                            round2Box.classList.replace('bg-light', 'bg-warning');
-                        }
-                        if (e.newRoundNumber >= 3 && round3Box) {
-                            round3Box.classList.replace('bg-light', 'bg-warning');
-                        }
-                    });
+                // 2. Dengarkan event di channel privat
+                // echo.private(`pertandingan.${pertandinganId}`)
+                //     .listen('TimerUpdated', (e) => {
+                //         console.log('Event Timer diterima:', e);
+                //         localCurrentSeconds = e.currentTime;
+                //         updateTimerDisplay(localCurrentSeconds);
+                //         if (e.state === 'playing') { startLocalCountdown(); }
+                //         else if (e.state === 'paused') { stopLocalCountdown(); }
+                //         else if (e.state === 'reset') {
+                //             stopLocalCountdown();
+                //             localCurrentSeconds = e.total_duration;
+                //             updateTimerDisplay(localCurrentSeconds);
+                //         }
+                //     }
+                // );
+
+                // echo.private(`pertandingan.${pertandinganId}`)
+                //     .listen('RoundUpdated', (e) => {
+                //         console.log('Event RoundUpdated diterima:', e);
+                        
+                //         const round1Box = document.getElementById('round-box-1');
+                //         const round2Box = document.getElementById('round-box-2');
+                //         const round3Box = document.getElementById('round-box-3');
+                        
+                //         if(round1Box) round1Box.classList.replace('bg-warning', 'bg-light');
+                //         if(round2Box) round2Box.classList.replace('bg-warning', 'bg-light');
+                //         if(round3Box) round3Box.classList.replace('bg-warning', 'bg-light');
+
+                //         if (e.newRoundNumber >= 1 && round1Box) {
+                //             round1Box.classList.replace('bg-light', 'bg-warning');
+                //         }
+                //         if (e.newRoundNumber >= 2 && round2Box) {
+                //             round2Box.classList.replace('bg-light', 'bg-warning');
+                //         }
+                //         if (e.newRoundNumber >= 3 && round3Box) {
+                //             round3Box.classList.replace('bg-light', 'bg-warning');
+                //         }
+                //     }
+                // );
             } else {
                 console.warn("Tidak ada pertandingan aktif untuk didengarkan event-nya.");
             }

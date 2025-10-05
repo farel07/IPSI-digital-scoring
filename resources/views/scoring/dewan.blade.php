@@ -209,6 +209,86 @@
     </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dewanMatchDataEl = document.getElementById('match-data');
+    if (!dewanMatchDataEl || !dewanMatchDataEl.dataset.pertandinganId) {
+        console.warn("DEWAN: Tidak ada data pertandingan, sessionStorage tidak diaktifkan.");
+        return;
+    }
+
+    const pertandinganId = dewanMatchDataEl.dataset.pertandinganId;
+    const storageKey = `dewanScoreHistory_${pertandinganId}`;
+
+    // Definisikan variabel ronde global agar bisa diakses oleh event.js
+    window.currentRound = {{ $pertandingan->current_round }};
+
+    /**
+     * Menyimpan seluruh riwayat skor pelanggaran ke sessionStorage.
+     */
+    window.saveHistoryToSession = function() {
+        const dataToSave = {
+            pertandingan_id: pertandinganId,
+            history: { blue: {}, red: {} }
+        };
+
+        const types = ['bina', 'teguran', 'peringatan', 'jatuh'];
+        const colors = ['blue', 'red'];
+        const rounds = [1, 2, 3];
+
+        colors.forEach(color => {
+            types.forEach(type => {
+                dataToSave.history[color][type] = {};
+                rounds.forEach(round => {
+                    const elementId = `point-${type}-${color}-${round}`;
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        dataToSave.history[color][type][round] = element.innerHTML;
+                    }
+                });
+            });
+        });
+
+        sessionStorage.setItem(storageKey, JSON.stringify(dataToSave));
+        console.log('Riwayat skor Dewan disimpan ke sessionStorage.');
+    };
+
+    /**
+     * Memuat riwayat skor dari sessionStorage saat halaman dimuat.
+     */
+    function loadHistoryFromSession() {
+        const savedDataJSON = sessionStorage.getItem(storageKey);
+        if (!savedDataJSON) return;
+
+        const savedData = JSON.parse(savedDataJSON);
+
+        if (savedData.pertandingan_id == pertandinganId) {
+            console.log('Memuat riwayat skor Dewan dari sessionStorage.');
+            const types = ['bina', 'teguran', 'peringatan', 'jatuh'];
+            const colors = ['blue', 'red'];
+            const rounds = [1, 2, 3];
+
+            colors.forEach(color => {
+                types.forEach(type => {
+                    rounds.forEach(round => {
+                        const elementId = `point-${type}-${color}-${round}`;
+                        const element = document.getElementById(elementId);
+                        const savedValue = savedData.history?.[color]?.[type]?.[round];
+                        if (element && savedValue) {
+                            element.innerHTML = savedValue;
+                        }
+                    });
+                });
+            });
+        } else {
+            sessionStorage.removeItem(storageKey);
+        }
+    }
+
+    // Panggil fungsi muat saat halaman pertama kali dibuka
+    loadHistoryFromSession();
+});
+</script>
 
    {{-- Letakkan di dalam file dewan.blade.php, idealnya sebelum </body> --}}
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
@@ -220,18 +300,13 @@
     document.addEventListener('DOMContentLoaded', function() {
         const dewanMatchDataEl = document.getElementById('match-data');
         if (!dewanMatchDataEl || !dewanMatchDataEl.dataset.pertandinganId) {
-            console.warn("DEWAN: Tidak ada data pertandingan, listener tidak diaktifkan.");
             return;
         }
 
         const pertandinganId = dewanMatchDataEl.dataset.pertandinganId;
         const kategori = dewanMatchDataEl.dataset.kategori;
-
-        // --- State Management ---
         let votes = {};
         const requiredVotes = 2;
-
-        // --- Element Selectors ---
         const requestSection = document.getElementById('dewan-request-section');
         const trackerSection = document.getElementById('dewan-vote-tracker-section');
         const validationTypeEl = document.getElementById('requested-validation-type');
@@ -243,7 +318,6 @@
             'juri-3': document.getElementById('juri-3-vote'),
         };
         
-        // --- UI Functions ---
         window.resetValidation = function() {
             votes = {};
             Object.values(voteSpans).forEach(span => {
@@ -258,7 +332,6 @@
             finalResultEl.className = 'm-0 text-center';
         };
 
-        // --- Logic Functions ---
         function checkVotes() {
             const voteCounts = { merah: 0, biru: 0, invalid: 0 };
             Object.values(votes).forEach(vote => {
@@ -269,27 +342,16 @@
                 if (voteCounts[vote] >= requiredVotes) {
                     const resultText = vote.toUpperCase() + ' || ' + jenis_validation;
                     const colorClass = vote === 'merah' ? 'text-danger fw-bold' : (vote === 'biru' ? 'text-primary fw-bold' : '');
-                    
                     finalResultEl.innerHTML = resultText;
                     finalResultEl.className = `m-0 text-center ${colorClass}`;
-                    console.log(`DEWAN: Final result determined: ${resultText}`);
-                    
-                    // setTimeout(() => {
-                    //     const validationModal = bootstrap.Modal.getInstance(document.getElementById('validationModal'));
-                    //     if (validationModal) validationModal.hide();
-                    //     resetValidation();
-                    // }, 3000);
                     return;
                 } else {
                     const resultText = 'INVALID';
-                    
                     finalResultEl.innerHTML = resultText;
-                    console.log(`DEWAN: Final result determined: ${resultText}`);
                 }
             }
         }
         
-        // --- WebSocket & Event Handling ---
         const echo = new window.Echo({
             broadcaster: 'pusher',
             key: "{{ config('broadcasting.connections.pusher.key') }}",
@@ -298,56 +360,24 @@
         });
 
         const channel = echo.private(`pertandingan.${pertandinganId}`);
-
         channel.error(err => console.error("DEWAN: Gagal koneksi ke channel.", err));
-
         channel.listen('JuriVoteSubmitted', (data) => {
-            console.log("DEWAN: Menerima vote dari juri", data);
             if (voteSpans[data.juriName]) {
                 votes[data.juriName] = data.vote;
-                
                 const span = voteSpans[data.juriName];
                 span.textContent = data.vote.toUpperCase();
                 if(data.vote === 'merah') span.className = 'badge bg-danger fs-6';
                 else if (data.vote === 'biru') span.className = 'badge bg-primary fs-6';
                 else span.className = 'badge bg-dark fs-6';
-
                 checkVotes();
             }
         });
-        
         channel.listen('RoundUpdated', (data) => {
-            console.log("DEWAN: Menerima event RoundUpdated", data);
-            const newRoundNumber = data.newRoundNumber;
-            const roundBoxes = {
-                1: document.getElementById('round-box-1'),
-                2: document.getElementById('round-box-2'),
-                3: document.getElementById('round-box-3')
-            };
-
-            Object.values(roundBoxes).forEach(box => {
-                if (box) {
-                    box.classList.remove('bg-warning');
-                    box.classList.add('bg-light');
-                }
-            });
-            for (let i = 1; i <= newRoundNumber; i++) {
-                if (roundBoxes[i]) {
-                    roundBoxes[i].classList.remove('bg-light');
-                    roundBoxes[i].classList.add('bg-warning');
-                }
-            }
-            
-            const isPemasalanDone = (kategori === 'Pemasalan' && newRoundNumber >= 2);
-            const isPrestasiDone = (kategori !== 'Pemasalan' && newRoundNumber >= 3);
-            if (btnPemenang && (isPemasalanDone || isPrestasiDone)) {
-                btnPemenang.classList.remove('disabled');
-            }
+            alert('Round telah diubah oleh operator timer');
+            window.location.reload();
         });
-
-        // --- Action Functions ---
+        
         window.sendValidationRequest = function(jenis) {
-            console.log(jenis)
             jenis_validation = jenis;
             fetch("{{ route('dewan.requestValidation') }}", {
                 method: 'POST',
@@ -363,7 +393,6 @@
             .then(res => res.json())
             .then(result => {
                 if(result.status === 'success') {
-                    // console.log('asdsad')
                     resetValidation();
                     validationTypeEl.textContent = jenis;
                     requestSection.classList.add('d-none');
