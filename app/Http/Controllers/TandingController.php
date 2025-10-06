@@ -9,10 +9,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 // Import semua Event Anda
-use App\Events\KirimBinaan;
-use App\Events\KirimPeringatan;
-use App\Events\KirimTeguran;
-use App\Events\KirimJatuh;
+use App\Events\kirimBinaan;
+use App\Events\kirimPeringatan;
+use App\Events\kirimTeguran;
+use App\Events\kirimJatuh;
 use App\Events\kirimPukul;
 use App\Events\kirimTendang;
 use App\Events\hapusPelanggaran;
@@ -52,7 +52,7 @@ class TandingController extends Controller
             $this->updateOrCreatePoint($pertandingan, 'teguran', $request->filter, 1);
         }
 
-        event(new KirimBinaan($request->count, $request->filter, $pertandingan->id));
+        event(new kirimBinaan($request->count, $request->filter, $pertandingan->id));
         return response()->json(['status' => 'berhasil', 'data' => $request->all()]);
     }
 
@@ -75,7 +75,7 @@ class TandingController extends Controller
 
         $this->updateOrCreatePoint($pertandingan, 'peringatan', $request->filter, $request->count);
 
-        event(new KirimPeringatan($request->count, $request->filter, $pertandingan->id));
+        event(new kirimPeringatan($request->count, $request->filter, $pertandingan->id));
         return response()->json(['status' => 'berhasil']);
     }
 
@@ -99,7 +99,7 @@ class TandingController extends Controller
 
         $this->updateOrCreatePoint($pertandingan, 'teguran', $request->filter, $request->count);
 
-        event(new KirimTeguran($request->count, $request->filter, $pertandingan->id));
+        event(new kirimTeguran($request->count, $request->filter, $pertandingan->id));
         return response()->json(['status' => 'berhasil']);
     }
 
@@ -117,7 +117,7 @@ class TandingController extends Controller
             ->first();
         $this->updateOrCreatePoint($pertandingan, 'fall_point', $request->filter, $request->count);
 
-        event(new KirimJatuh($request->count, $request->filter, $pertandingan->id));
+        event(new kirimJatuh($request->count, $request->filter, $pertandingan->id));
         return response()->json(['status' => 'berhasil']);
     }
 
