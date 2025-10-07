@@ -15,6 +15,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\dewanOperatorController;
 use App\Http\Controllers\dewanController;
+// use App\Http\Controllers\juriController;
 use App\Http\Controllers\juriController;
 use App\Http\Controllers\operatorController;
 use App\Http\Controllers\penilaianController;
@@ -76,8 +77,8 @@ Route::post('/kirim-hapus-point/{user}', [TandingController::class, 'hapus_point
 // Route::post('/pertandingan/kirim-vote', [TandingController::class, 'submitVote'])
 //     ->name('tanding.submitVote');
 
-Route::post('/dewan/request-validation', [\App\Http\Controllers\DewanController::class, 'sendValidationRequest'])->name('dewan.requestValidation');
-Route::post('/juri/submit-vote', [\App\Http\Controllers\JuriController::class, 'submitVote'])->name('juri.submitVote');
+Route::post('/dewan/request-validation', [dewanController::class, 'sendValidationRequest'])->name('dewan.requestValidation');
+Route::post('/juri/submit-vote', [juriController::class, 'submitVote'])->name('juri.submitVote');
 
 Route::post('/get_point/{user}', [TandingController::class, 'get_point']);
 

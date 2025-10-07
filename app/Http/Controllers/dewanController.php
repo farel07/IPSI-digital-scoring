@@ -57,7 +57,7 @@ class dewanController extends Controller
                 'pertandingan' => $pertandingan,
                 'user' => $user
             ]);
-        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)){
+        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)  && $pertandingan->kelasPertandingan->kelas->nama_kelas != "Tunggal Bebas"){
 
             if($request->unit == 'unit_1'){
                 $unit_id = $pertandingan->unit1_id;
@@ -78,7 +78,7 @@ class dewanController extends Controller
                 'penalti_terakhir' => $hasil_poin
             ]);
            
-        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && $jumlah_pemain == 2){
+        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 2 || $jumlah_pemain == 1)  && $pertandingan->kelasPertandingan->kelas->nama_kelas == "Tunggal Bebas"){
 
             if($request->unit == 'unit_1'){
                 $unit_id = $pertandingan->unit1_id;
