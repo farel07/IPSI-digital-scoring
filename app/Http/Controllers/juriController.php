@@ -53,14 +53,14 @@ class juriController extends Controller
                 'user' => $user
             ]);
         } else if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)) {
-        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)){
+        } else if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)) {
 
-            if($request->unit == 'unit_1'){
+            if ($request->unit == 'unit_1') {
                 $unit_id = $pertandingan->unit1_id;
-            } else if ($request->unit == 'unit_2'){
+            } else if ($request->unit == 'unit_2') {
                 $unit_id = $pertandingan->unit2_id;
-            } 
-            
+            }
+
             // return "unit id : ".$unit_id;
 
             $detail_poin = DetailPoinSeniJuriTunggalRegu::where('pertandingan_id', $pertandingan->id)->where('user_id', $user->id)->where('unit_id', $unit_id)->first();
@@ -73,24 +73,24 @@ class juriController extends Controller
             }
 
 
-            
+
             // return $request;
             return view("seni.prestasi.tunggal.biru.juri", [
                 'pertandingan' => $pertandingan,
                 'user' => $user,
-                'total_jurus' => $total_jurus
-                'user' => $user, 
+                'total_jurus' => $total_jurus,
+                'user' => $user,
                 'total_jurus' => $total_jurus,
                 'detail_poin' => $detail_poin
             ]);
         } else if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && $jumlah_pemain == 2) {
-        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && $jumlah_pemain == 2){
+        } else if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && $jumlah_pemain == 2) {
 
-             if($request->unit == 'unit_1'){
+            if ($request->unit == 'unit_1') {
                 $unit_id = $pertandingan->unit1_id;
-            } else if ($request->unit == 'unit_2'){
+            } else if ($request->unit == 'unit_2') {
                 $unit_id = $pertandingan->unit2_id;
-            } 
+            }
 
             $detail_poin = DetailPoinSeniJuriGanda::where('pertandingan_id', $pertandingan->id)->where('user_id', $user->id)->where('unit_id', $unit_id)->first();
             // return $detail_poin;
