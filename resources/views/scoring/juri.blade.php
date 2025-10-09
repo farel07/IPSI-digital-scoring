@@ -73,7 +73,7 @@
                     <div id="total-point-blue-1" class="p-3 mt-3 border bg-light text-center score-box">.</div>
                     <div id="total-point-blue-2" class="p-3 mt-3 border bg-light text-center score-box">.</div>
                     <div id="total-point-blue-3" class="p-3 mt-3 border bg-light text-center score-box">.</div>
-                    <div class="row justify-content-between">
+                    <div class="row d-flex flex-column">
                         <div class="col-6 mb-3">
                             <button class="mt-3 btn btn-primary w-100" type="button" value="1" onclick="kirimPukul('blue')"  id="btn_pukul_blue" 
                                 style="border-radius: 10px; height: 100px"><img class="w-25 me-2"
@@ -84,7 +84,7 @@
                                 style="border-radius: 10px; height: 100px; background-color:rgb(190, 0, 0)">HAPUS POINT
                                 TERBARU</button>
                         </div> --}}
-                        <div class="d-grid gap-2 col-6 me-auto mt-3">
+                        <div class="d-grid gap-2 col-6 me-auto">
                             <button class="btn btn-primary" id="btn_tendang_blue" type="button" style="border-radius: 10px; height: 100px" onclick="kirimTendang('blue')" value="2"><img
                                     class="w-25 me-1 mb-3" src="{{ asset('assets') }}/img/icon/logo-tendang.png"
                                     alt="Tendang">TENDANG</button>
@@ -110,18 +110,18 @@
                     <div id="total-point-red-1" class="p-3 mt-3 border bg-light text-center score-box">.</div>
                     <div id="total-point-red-2" class="p-3 mt-3 border bg-light text-center score-box">.</div>
                     <div id="total-point-red-3" class="p-3 mt-3 border bg-light text-center score-box">.</div>
-                    <div class="row justify-content-between">
+                    <div class="d-flex flex-column align-items-end">
                         {{-- <div class="col-6">
                             <button class="mt-3 btn btn-danger w-100 text-light" type="button" onclick="kirimHapusPoint('red')" id="btn_hapus_point_red" disabled
                                 style="border-radius: 10px; background-color:rgb(190, 0, 0); height: 100px">HAPUS POINT
                                 TERBARU</button>
                         </div> --}}
-                        <div class="col-6"> 
+                        <div class="col-6 mb-3">
                             <button class="mt-3 btn btn-danger w-100" type="button" onclick="kirimPukul('red')" id="btn_pukul_red"
                                 style="border-radius: 10px; height:100px" value="1"><img class="w-25 me-1" 
                                     src="{{ asset('assets') }}/img/icon/logo-pukul.png" alt="Pukul"> PUKUL</button>
                         </div>
-                        <div class="d-grid gap-2 col-6 ms-auto mt-3">
+                        <div class="d-grid gap-2 col-6">
                             <button class="btn btn-danger" type="button" style="border-radius: 10px;height: 100px" onclick="kirimTendang('red')" id="btn_tendang_red" value="2"><img
                                     class="w-25 me-1 mb-3" src="{{ asset('assets') }}/img/icon/logo-tendang.png"
                                     alt="Tendang">TENDANG</button>
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.currentRound = {{ $pertandingan->current_round }};
     // 1. Buat kunci penyimpanan yang unik dan konsisten untuk juri ini
     const juriId = juriName.replace('-', ''); // Mengubah "juri-1" menjadi "juri1"
-    const storageKey = `juriScoreHistory_${juriId}_match${pertandinganId}`;
+    const storageKey = juriScoreHistory_${juriId}_match${pertandinganId};
 
     // 2. Fungsi SIMPAN tetap menggunakan localStorage dengan kunci yang unik
     window.saveHistoryToSession = function() {
@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         // Simpan ke localStorage, bukan sessionStorage
         localStorage.setItem(storageKey, JSON.stringify(dataToSave));
-        console.log(`Riwayat skor Juri disimpan ke localStorage dengan kunci: ${storageKey}`);
+        console.log(Riwayat skor Juri disimpan ke localStorage dengan kunci: ${storageKey});
     };
 
     // 3. Fungsi LOAD diperbaiki untuk membaca dari localStorage dengan kunci yang sama
@@ -246,12 +246,12 @@ document.addEventListener('DOMContentLoaded', function() {
         forceTLS: true
     });
 
-    const channel = echo.private(`pertandingan.${pertandinganId}`);
+    const channel = echo.private(pertandingan.${pertandinganId});
     
-    console.log(`JURI (${juriName}): Mencoba subscribe ke channel private-pertandingan.${pertandinganId}`);
+    console.log(JURI (${juriName}): Mencoba subscribe ke channel private-pertandingan.${pertandinganId});
     
     channel.error((error) => {
-        console.error(`JURI: Gagal terhubung ke channel, error otorisasi:`, error);
+        console.error(JURI: Gagal terhubung ke channel, error otorisasi:, error);
         alert("JURI: Koneksi real-time GAGAL! Periksa console untuk detail.");
     });
 
