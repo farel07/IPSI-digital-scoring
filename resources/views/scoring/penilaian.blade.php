@@ -399,11 +399,11 @@
 
         </div>
 
-        <div class="d-flex justify-content-center mt-3 mb-5">
+        {{-- <div class="d-flex justify-content-center mt-3 mb-5">
             <a href="{{ url('scoring/operator/' . Auth::user()->id) }}" class="btn btn-success btn-lg shadow-sm">
                 <i class="fas fa-user-cog me-2"></i>Back to Operator
             </a>
-        </div>
+        </div> --}}
         @else
             {{-- Ini akan ditampilkan jika controller tidak menemukan pertandingan aktif --}}
             <div class="text-center p-5">

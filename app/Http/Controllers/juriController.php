@@ -55,13 +55,12 @@ class juriController extends Controller
             // return $pertandingan->grouped_peserta;
         }
 
-      if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 1) {
-    return view("scoring.juri", [
-        'pertandingan' => $pertandingan,
-        'user' => $user
-    ]);
-} 
-else if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3) && $pertandingan->kelasPertandingan->kelas->nama_kelas != "Tunggal Bebas") {
+        if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 1) {
+            return view("scoring.juri", [
+                'pertandingan' => $pertandingan,
+                'user' => $user
+            ]);
+        } else if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3) && $pertandingan->kelasPertandingan->kelas->nama_kelas != "Tunggal Bebas") {
 
     if ($pertandingan->kelasPertandingan->kategoriPertandingan->id == 1) {
     
@@ -181,6 +180,7 @@ else {
     return "jenis pertandingan tidak dikenali.";
     
 }
+
 
 
         // 5. Kirim objek pertandingan ke view.

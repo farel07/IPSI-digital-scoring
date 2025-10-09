@@ -102,7 +102,9 @@ Route::prefix('scoring')->group(function () {
     // Route::post('/juri/tambah-skor', [juriController::class, 'tambahSkor'])->name('juri.tambahSkor');
 
     Route::get('/operator/{user}', [operatorController::class, 'index']);
-    Route::post('/operator/update-status/{pertandingan}', [OperatorController::class, 'updateStatus'])->name('operator.updateStatus');
+    Route::post('/operator/update-status/{pertandingan}', [operatorController::class, 'updateStatus'])->name('operator.updateStatus');
+    // Route::get('/operator-rekap/{pertandingan_id}', [operatorController::class, 'showRekap'])->name('rekap-operator');
+    Route::get('/operator-rekap/{user}', [operatorController::class, 'showRekap'])->name('rekap-operator');
 
     Route::get('/penilaian/{user}', [penilaianController::class, 'index']);
 
@@ -115,6 +117,7 @@ Route::prefix('scoring')->group(function () {
     Route::post('/submit_penilaian_juri/{id}', [juriController::class, 'submit_penilaian_juri']);
 
     Route::get('penonton-final/{user}', [OperatorController::class, 'viewPenontonFinal'])->name('operator.penontonFinal');
+    Route::put('/pertandingan/{pertandingan}/set-winner', [TandingController::class, 'setWinner'])->name('pertandingan.setWinner');
 
 
     // seni & jurus baku

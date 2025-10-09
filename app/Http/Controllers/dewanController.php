@@ -55,15 +55,15 @@ class dewanController extends Controller
             return "belum ada pertandingan aktif di arena Anda.";
         }
 
-            $jumlah_pemain = $pertandingan->kelasPertandingan->kelas->jumlah_pemain;
+        $jumlah_pemain = $pertandingan->kelasPertandingan->kelas->jumlah_pemain;
 
 
-        if($pertandingan->kelasPertandingan->jenisPertandingan->id == 1){
+        if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 1) {
             return view("scoring.dewan", [
                 'pertandingan' => $pertandingan,
                 'user' => $user
             ]);
-        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)  && $pertandingan->kelasPertandingan->kelas->nama_kelas != "Tunggal Bebas"){
+        } else if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)  && $pertandingan->kelasPertandingan->kelas->nama_kelas != "Tunggal Bebas") {
 
              if ($pertandingan->kelasPertandingan->kategoriPertandingan->id == 1) {
     
@@ -117,24 +117,25 @@ class dewanController extends Controller
            
         } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 2 || ($jumlah_pemain == 1 &&$pertandingan->kelasPertandingan->kelas->nama_kelas == "Tunggal Bebas") )){
 
-            if($request->unit == 'unit_1'){
+
+            if ($request->unit == 'unit_1') {
                 $unit_id = $pertandingan->unit1_id;
-            } else if ($request->unit == 'unit_2'){
+            } else if ($request->unit == 'unit_2') {
                 $unit_id = $pertandingan->unit2_id;
             } else {
                 $unit_id = 'unit_1'; // default ke unit_1 jika tidak ada di request
+
             }
 
             $hasil_poin = HasilPoinSeniGanda::where('pertandingan_id', $pertandingan->id)->where('unit_id', $unit_id)->first();
 
             // return $hasil_poin;
 
-             return view("seni.prestasi.ganda.merah.dewan", [
+            return view("seni.prestasi.ganda.merah.dewan", [
                 'pertandingan' => $pertandingan,
                 'user' => $user,
                 'penalti_terakhir' => $hasil_poin
             ]);
-            
         } else {
             return "jenis pertandingan tidak dikenali.";
         }

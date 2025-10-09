@@ -29,13 +29,14 @@ function kirimBinaan(filter) {
   const binaanValue = document.getElementById("btn_binaan_" + filter).value;
   document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = false;
   document.getElementById("btn_hapus_pelanggaran_" + filter).value = "binaan-" + binaanValue;
+  console.log("Kirim binaan:", binaanValue);
 
   document.getElementById("btn_binaan_" + filter).disabled = true;
 
   setTimeout(() => {
-    document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
+    // document.getElementById("btn_hapus_pelanggaran_" + filter).disabled =  ;
     document.getElementById("btn_binaan_" + filter).disabled = false;
-  }, 4000);
+  }, 2000);
 
   if (binaanValue != 3) {
     // Pastikan elemen ada sebelum mengubahnya
@@ -52,7 +53,7 @@ function kirimBinaan(filter) {
     document.getElementById("btn_binaan_" + filter).value = 2;
   } else {
     document.getElementById("btn_binaan_" + filter).value = 3;
-    document.getElementById("btn_teguran_" + filter).value = 2;
+    // document.getElementById("btn_teguran_" + filter).value = 2;
   }
 
   fetch("/kirim-binaan/" + id_user, {
@@ -73,9 +74,9 @@ function kirimPeringatan(filter) {
 
   document.getElementById("btn_peringatan_" + filter).disabled = true;
   setTimeout(() => {
-    document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
+    // document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
     document.getElementById("btn_peringatan_" + filter).disabled = false;
-  }, 4000);
+  }, 2000);
 
   if (peringatanValue != 4) {
     const pointElement = document.getElementById("point-peringatan-" + filter + "-" + window.currentRound);
@@ -113,9 +114,9 @@ function kirimTeguran(filter) {
   document.getElementById("btn_teguran_" + filter).disabled = true;
 
   setTimeout(() => {
-    document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
+    // document.getElementById("btn_hapus_pelanggaran_" + filter).disabled = true;
     document.getElementById("btn_teguran_" + filter).disabled = false;
-  }, 4000);
+  }, 2000);
 
   if (teguranValue != 3) {
     const pointElement = document.getElementById("point-teguran-" + filter + "-" + window.currentRound);
@@ -154,9 +155,9 @@ function kirimJatuh(filter) {
   document.getElementById("btn_jatuh_" + filter).disabled = true;
 
   setTimeout(() => {
-    document.getElementById("btn_hapus_jatuhan_" + filter).disabled = true;
+    // document.getElementById("btn_hapus_jatuhan_" + filter).disabled = true;
     document.getElementById("btn_jatuh_" + filter).disabled = false;
-  }, 4000);
+  }, 2000);
 
   if (filter == "blue") {
     total_jatuh_blue += 1;
@@ -208,6 +209,9 @@ function kirimHapus(type, filter) {
 
     // Reset value sesuai value sebelumnya
     if (type === "binaan-1" || type === "binaan-2" || type === "binaan-3") {
+      console.log(type);
+
+      // console.log("Reset filter untuk hapus binaan:", type);
       let binaanValue = document.getElementById("btn_binaan_" + filter).value;
       if (binaanValue == "2" || binaanValue == "1") {
         document.getElementById("btn_binaan_" + filter).value = "1";
@@ -260,6 +264,7 @@ function kirimHapus(type, filter) {
     .then((data) => {
       // alert(type + filter);
       console.log(data);
+      // console.log("Hapus jenis:", type);
     });
 }
 
@@ -278,9 +283,7 @@ function kirimSkor(filter, pointValue, endpoint) {
     return;
   }
 
-  // --- LOGIKA LAMA UNTUK MENGAKTIFKAN TOMBOL HAPUS (TETAP SAMA) ---
   const deleteButton = document.getElementById(`btn_hapus_point_${filter}`);
-
   if (deleteButton) {
     if (deleteButtonTimers[filter]) {
       clearTimeout(deleteButtonTimers[filter]);
@@ -291,27 +294,30 @@ function kirimSkor(filter, pointValue, endpoint) {
     }, 4000);
   }
 
-  // MODIFIKASI: Gunakan 'window.currentRound' untuk memilih elemen yang tepat
   const displayElement = document.getElementById(`total-point-${filter}-${window.currentRound}`);
-
   if (!displayElement) {
     console.error(`Elemen display skor tidak ditemukan untuk ID: total-point-${filter}-${window.currentRound}`);
     return;
   }
 
   let currentText = displayElement.innerHTML.trim();
-  // Gunakan '|| . ' agar konsisten dengan tampilan awal
-  let newText = currentText === "" || currentText === "." ? pointValue.toString() : `${currentText} + ${pointValue}`;
+  let newText = currentText === "" || currentText === "." ? pointValue.toString() : `${currentText} ${pointValue}`;
 
+  // Perbarui tampilan
   displayElement.innerHTML = newText;
 
-  // --- BARIS BARU: Simpan riwayat ke sessionStorage setelah mengubah tampilan ---
+  // ================================================================
+  // MODIFIKASI: Tambahkan baris ini untuk auto-scroll ke kanan
+  // `scrollWidth` adalah total lebar konten, termasuk yang tersembunyi
+  // ================================================================
+  displayElement.scrollLeft = displayElement.scrollWidth;
+
+  // Simpan ke session storage (tidak berubah)
   if (typeof window.saveHistoryToSession === "function") {
     window.saveHistoryToSession();
   }
-  // --- AKHIR BARIS BARU ---
 
-  // Kirim ke server (tidak ada perubahan di sini)
+  // Kirim ke server (tidak berubah)
   fetch(`${endpoint}${id_user}`, {
     method: "POST",
     headers: {
@@ -323,16 +329,8 @@ function kirimSkor(filter, pointValue, endpoint) {
       juri_ket: juri_ket,
     }),
   })
-    .then((res) => {
-      if (!res.ok) throw new Error("Respons jaringan bermasalah");
-      return res.json();
-    })
-    .then((data) => {
-      console.log(`Data terkirim ke ${endpoint}:`, data);
-    })
-    .catch((error) => {
-      console.error(`Terjadi masalah dengan operasi fetch ke ${endpoint}:`, error);
-    });
+    .then((res) => res.json())
+    .catch((error) => console.error(`Error fetch ke ${endpoint}:`, error));
 }
 
 /**
@@ -354,15 +352,12 @@ function kirimTendang(filter) {
  * @param {string} filter - Warna tim, "blue" atau "red".
  */
 function kirimHapusPoint(filter) {
-  // Gunakan variabel global 'window.currentRound'
   if (typeof window.currentRound === "undefined" || typeof juri_ket === "undefined") {
     console.error("Variabel global 'currentRound' atau 'juri_ket' belum didefinisikan.");
     return;
   }
 
-  // MODIFIKASI: Gunakan 'window.currentRound' untuk memilih elemen yang tepat
   const displayElement = document.getElementById(`total-point-${filter}-${window.currentRound}`);
-
   const deleteButton = document.getElementById(`btn_hapus_point_${filter}`);
   if (deleteButton) {
     deleteButton.disabled = true;
@@ -373,13 +368,12 @@ function kirimHapusPoint(filter) {
     return;
   }
 
-  let currentText = displayElement.innerHTML.trim();
+  let currentText = displayElement.innerHTML.trim(); // Simpan state sebelum diubah
   if (currentText === "" || currentText === ".") {
-    console.log("Tidak ada skor untuk dihapus.");
     return;
   }
 
-  const pointsArray = currentText.split(" + ");
+  const pointsArray = currentText.split(" ");
   const lastPointValue = parseInt(pointsArray[pointsArray.length - 1], 10);
   let type = "";
 
@@ -394,17 +388,15 @@ function kirimHapusPoint(filter) {
 
   pointsArray.pop();
 
-  let newText = pointsArray.join(" + ");
+  let newText = pointsArray.join(" ");
   if (newText === "") {
-    newText = "."; // Kembalikan ke titik jika kosong
+    newText = ".";
   }
-  displayElement.innerHTML = newText;
+  displayElement.innerHTML = newText; // Ubah tampilan secara optimis
 
-  // --- BARIS BARU: Simpan riwayat ke sessionStorage setelah mengubah tampilan ---
   if (typeof window.saveHistoryToSession === "function") {
     window.saveHistoryToSession();
   }
-  // --- AKHIR BARIS BARU ---
 
   fetch("/kirim-hapus-point/" + id_user, {
     method: "POST",
@@ -412,21 +404,28 @@ function kirimHapusPoint(filter) {
       "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      filter: filter,
-      type: type,
-      juri_ket: juri_ket,
-    }),
+    body: JSON.stringify({ filter: filter, type: type, juri_ket: juri_ket }),
   })
+    // MODIFIKASI KUNCI DI SINI
     .then((res) => {
-      if (!res.ok) throw new Error("Respons jaringan bermasalah saat menghapus skor");
-      return res.json();
-    })
-    .then((data) => {
-      console.log(`Notifikasi hapus terkirim. Tipe: ${type}`, data);
+      // Kita hanya cek apakah server merespon 'OK' (status 200-299)
+      // Kita tidak mencoba membaca JSON
+      if (!res.ok) {
+        throw new Error("Respons server bermasalah saat menghapus skor");
+      }
+      console.log(`Notifikasi hapus terkirim. Tipe: ${type}. Server merespon OK.`);
     })
     .catch((error) => {
+      // Jika terjadi error (misalnya jaringan putus), KEMBALIKAN TAMPILAN
       console.error("Terjadi masalah dengan operasi fetch untuk hapus skor:", error);
       displayElement.innerHTML = currentText;
+
+      // Juga simpan kembali state lama ke session storage agar konsisten
+      if (typeof window.saveHistoryToSession === "function") {
+        window.saveHistoryToSession();
+      }
+
+      // Beri tahu pengguna
+      alert("Gagal menghapus poin terakhir. Periksa koneksi Anda dan coba lagi.");
     });
 }

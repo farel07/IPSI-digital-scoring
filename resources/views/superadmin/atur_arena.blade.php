@@ -1,3 +1,29 @@
+@push('styles')
+<!-- DataTables CSS CDN -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+@endpush
+
+@push('scripts')
+<!-- jQuery & DataTables JS CDN -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script>
+$(document).ready(function() {
+    // DataTables hanya untuk searching, paging & info dimatikan
+    $('.table-custom').DataTable({
+        paging: false,
+        info: false,
+        ordering: false,
+        searching: true,
+        language: {
+            search: 'Cari:',
+            zeroRecords: 'Tidak ada data yang cocok.'
+        }
+    });
+});
+</script>
+@endpush
+
 @extends('superadmin.app')
 
 @section('title', 'Detail Kejuaraan Nasional 2024')
@@ -68,9 +94,9 @@
                                     <th>Tim Merah</th>
                                     <th>Tim Biru</th>
                                     <th>Kelas Tanding</th>
-                                    <th>Babak</th>
+                                    {{-- <th>Babak</th> --}}
                                     <th>Status</th>
-                                    <th>Waktu</th>
+                                    {{-- <th>Waktu</th> --}}
                                     <th style="width: 180px;">Arena</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -98,9 +124,9 @@
                                     <td>
                                         <div class="fw-semibold">{{ $pertandingan->kelasPertandingan?->kelas?->nama_kelas ?? 'N/A' }}</div>
                                     </td>
-                                    <td><span class="badge badge-warning-custom">{{ 'Babak ' . $pertandingan->round_number }}</span></td>
+                                    {{-- <td><span class="badge badge-warning-custom">{{ 'Babak ' . $pertandingan->round_number }}</span></td> --}}
                                     <td><span>{{ ucwords(str_replace('_', ' ', $pertandingan->status)) }}</span></td>
-                                    <td class="text-muted">--:--</td>
+                                    {{-- <td class="text-muted">--:--</td> --}}
                                     <td>
                                         <select class="form-select form-select-sm arena-dropdown" data-id="{{ $pertandingan->id }}">
                                             <option value="" {{ is_null($pertandingan->arena_id) ? 'selected' : 'disabled' }}>
@@ -118,9 +144,9 @@
                                         </select>
                                     </td>
                                     <td class="action-links">
-                                        <a href="#" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a>
+                                        {{-- <a href="#" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a> --}}
                                         <a href="#" class="text-danger"><i class="bi bi-trash-fill"></i> Hapus</a>
-                                        <a href="#" class="text-info"><i class="bi bi-arrow-left-right"></i> Pindah</a>
+                                        {{-- <a href="#" class="text-info"><i class="bi bi-arrow-left-right"></i> Pindah</a> --}}
                                     </td>
                                 </tr>
                                 @empty
@@ -166,9 +192,9 @@
                                     <th>Tim Merah</th>
                                     <th>Tim Biru</th>
                                     <th>Kelas Tanding</th>
-                                    <th>Babak</th>
+                                    {{-- <th>Babak</th> --}}
                                     <th>Status</th>
-                                    <th>Waktu</th>
+                                    {{-- <th>Waktu</th> --}}
                                     <th style="width: 180px;">Arena</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -196,9 +222,9 @@
                                     <td>
                                         <div class="fw-semibold">{{ $pertandingan->kelasPertandingan?->kelas?->nama_kelas ?? 'N/A' }}</div>
                                     </td>
-                                    <td><span class="badge badge-warning-custom">{{ 'Babak ' . $pertandingan->round_number }}</span></td>
+                                    {{-- <td><span class="badge badge-warning-custom">{{ 'Babak ' . $pertandingan->round_number }}</span></td> --}}
                                     <td><span>{{ ucwords(str_replace('_', ' ', $pertandingan->status)) }}</span></td>
-                                    <td class="text-muted">--:--</td>
+                                    {{-- <td class="text-muted">--:--</td> --}}
                                     <td>
                                         <select class="form-select form-select-sm arena-dropdown" data-id="{{ $pertandingan->id }}">
                                             <option value="" {{ is_null($pertandingan->arena_id) ? 'selected' : 'disabled' }}>
@@ -216,9 +242,9 @@
                                         </select>
                                     </td>
                                     <td class="action-links">
-                                        <a href="#" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a>
+                                        {{-- <a href="#" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a> --}}
                                         <a href="#" class="text-danger"><i class="bi bi-trash-fill"></i> Hapus</a>
-                                        <a href="#" class="text-info"><i class="bi bi-arrow-left-right"></i> Pindah</a>
+                                        {{-- <a href="#" class="text-info"><i class="bi bi-arrow-left-right"></i> Pindah</a> --}}
                                     </td>
                                 </tr>
                                 @empty
