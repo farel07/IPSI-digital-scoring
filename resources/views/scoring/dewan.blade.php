@@ -81,8 +81,8 @@
                                 <div class="col-6"><button id="btn_binaan_blue" class="mt-3 btn btn-primary w-100" onclick="kirimBinaan('blue')" value="1" type="button" style="border-radius: 10px; height:100px">BINA</button></div>
                                 <div class="col-6"><button id="btn_teguran_blue" class="mt-3 btn btn-primary w-100" onclick="kirimTeguran('blue')" value="1" type="button" style="border-radius: 10px; height:100px">TEGURAN</button></div>
                                 <div class="col-6"><button id="btn_peringatan_blue" class="mt-3 btn btn-primary w-100" onclick="kirimPeringatan('blue')" value="1" type="button" style="border-radius: 10px; height:100px">PERINGATAN</button></div>
-                                <div class="col-6"><button class="mt-3 btn btn-primary w-100 h-75" type="button" id="btn_hapus_jatuhan_blue" style="border-radius: 10px; background-color:rgb(190, 0, 0)" disabled onclick="kirimHapus('jatuhan', 'blue')">HAPUS JATUHAN</button></div>
-                                <div class="col-6"><button class="mt-3 btn btn-primary w-100 h-75" type="button" id="btn_hapus_pelanggaran_blue" style="border-radius: 10px; background-color:rgb(190, 0, 0)" disabled onclick="kirimHapus('pelanggaran', 'blue')" value="0">HAPUS PELANGGARAN</button></div>
+                                <div class="col-6"><button class="mt-3 btn btn-primary w-100 h-75" type="button" id="btn_hapus_jatuhan_blue" style="border-radius: 10px; background-color:rgb(190, 0, 0)" onclick="kirimHapus('jatuhan', 'blue')">HAPUS JATUHAN</button></div>
+                                <div class="col-6"><button class="mt-3 btn btn-primary w-100 h-75" type="button" id="btn_hapus_pelanggaran_blue" style="border-radius: 10px; background-color:rgb(190, 0, 0)" onclick="kirimHapus('pelanggaran', 'blue')" value="0">HAPUS PELANGGARAN</button></div>
                             </div>
                         </div>
                         
@@ -98,22 +98,23 @@
                                 <button type="button" class="btn btn-warning text-light" data-bs-toggle="modal" data-bs-target="#validationModal">
                                     REQUEST VALIDATION
                                 </button>
-                                {{-- Modal Content Here --}}
-                                <div id="btn-tentukan-pemenang" class="btn btn-success mt-2 
-                                    @php
-                                        $kategori = $pertandingan->kelasPertandingan?->kategoriPertandingan?->nama_kategori;
-                                        $currentRound = $pertandingan->current_round;
-                                        $isDisabled = true;
-                                        if ($kategori == 'Pemasalan' && $currentRound >= 2) {
-                                            $isDisabled = false;
-                                        } elseif ($kategori != 'Pemasalan' && $currentRound >= 3) {
-                                            $isDisabled = false;
-                                        }
-                                        if ($isDisabled) {
-                                            echo 'disabled';
-                                        }
-                                    @endphp">TENTUKAN PEMENANG
-                                </div>
+
+                                <!-- [PERUBAHAN] Mengubah DIV menjadi BUTTON dan menambahkan atribut pemicu modal -->
+                                @php
+                                    $kategori = $pertandingan->kelasPertandingan?->kategoriPertandingan?->nama_kategori;
+                                    $currentRound = $pertandingan->current_round;
+                                    $isDisabled = true;
+                                    if ($kategori == 'Pemasalan' && $currentRound >= 2) {
+                                        $isDisabled = false;
+                                    } elseif ($kategori != 'Pemasalan' && $currentRound >= 3) {
+                                        $isDisabled = false;
+                                    }
+                                @endphp
+                                <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#modalTentukanPemenang" {{ $isDisabled ? 'disabled' : '' }}>
+                                    TENTUKAN PEMENANG
+                                </button>
+                                <!-- [AKHIR PERUBAHAN] -->
+
                                 <div class="border bg-dark p-2 mt-2 rounded-top"><p class="m-0 text-center text-light">LAST VALIDATION</p></div>
                                 <div id="final-result-display" class="border bg-light p-2 mb-2 rounded-bottom"><p class="m-0 text-center">NO RESULT</p></div>
                             </div>
@@ -151,8 +152,8 @@
                                 <div class="col-6 pe-3"><button class="mt-3 btn btn-danger w-100" id="btn_binaan_red" type="button" style="border-radius: 10px; height:100px" onclick="kirimBinaan('red')" value="1" type="button">BINA</button></div>
                                 <div class="col-6 ps-3"><button class="mt-3 btn btn-danger w-100" id="btn_teguran_red" type="button" style="border-radius: 10px; height:100px" onclick="kirimTeguran('red')" value="1" type="button">TEGURAN</button></div>
                                 <div class="col-6 pe-3"><button class="mt-3 btn btn-danger w-100" id="btn_peringatan_red" type="button" style="border-radius: 10px; height:100px" onclick="kirimPeringatan('red')" value="1" type="button">PERINGATAN</button></div>
-                                <div class="col-6"><button class="mt-3 btn btn-primary w-100 h-75" type="button" style="border-radius: 10px; background-color:rgb(190, 0, 0)" id="btn_hapus_jatuhan_red" onclick="kirimHapus('jatuhan', 'red')" disabled>HAPUS JATUHAN</button></div>
-                                <div class="col-6"><button class="mt-3 btn btn-primary w-100 h-75" type="button" style="border-radius: 10px; background-color:rgb(190, 0, 0)" id="btn_hapus_pelanggaran_red" onclick="kirimHapus('pelanggaran', 'red')" disabled>HAPUS PELANGGARAN</button></div>
+                                <div class="col-6"><button class="mt-3 btn btn-primary w-100 h-75" type="button" style="border-radius: 10px; background-color:rgb(190, 0, 0)" id="btn_hapus_jatuhan_red" onclick="kirimHapus('jatuhan', 'red')" >HAPUS JATUHAN</button></div>
+                                <div class="col-6"><button class="mt-3 btn btn-primary w-100 h-75" type="button" style="border-radius: 10px; background-color:rgb(190, 0, 0)" id="btn_hapus_pelanggaran_red" onclick="kirimHapus('pelanggaran', 'red')" >HAPUS PELANGGARAN</button></div>
                             </div>
                         </div>
                     </div>
@@ -167,47 +168,100 @@
 
     {{-- modal request validation (kode tidak berubah) --}}
     <div class="modal fade" id="validationModal" tabindex="-1" aria-labelledby="validationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="validationModalLabel">Request Validasi Juri</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="dewan-request-section">
-                    <p class="text-center lead">Kirim permintaan validasi ke Juri untuk:</p>
-                    <div class="d-grid gap-3">
-                        <button type="button" class="btn btn-primary btn-lg" onclick="sendValidationRequest('Jatuhan')">Jatuhan</button>
-                        <button type="button" class="btn btn-danger btn-lg" onclick="sendValidationRequest('Pelanggaran')">Pelanggaran</button>
-                    </div>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="validationModalLabel">Request Validasi Juri</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <div class="modal-body">
+                    <div id="dewan-request-section">
+                        <p class="text-center lead">Kirim permintaan validasi ke Juri untuk:</p>
+                        <div class="d-grid gap-3">
+                            <button type="button" class="btn btn-primary btn-lg" onclick="sendValidationRequest('Jatuhan')">Jatuhan</button>
+                            <button type="button" class="btn btn-danger btn-lg" onclick="sendValidationRequest('Pelanggaran')">Pelanggaran</button>
+                        </div>
+                    </div>
 
-                <div id="dewan-vote-tracker-section" class="d-none mt-3">
-                    <h5 class="text-center">Menunggu Vote dari Juri untuk: <strong id="requested-validation-type"></strong></h5>
-                    <table class="table table-bordered text-center mt-3">
-                        <thead>
-                            <tr>
-                                <th>Juri 1</th>
-                                <th>Juri 2</th>
-                                <th>Juri 3</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span id="juri-1-vote" class="badge bg-secondary fs-6">Menunggu</span></td>
-                                <td><span id="juri-2-vote" class="badge bg-secondary fs-6">Menunggu</span></td>
-                                <td><span id="juri-3-vote" class="badge bg-secondary fs-6">Menunggu</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                     <div class="d-grid mt-4">
-                        <button class="btn btn-secondary" type="button" onclick="resetValidation()">Reset Validasi</button>
+                    <div id="dewan-vote-tracker-section" class="d-none mt-3">
+                        <h5 class="text-center">Menunggu Vote dari Juri untuk: <strong id="requested-validation-type"></strong></h5>
+                        <table class="table table-bordered text-center mt-3">
+                            <thead>
+                                <tr>
+                                    <th>Juri 1</th>
+                                    <th>Juri 2</th>
+                                    <th>Juri 3</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span id="juri-1-vote" class="badge bg-secondary fs-6">Menunggu</span></td>
+                                    <td><span id="juri-2-vote" class="badge bg-secondary fs-6">Menunggu</span></td>
+                                    <td><span id="juri-3-vote" class="badge bg-secondary fs-6">Menunggu</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                         <div class="d-grid mt-4">
+                            <button class="btn btn-secondary" type="button" onclick="resetValidation()">Reset Validasi</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- [KODE BARU] Modal untuk Menentukan Pemenang -->
+   <div class="modal fade" id="modalTentukanPemenang" tabindex="-1" aria-labelledby="modalTentukanPemenangLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTentukanPemenangLabel">Pilih Pemenang Pertandingan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Pilih salah satu sudut sebagai pemenang untuk melanjutkan ke babak berikutnya.</p>
+                
+                <form id="formTentukanPemenang" method="POST" action="{{ route('pertandingan.setWinner', $pertandingan->id) }}">
+                    @csrf
+                    @method('PUT')
+                    
+                    <input type="hidden" name="winner_unit_id" id="winner_id_input">
+
+                    <div class="d-grid gap-3">
+                        {{-- [PERBAIKAN] Menggunakan unit1_id --}}
+                        <button type="button" class="btn btn-primary btn-lg btn-pilih-pemenang" 
+                                data-winner-id="{{ $pertandingan->unit1_id }}"
+                                data-winner-name="@forelse($pertandingan->pemain_unit_1 as $p){{ $p->player?->name ?? 'Pemain Biru' }}@if(!$loop->last), @endif @empty Pemain Biru @endforelse">
+                            Pemenang Sudut BIRU <br>
+                            <small>(@forelse ($pertandingan->pemain_unit_1 as $peserta)
+                                {{ $peserta->player?->name ?? 'Pemain Biru' }}{{ !$loop->last ? ', ' : ''}}
+                            @empty
+                                Pemain Biru Belum Ada
+                            @endforelse)</small>
+                        </button>
+
+                        {{-- [PERBAIKAN] Menggunakan unit2_id --}}
+                        <button type="button" class="btn btn-danger btn-lg btn-pilih-pemenang" 
+                                data-winner-id="{{ $pertandingan->unit2_id }}"
+                                data-winner-name="@forelse($pertandingan->pemain_unit_2 as $p){{ $p->player?->name ?? 'Pemain Merah' }}@if(!$loop->last), @endif @empty Pemain Merah @endforelse">
+                            Pemenang Sudut MERAH <br>
+                            <small>(@forelse ($pertandingan->pemain_unit_2 as $peserta)
+                                {{ $peserta->player?->name ?? 'Pemain Merah' }}{{ !$loop->last ? ', ' : ''}}
+                            @empty
+                                Pemain Merah Belum Ada
+                            @endforelse)</small>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
 </div>
+    <!-- [AKHIR KODE BARU] -->
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -373,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         channel.listen('RoundUpdated', (data) => {
-            alert('Round telah diubah oleh operator timer');
+            // alert('Round telah diubah oleh operator timer');
             window.location.reload();
         });
         
@@ -404,4 +458,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 </script>
+
+<!-- [KODE BARU] JavaScript untuk Modal Pemenang -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Cek jika modalnya ada di halaman
+        const modalEl = document.getElementById('modalTentukanPemenang');
+        if (modalEl) {
+            const buttons = modalEl.querySelectorAll('.btn-pilih-pemenang');
+            const form = document.getElementById('formTentukanPemenang');
+            const winnerInput = document.getElementById('winner_id_input');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const winnerId = this.getAttribute('data-winner-id');
+                    const winnerName = this.getAttribute('data-winner-name');
+
+                    // Validasi sederhana, jangan submit jika tidak ada ID pemenang
+                    if (!winnerId) {
+                        alert('Error: ID Pemenang tidak ditemukan. Pastikan kedua pemain sudah ada di slot pertandingan.');
+                        return;
+                    }
+
+                    const confirmation = confirm(`Apakah Anda yakin ingin menetapkan ${winnerName} sebagai pemenang?`);
+                    
+                    if (confirmation) {
+                        winnerInput.value = winnerId;
+                        form.submit();
+                    }
+                });
+            });
+        }
+    });
+</script>
+<!-- [AKHIR KODE BARU] -->
+
 @endsection

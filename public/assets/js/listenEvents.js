@@ -104,8 +104,6 @@ function initializeListener(appKey, appCluster, pertandinganId) {
         document.getElementById("blue-notif-binaan-1").style.filter = yellowFilter;
       } else if (data.count == 2) {
         document.getElementById("blue-notif-binaan-2").style.filter = yellowFilter;
-        document.getElementById("blue-notif-teguran-1").style.filter = yellowFilter;
-        document.getElementById("blue-notif-teguran-1-table").innerHTML = 1;
       } else {
         alert("binaan cuman 2x banh");
       }
@@ -114,8 +112,6 @@ function initializeListener(appKey, appCluster, pertandinganId) {
         document.getElementById("red-notif-binaan-1").style.filter = yellowFilter;
       } else if (data.count == 2) {
         document.getElementById("red-notif-binaan-2").style.filter = yellowFilter;
-        document.getElementById("red-notif-teguran-1").style.filter = yellowFilter;
-        document.getElementById("red-notif-teguran-1-table").innerHTML = 1;
       } else {
         alert("binaan cuman 2x banh");
       }
@@ -208,8 +204,10 @@ function initializeListener(appKey, appCluster, pertandinganId) {
   const hapusPelanggaranChannel = pusher.subscribe("kirim-hapus-pelanggaran-channel-" + pertandingan_id);
   hapusPelanggaranChannel.bind("terima-hapus-pelanggaran-" + pertandingan_id, function (data) {
     if (data.filter == "blue") {
+      console.log("Menerima event hapus pelanggaran untuk blue:", data);
       // Reset filter ikon untuk Binaan
       if (data.type == "binaan-1") {
+        console.log("Reset filter untuk blue-notif-binaan-1");
         document.getElementById("blue-notif-binaan-1").style.filter = "";
       } else if (data.type == "binaan-2") {
         document.getElementById("blue-notif-binaan-2").style.filter = "";

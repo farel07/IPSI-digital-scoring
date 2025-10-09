@@ -1,12 +1,32 @@
 @extends('main.main')
 @section('content')
 
+<style>
+    .score-box {
+        border-radius: 10px;
+        white-space: nowrap; /* Mencegah teks turun ke baris baru */
+        overflow-x: auto;   /* Memungkinkan scrolling, meskipun scrollbar disembunyikan */
+        
+        /* Menyembunyikan scrollbar di berbagai browser */
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+
+    /* Menyembunyikan scrollbar untuk Chrome, Safari, dan Opera */
+    .score-box::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+
 <div id="match-data" 
     data-pertandingan-id="{{ $pertandingan->id }}" 
     data-juri-name="{{ $user->role->name }}"> {{-- Menambahkan nama juri --}}
 </div>
 
     <div class="container mt-2 mb-2 rounded pb-4" style="background-color: rgb(216, 216, 216)">
+        <div class="mb-3 text-center">
+            <span class="badge bg-info text-dark fs-6">Juri: {{ $user->role->name }}</span>
+        </div>
         <div class="container">
             {{-- title --}}
             <div class="d-flex justify-content-between">
@@ -50,20 +70,20 @@
                 <div class="col-4">
                     <div class="p-3 border bg-primary text-light text-center" style="border-radius: 10px">TEAM BLUE
                     </div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-1" style="border-radius: 10px">.</div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-2" style="border-radius: 10px">.</div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-blue-3" style="border-radius: 10px">.</div>
+                    <div id="total-point-blue-1" class="p-3 mt-3 border bg-light text-center score-box">.</div>
+                    <div id="total-point-blue-2" class="p-3 mt-3 border bg-light text-center score-box">.</div>
+                    <div id="total-point-blue-3" class="p-3 mt-3 border bg-light text-center score-box">.</div>
                     <div class="row justify-content-between">
                         <div class="col-6 mb-3">
                             <button class="mt-3 btn btn-primary w-100" type="button" value="1" onclick="kirimPukul('blue')"  id="btn_pukul_blue" 
                                 style="border-radius: 10px; height: 100px"><img class="w-25 me-2"
                                     src="{{ asset('assets') }}/img/icon/logo-pukul.png" alt="Pukul">PUKUL</button>
                         </div>
-                        <div class="col-6">
+                        {{-- <div class="col-6">
                             <button class="mt-3 btn w-100 text-light" type="button" onclick="kirimHapusPoint('blue')" id="btn_hapus_point_blue" disabled
                                 style="border-radius: 10px; height: 100px; background-color:rgb(190, 0, 0)">HAPUS POINT
                                 TERBARU</button>
-                        </div>
+                        </div> --}}
                         <div class="d-grid gap-2 col-6 me-auto mt-3">
                             <button class="btn btn-primary" id="btn_tendang_blue" type="button" style="border-radius: 10px; height: 100px" onclick="kirimTendang('blue')" value="2"><img
                                     class="w-25 me-1 mb-3" src="{{ asset('assets') }}/img/icon/logo-tendang.png"
@@ -87,15 +107,15 @@
                 {{-- team red --}}
                 <div class="col-4">
                     <div class="p-3 border bg-danger text-light text-center" style="border-radius: 10px">TEAM RED</div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-1" style="border-radius: 10px">.</div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-2" style="border-radius: 10px">.</div>
-                    <div class="p-3 mt-3 border bg-light text-center" id="total-point-red-3" style="border-radius: 10px">.</div>
+                    <div id="total-point-red-1" class="p-3 mt-3 border bg-light text-center score-box">.</div>
+                    <div id="total-point-red-2" class="p-3 mt-3 border bg-light text-center score-box">.</div>
+                    <div id="total-point-red-3" class="p-3 mt-3 border bg-light text-center score-box">.</div>
                     <div class="row justify-content-between">
-                        <div class="col-6">
+                        {{-- <div class="col-6">
                             <button class="mt-3 btn btn-danger w-100 text-light" type="button" onclick="kirimHapusPoint('red')" id="btn_hapus_point_red" disabled
                                 style="border-radius: 10px; background-color:rgb(190, 0, 0); height: 100px">HAPUS POINT
                                 TERBARU</button>
-                        </div>
+                        </div> --}}
                         <div class="col-6"> 
                             <button class="mt-3 btn btn-danger w-100" type="button" onclick="kirimPukul('red')" id="btn_pukul_red"
                                 style="border-radius: 10px; height:100px" value="1"><img class="w-25 me-1" 
@@ -164,8 +184,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // LOGIKA SESSIONSTORAGE & MANAJEMEN RONDE
     // ======================================================================
     window.currentRound = {{ $pertandingan->current_round }};
-    const storageKey = `juriScoreHistory_${pertandinganId}`;
+    // 1. Buat kunci penyimpanan yang unik dan konsisten untuk juri ini
+    const juriId = juriName.replace('-', ''); // Mengubah "juri-1" menjadi "juri1"
+    const storageKey = `juriScoreHistory_${juriId}_match${pertandinganId}`;
 
+    // 2. Fungsi SIMPAN tetap menggunakan localStorage dengan kunci yang unik
     window.saveHistoryToSession = function() {
         const dataToSave = {
             pertandingan_id: pertandinganId,
@@ -182,16 +205,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         };
-        sessionStorage.setItem(storageKey, JSON.stringify(dataToSave));
-        console.log('Riwayat skor disimpan ke sessionStorage.');
+        // Simpan ke localStorage, bukan sessionStorage
+        localStorage.setItem(storageKey, JSON.stringify(dataToSave));
+        console.log(`Riwayat skor Juri disimpan ke localStorage dengan kunci: ${storageKey}`);
     };
 
-    function loadHistoryFromSession() {
-        const savedDataJSON = sessionStorage.getItem(storageKey);
+    // 3. Fungsi LOAD diperbaiki untuk membaca dari localStorage dengan kunci yang sama
+    function loadHistoryFromStorage() {
+        // Ganti sessionStorage.getItem menjadi localStorage.getItem
+        const savedDataJSON = localStorage.getItem(storageKey); 
+        
         if (savedDataJSON) {
             const savedData = JSON.parse(savedDataJSON);
             if (savedData.pertandingan_id == pertandinganId) {
-                console.log('Memuat riwayat skor dari sessionStorage.');
+                console.log('Memuat riwayat skor dari localStorage.');
+                // Logika pemuatan data (tidak berubah)
                 document.getElementById('total-point-blue-1').innerHTML = savedData.history.blue['1'] || '.';
                 document.getElementById('total-point-blue-2').innerHTML = savedData.history.blue['2'] || '.';
                 document.getElementById('total-point-blue-3').innerHTML = savedData.history.blue['3'] || '.';
@@ -199,13 +227,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('total-point-red-2').innerHTML = savedData.history.red['2'] || '.';
                 document.getElementById('total-point-red-3').innerHTML = savedData.history.red['3'] || '.';
             } else {
-                console.warn('Data sessionStorage dari pertandingan sebelumnya ditemukan. Mengabaikan.');
-                sessionStorage.removeItem(storageKey);
+                localStorage.removeItem(storageKey);
             }
         }
     }
 
-    loadHistoryFromSession();
+    // Panggil fungsi yang sudah diperbaiki
+    loadHistoryFromStorage();
     
     // ======================================================================
     // ... KODE ECHO DAN PUSHER ANDA ...
@@ -237,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     channel.listen('RoundUpdated', (data) => {
         console.log('Round Telah diubah oleh operator timer', data);
-        alert('Round telah diubah oleh operator timer');
+        // alert('Round telah diubah oleh operator timer');
         window.location.reload();
     });
 

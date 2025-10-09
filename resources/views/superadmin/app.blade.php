@@ -55,6 +55,8 @@
             background-color: #f8f9fa;
         }
     </style>
+
+    @stack('styles')
 </head>
 <body>
     <header class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">

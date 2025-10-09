@@ -7,6 +7,7 @@ use App\Models\DetailPointTanding;
 use App\Models\Pertandingan;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 // Import semua Event Anda
 use App\Events\kirimBinaan;
@@ -46,11 +47,11 @@ class TandingController extends Controller
 
         // Panggil helper dengan kolom 'binaan_point', nilai dari 'count', dan filter
         $this->updateOrCreatePoint($pertandingan, 'binaan_point', $request->filter, $request->count);
-        
 
-        if ($request->count == 2) {
-            $this->updateOrCreatePoint($pertandingan, 'teguran', $request->filter, 1);
-        }
+
+        // if ($request->count == 2) {
+        //     $this->updateOrCreatePoint($pertandingan, 'teguran', $request->filter, 1);
+        // }
 
         event(new kirimBinaan($request->count, $request->filter, $pertandingan->id));
         return response()->json(['status' => 'berhasil', 'data' => $request->all()]);
@@ -200,6 +201,50 @@ class TandingController extends Controller
         return response()->json(['status' => 'berhasil']);
     }
 
+    public function hapus_point(Request $request, User $user)
+    {
+        // 1. Validasi dasar
+        $validated = $request->validate([
+            'filter' => 'required|string|in:blue,red',
+            'type'   => 'required|string|in:pukulan,tendangan',
+            'juri_ket' => 'required|string',
+        ]);
+
+        // 2. Dapatkan pertandingan aktif sama seperti fungsi lainnya
+        $arenaId = $user->user_arena->first()->arena_id ?? null;
+        if (!$arenaId) {
+            return response()->json(['status' => 'gagal', 'message' => 'Juri tidak punya arena'], 404);
+        }
+
+        $pertandingan = Pertandingan::where('arena_id', $arenaId)->where('status', 'berlangsung')->first();
+        if (!$pertandingan) {
+            return response()->json(['status' => 'gagal', 'message' => 'Tidak ada pertandingan berlangsung'], 404);
+        }
+
+        // 3. Tentukan kolom dan nilai yang akan dikurangi
+        $baseColumn = '';
+        $valueToDecrement = 0;
+
+        if ($validated['type'] === 'pukulan') {
+            $baseColumn = 'punch_point';
+            $valueToDecrement = -1; // Nilai negatif untuk pengurangan
+        } elseif ($validated['type'] === 'tendangan') {
+            $baseColumn = 'kick_point';
+            $valueToDecrement = -2; // Nilai negatif untuk pengurangan
+        }
+
+        // 4. Panggil helper untuk melakukan pengurangan di database
+        if (!empty($baseColumn)) {
+            $this->updateOrCreatePoint($pertandingan, $baseColumn, $validated['filter'], $valueToDecrement);
+        }
+
+        // 5. Broadcast event ke client lain (opsional, tapi bagus untuk penilaian)
+        event(new hapusPoint($validated['filter'], $validated['type'], $validated['juri_ket'], $pertandingan->id));
+
+        // 6. Kirim respons sukses (tanpa body JSON)
+        return response()->json(['status' => 'berhasil']);
+    }
+
     // --- FUNGSI HAPUS (Dibiarkan kosong sesuai permintaan) ---
 
     public function hapus_pelanggaran(Request $request, User $user)
@@ -236,8 +281,56 @@ class TandingController extends Controller
         $this->updateOrCreatePoint($pertandingan, $type, $request->filter, $point);
 
 
-        event(new hapusPelanggaran($request->count, $request->filter, $pertandingan->id));
+        event(new hapusPelanggaran($request->type, $request->filter, $pertandingan->id));
         return response()->json(['status' => 'berhasil', 'data' => $type]);
+    }
+
+    // app/Http/Controllers/PertandinganController.php
+
+    public function setWinner(Request $request, Pertandingan $pertandingan)
+    {
+        // 1. Validasi Input yang Disempurnakan
+        $validated = $request->validate([
+            // Ganti nama field input di form menjadi 'winner_unit_id' agar lebih jelas
+            'winner_unit_id' => [
+                'required',
+                'integer',
+                // Aturan validasi:
+                // 'winner_unit_id' yang dikirim HARUS ADA di tabel 'bracket_peserta'
+                // DAN 'kelas_pertandingan_id'-nya HARUS SAMA dengan kelas pertandingan saat ini.
+                Rule::exists('bracket_peserta', 'unit_id')->where(function ($query) use ($pertandingan) {
+                    return $query->where('kelas_pertandingan_id', $pertandingan->kelas_pertandingan_id);
+                }),
+            ],
+        ]);
+
+        // 2. Update Pertandingan Saat Ini
+        // Kolom 'winner_id' di tabel pertandingan akan diisi dengan unit_id yang menang.
+        $pertandingan->winner_unit_id = $validated['winner_unit_id'];
+        $pertandingan->status = 'selesai';
+        $pertandingan->save();
+
+        // 3. Logika Memajukan Pemenang ke Babak Berikutnya
+        $nextMatch = $pertandingan->nextMatch;
+
+        if ($nextMatch) {
+            // Pemenang (sebagai unit) akan mengisi slot unit berikutnya yang tersedia.
+            if (is_null($nextMatch->unit1_id)) {
+                $nextMatch->unit1_id = $validated['winner_unit_id'];
+            } elseif (is_null($nextMatch->unit2_id)) {
+                $nextMatch->unit2_id = $validated['winner_unit_id'];
+            }
+
+            // Jika kedua unit untuk pertandingan berikutnya sudah lengkap, ubah statusnya.
+            if ($nextMatch->unit1_id && $nextMatch->unit2_id) {
+                $nextMatch->status = 'siap_dimulai';
+            }
+
+            $nextMatch->save();
+        }
+
+        // 4. Redirect Kembali dengan Pesan Sukses
+        return redirect()->back()->with('success', 'Pemenang berhasil ditentukan!');
     }
 
     // public function submitVote(Request $request)
