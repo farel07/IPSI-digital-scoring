@@ -168,7 +168,7 @@ function calculateAndDisplayFinalResults(judgeTotals, totalPenalty) {
     document.getElementById('median-value').textContent = medianDisplay;
     document.getElementById('median-average-value').textContent = medianAverage.toFixed(2);
     document.getElementById('judge-final-score').textContent = medianAverage.toFixed(2); // Final score judge adalah rata-rata median
-    document.getElementById('std-dev-value').textContent = stdDev.toFixed(2);
+    document.getElementById('std-dev-value').textContent = stdDev.toFixed(6);
     document.getElementById('final-result-score').textContent = finalScore.toFixed(2);
     document.getElementById('final-result-calculation').textContent = `Final Score (${medianAverage.toFixed(2)}) - Total Penalti (${Math.abs(totalPenalty).toFixed(2)})`;
 }

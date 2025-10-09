@@ -55,7 +55,7 @@ class dewanOperatorController extends Controller
         } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3) && $pertandingan->kelasPertandingan->kelas->nama_kelas != "Tunggal Bebas"){
                     return view('seni.prestasi.tunggal.biru.dewanOperator', compact('user', 'pertandingan', 'daftar_juri'));
 
-        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 2 || $jumlah_pemain == 1)  && $pertandingan->kelasPertandingan->kelas->nama_kelas == "Tunggal Bebas"){
+        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 2 || ($jumlah_pemain == 1 && $pertandingan->kelasPertandingan->kelas->nama_kelas == "Tunggal Bebas"))){
                     return view('seni.prestasi.ganda.merah.dewanOperator', compact('user', 'pertandingan', 'daftar_juri'));
            
         } else {

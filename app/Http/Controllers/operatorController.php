@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HasilPoinSeniGanda;
 use Illuminate\Http\Request;
 use App\Models\Pertandingan;
 use App\Models\User;
 use Illuminate\Validation\Rule;
+use App\Models\HasilPoinSeniTunggalRegu;
 
 class operatorController extends Controller
 {
@@ -67,6 +69,48 @@ class operatorController extends Controller
             'status' => 'success',
             'message' => 'Status pertandingan berhasil diperbarui!',
             'new_status' => $validated['status']
+        ]);
+    }
+
+    public function viewPenontonFinal(User $user)
+    {
+       $arenaId = $user->user_arena->first()->arena_id ?? null;
+
+        // 2. Tangani jika juri tidak punya arena
+        if (!$arenaId) {
+            abort(404, 'Juri ini tidak ditugaskan ke arena manapun.');
+        }
+
+        
+
+        // 3. Cari satu pertandingan yang aktif di arena tersebut.
+        // Kita tidak perlu lagi `with()` yang kompleks di sini.
+        $pertandingan = Pertandingan::with('kelasPertandingan.kelas') // Cukup muat info kelas
+            ->where('arena_id', $arenaId)
+            ->where('status', 'berlangsung')
+            ->first();
+
+            $jumlah_pemain = $pertandingan->kelasPertandingan->kelas->jumlah_pemain;
+
+            if ($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3) && $pertandingan->kelasPertandingan->kelas->nama_kelas != "Tunggal Bebas"){
+
+                $hasil_poin = HasilPoinSeniTunggalRegu::where('pertandingan_id', $pertandingan->id)->get();
+            } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 2 || ($jumlah_pemain == 1 && $pertandingan->kelasPertandingan->kelas->nama_kelas == "Tunggal Bebas"))){
+               $hasil_poin = HasilPoinSeniGanda::where('pertandingan_id', $pertandingan->id)->get(); 
+            }
+
+            $hasil_poinBiru = $hasil_poin->where('unit_id', $pertandingan->unit1_id)->first();
+            $hasil_poinMerah = $hasil_poin->where('unit_id', $pertandingan->unit2_id)->first();
+
+            // return $hasil_poinBiru;
+
+            // return $hasil_poin;
+
+        return view('seni.prestasi.tunggal.penontonFinal', [
+            'pertandingan' => $pertandingan,
+            'hasil_poin' => $hasil_poin,
+            'hasilBiru' => $hasil_poinBiru,
+            'hasilMerah' => $hasil_poinMerah,
         ]);
     }
 }

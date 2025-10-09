@@ -23,6 +23,7 @@ use App\Http\Controllers\timerController;
 use App\Http\Controllers\TandingController;
 use App\Http\Controllers\SeniController;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\Constraint\Operator;
 
 /*
 |--------------------------------------------------------------------------
@@ -110,6 +111,10 @@ Route::prefix('scoring')->group(function () {
     Route::post('/timer/update-round', [timerController::class, 'updateRound'])->name('timer.updateRound');
 
     Route::get('/dewan-operator/{user}', [dewanOperatorController::class, 'index']);
+
+    Route::post('/submit_penilaian_juri/{id}', [juriController::class, 'submit_penilaian_juri']);
+
+    Route::get('penonton-final/{user}', [OperatorController::class, 'viewPenontonFinal'])->name('operator.penontonFinal');
 
 
     // seni & jurus baku

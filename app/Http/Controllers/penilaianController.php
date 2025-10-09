@@ -54,7 +54,7 @@ class penilaianController extends Controller
 
         if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)  && $pertandingan->kelasPertandingan->kelas->nama_kelas != "Tunggal Bebas"){
             return view('seni.prestasi.tunggal.biru.penonton', compact('user', 'pertandingan', 'daftar_juri'));
-        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 2 || $jumlah_pemain == 1)  && $pertandingan->kelasPertandingan->kelas->nama_kelas == "Tunggal Bebas"){
+        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 2 || ($jumlah_pemain == 1 && $pertandingan->kelasPertandingan->kelas->nama_kelas == "Tunggal Bebas"))){
             return view('seni.prestasi.ganda.biru.penonton', compact('user', 'pertandingan', 'daftar_juri'));
         }
         else {

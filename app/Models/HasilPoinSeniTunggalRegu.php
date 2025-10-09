@@ -21,7 +21,7 @@ class HasilPoinSeniTunggalRegu extends Model
      * Kolom yang bisa diisi secara massal (mass assignable).
      *
      * @var array<int, string>
-     */
+     */ 
     protected $fillable = [
         'pertandingan_id',
         'unit_id',
@@ -32,6 +32,7 @@ class HasilPoinSeniTunggalRegu extends Model
         'pakaian',
         'senjata_jatuh',
         'stop',
+        'performance_time'
     ];
 
     /**

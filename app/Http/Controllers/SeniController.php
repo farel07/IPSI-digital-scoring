@@ -52,8 +52,14 @@ class SeniController extends Controller
         'senjata_tidak_jatuh' => 'senjata_tidak_jatuh',
         'salam_suara' => 'tidak_ada_salam',
         'baju_senjata_rusak' => 'baju_senjata',
+        'time_performance' => 'performance_time',
     ];
     $columnToUpdate = $columnMap[$baseType] ?? null;
+
+    // return response()->json([
+    //     'columnToUpdate' => $columnMap[$baseType]
+    // ]);
+
 
     if ($columnToUpdate) {
         $hasilPoin = HasilPoinSeniGanda::firstOrCreate(
@@ -62,10 +68,24 @@ class SeniController extends Controller
                 'unit_id' => $unit_id, // Anda perlu memastikan unit_id dikirim
             ]
         );
-        
-        // Operasi penambahan/pengurangan
-        $hasilPoin->{$columnToUpdate} += $poin;
+
+        if($columnMap[$baseType] == 'performance_time'){
+            // Ubah format poin dari detik ke waktu (HH:MM:SS)
+            $hours = floor($poin / 3600);
+            $minutes = floor(($poin % 3600) / 60);
+            $seconds = $poin % 60;
+            $formattedTime = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+            $hasilPoin->{$columnToUpdate} = $formattedTime;
+        } else {
+            // Operasi penambahan/pengurangan
+            $hasilPoin->{$columnToUpdate} += $poin;
+        }
         $hasilPoin->save();
+
+        return response()->json([
+'status' => 'berhasil'
+        ]);
+        
     }
 
 
@@ -91,6 +111,7 @@ class SeniController extends Controller
                 if ($columnToUpdate) {
                     // Langkah 1: Update kolom yang sesuai dengan nilai poin baru
                     $detail_poin->{$columnToUpdate} = $poin;
+
 
                     // Langkah 2: Hitung ulang total skor dengan skor dasar 9.10
                     $detail_poin->total_skor = 9.10 
@@ -122,13 +143,26 @@ class SeniController extends Controller
                 case 'pakaian': $nama_kolom = 'pakaian'; break;
                 case 'senjata_jatuh': $nama_kolom = 'senjata_jatuh'; break;
                 case 'berhenti': $nama_kolom = 'stop'; break;
+                case 'performance_time': $nama_kolom = 'performance_time'; break;
             }
-
+            // return response()->json(['nama_kolom' => $nama_kolom, 'poin' => $poin]);
             if ($nama_kolom) {
                 $hasil_poin = HasilPoinSeniTunggalRegu::firstOrCreate(
                     ['pertandingan_id' => $pertandingan->id, 'unit_id' => $unit_id]
                 );
-                $hasil_poin->{$nama_kolom} += $poin;
+                if($nama_kolom == 'performance_time'){
+                    // Ubah format poin dari detik ke waktu (HH:MM:SS)
+                    $hours = floor($poin / 3600);
+                    $minutes = floor(($poin % 3600) / 60);
+                    $seconds = $poin % 60;
+                    $formattedTime = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                    $hasil_poin->{$nama_kolom} = $formattedTime;
+                } else {
+                    $hasil_poin->{$nama_kolom} += $poin;
+                }
+
+                // return response()->json(['nama_kolom' => $nama_kolom, 'poin' => $hasil_poin->{$nama_kolom}]);
+                // $hasil_poin->{$nama_kolom} += $poin;
                 $hasil_poin->save();
             }
 

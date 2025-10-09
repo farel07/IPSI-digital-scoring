@@ -25,6 +25,12 @@ class dewanController extends Controller
     public function index(User $user, Request $request)
     {
 
+        // if(isset($request->unit)){
+        //    return 'ada';
+        // } else {
+        //     return 'tidak'; // default ke unit_1 jika tidak ada di request
+        // }
+
         if ($user->role->id !== 5) {
             abort(403, 'Akses ditolak. User ini bukan dewan.');
         }
@@ -59,11 +65,42 @@ class dewanController extends Controller
             ]);
         } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 1 || $jumlah_pemain == 3)  && $pertandingan->kelasPertandingan->kelas->nama_kelas != "Tunggal Bebas"){
 
-            if($request->unit == 'unit_1'){
-                $unit_id = $pertandingan->unit1_id;
-            } else if ($request->unit == 'unit_2'){
-                $unit_id = $pertandingan->unit2_id;
-            } 
+             if ($pertandingan->kelasPertandingan->kategoriPertandingan->id == 1) {
+    
+    // Ambil SEMUA unit_id yang terkait dengan pertandingan ini dari tabel relasi.
+    // Kita urutkan berdasarkan 'unit_id' untuk memastikan urutannya selalu konsisten
+    // (misal: 'unit_1' akan selalu merujuk pada unit_id terkecil, dst).
+    $unitIds = $pertandingan->unitPemasalanSeni()->orderBy('unit_id', 'asc')->pluck('unit_id');
+
+    // Validasi input dari request untuk memastikan formatnya 'unit_X' dimana X adalah angka.
+    // Ini untuk keamanan dan menghindari error.
+    if (preg_match('/^unit_(\d+)$/', $request->unit, $matches)) {
+        // Ambil angka dari request, misal 'unit_3' -> $matches[1] akan berisi '3'
+        $unitNumber = (int)$matches[1];
+
+        // Pastikan angka valid (bukan 'unit_0')
+        if ($unitNumber > 0) {
+            // Ubah menjadi indeks array (0-based). 'unit_1' -> indeks 0, 'unit_2' -> indeks 1, dst.
+            $unitIndex = $unitNumber - 1;
+
+            // Ambil unit_id dari koleksi berdasarkan indeksnya.
+            // Metode ->get() aman digunakan, akan mengembalikan null jika indeks tidak ada,
+            // sehingga tidak akan menyebabkan error "undefined offset".
+            $unit_id = $unitIds->get($unitIndex);
+        }
+        // return $unit_id;
+    }
+
+    } else {
+        if($request->unit == 'unit_1'){
+            $unit_id = $pertandingan->unit1_id;
+        } else if ($request->unit == 'unit_2'){
+            $unit_id = $pertandingan->unit2_id;
+        } else {
+            $unit_id = 'unit_1'; // default ke unit_1 jika tidak ada di request
+        }
+
+    }
 
             $hasil_poin = HasilPoinSeniTunggalRegu::where('pertandingan_id', $pertandingan->id)->where('unit_id', $unit_id)->first();
 
@@ -78,13 +115,15 @@ class dewanController extends Controller
                 'penalti_terakhir' => $hasil_poin
             ]);
            
-        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 2 || $jumlah_pemain == 1)  && $pertandingan->kelasPertandingan->kelas->nama_kelas == "Tunggal Bebas"){
+        } else if($pertandingan->kelasPertandingan->jenisPertandingan->id == 2 && ($jumlah_pemain == 2 || ($jumlah_pemain == 1 &&$pertandingan->kelasPertandingan->kelas->nama_kelas == "Tunggal Bebas") )){
 
             if($request->unit == 'unit_1'){
                 $unit_id = $pertandingan->unit1_id;
             } else if ($request->unit == 'unit_2'){
                 $unit_id = $pertandingan->unit2_id;
-            } 
+            } else {
+                $unit_id = 'unit_1'; // default ke unit_1 jika tidak ada di request
+            }
 
             $hasil_poin = HasilPoinSeniGanda::where('pertandingan_id', $pertandingan->id)->where('unit_id', $unit_id)->first();
 

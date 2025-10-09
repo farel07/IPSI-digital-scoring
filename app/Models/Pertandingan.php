@@ -59,6 +59,52 @@ class Pertandingan extends Model
             ->get();
     }
 
+
+     public function unitPemasalanSeni()
+    {
+        return $this->hasMany(UnitPemasalanSeni::class, 'pertandingan_id');
+    }
+
+
+     public function getGroupedPesertaAttribute()
+    {
+        // KONDISI 1: Ini adalah pertandingan standar (Tanding / 2 unit)
+        // Kita deteksi dengan memeriksa apakah unit1_id tidak null.
+        if ($this->unit1_id) {
+            
+            // Ambil unit_id yang ada isinya (untuk menangani kasus "bye" dimana unit2_id bisa null)
+            $unitIds = collect([$this->unit1_id, $this->unit2_id])->filter();
+
+            if ($unitIds->isEmpty()) {
+                return collect(); // Tidak ada peserta sama sekali
+            }
+
+            // Ambil semua data BracketPeserta untuk unit-unit tersebut
+            return BracketPeserta::whereIn('unit_id', $unitIds)
+                ->with('player.contingent') // Eager load relasi
+                ->get()
+                ->groupBy('unit_id'); // Kelompokkan hasilnya berdasarkan unit_id
+
+        } 
+        // KONDISI 2: Ini adalah pertandingan non-standar (Seni / Beregu > 2 unit)
+        else {
+
+            // Ambil semua unit_id dari tabel relasi 'unit_pemasalan_seni'
+            $unitIds = $this->unitPemasalanSeni()->pluck('unit_id');
+            
+            if ($unitIds->isEmpty()) {
+                return collect(); // Tidak ada peserta
+            }
+
+            // Ambil semua data BracketPeserta untuk unit-unit tersebut
+            return BracketPeserta::whereIn('unit_id', $unitIds)
+                ->with('player.contingent') // Eager load relasi
+                ->get()
+                ->groupBy('unit_id'); // Kelompokkan hasilnya berdasarkan unit_id
+        }
+    }
+
+
     public function detailPointTanding()
     {
         return $this->hasOne(DetailPointTanding::class, 'pertandingan_id', 'id');
